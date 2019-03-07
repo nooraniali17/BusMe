@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "bus-me"
+version = "0.1.0"
+description = "Bus Me backend"
+authors = ["Shane Duan <s_duan@u.pacific.edu>"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+flask = "^1.0"
+flask-socketio = "^3.3"
+eventlet = "^0.24.1"
+
+[tool.poetry.dev-dependencies]
+black = {version = "^18.3-alpha.0",allows-prereleases = true}
+pylint = "^2.3"
+
+[tool.poetry.scripts]
+start = "bus_me:main"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
