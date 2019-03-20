@@ -6,11 +6,11 @@ authors = ["Shane Duan <s_duan@u.pacific.edu>"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-flask = "^1.0"
-flask-socketio = "^3.3"
 eventlet = "^0.24.1"
 pony = "^0.7.9"
 config2 = "^0.3.1"
+aiohttp = "^3.5"
+python-socketio = "^4.0"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^18.3-alpha.0",allows-prereleases = true}

@@ -1,16 +1,27 @@
-from flask import Flask
-from flask_socketio import SocketIO, emit
+from aiohttp import web
+from socketio import AsyncServer
 
 __all__ = ["main"]
+socket = AsyncServer()
+app = web.Application()
+socket.attach(app)
 
-app = Flask(__name__)
-socketio = SocketIO(app)
+
+@socket.on("connect")
+def connect(sid, environ):
+    print("connect", sid)
 
 
-@socketio.on("my event")
-def test_message(message):
-    emit("my response", {"data": "got it!"})
+@socket.on("my event")
+async def test_message(sid, data):
+    print("message", data)
+    await socket.emit("my response",  {"data": "got it!"})
+
+
+@socket.on("disconnect")
+def disconnect(sid):
+    print("disconnect", sid)
 
 
 def main():
-    socketio.run(app)
+    web.run_app(app)
