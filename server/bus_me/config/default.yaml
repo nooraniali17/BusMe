@@ -1,0 +1,6 @@
+# Database connection parameters. Will be splatted, so therefore check out the
+# valid parameters for `pony.orm.Database#__init__`:
+# https://docs.ponyorm.org/database.html
+database:
+  provider: sqlite
+  filename: ':memory:'

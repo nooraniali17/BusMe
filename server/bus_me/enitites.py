@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
 from uuid import UUID, uuid4
+
+from config2.config import config
 from pony.orm import Database, Json, Optional, PrimaryKey, Required, Set
 
-db = Database()
+db = Database(**config.database)
 
 
 class User(db.Entity):
@@ -90,4 +92,4 @@ class Time(db.Entity):
     timetable = Required(Timetable)
 
 
-db.generate_mapping()
+db.generate_mapping(create_tables=True)
