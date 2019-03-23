@@ -1,26 +1,17 @@
+from typing import Any
+
 from aiohttp import web
+from pony.orm import db_session, select
 from socketio import AsyncServer
+
+from .entities import User
+from .endpoint import Application
 
 __all__ = ["main"]
 socket = AsyncServer()
 app = web.Application()
 socket.attach(app)
-
-
-@socket.on("connect")
-def connect(sid, environ):
-    print("connect", sid)
-
-
-@socket.on("my event")
-async def test_message(sid, data):
-    print("message", data)
-    await socket.emit("my response",  {"data": "got it!"})
-
-
-@socket.on("disconnect")
-def disconnect(sid):
-    print("disconnect", sid)
+socket.register_namespace(Application())
 
 
 def main():
