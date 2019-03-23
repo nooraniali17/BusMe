@@ -1,6 +1,8 @@
 from ._async_namespace import _AsyncNamespace
 from ..authentication import authenticate, JWTVerifyError
 
+__all__ = ["LoginNamespace"]
+
 
 class LoginNamespace(_AsyncNamespace):
     """Namespace for handling logins."""

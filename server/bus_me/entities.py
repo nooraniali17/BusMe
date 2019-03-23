@@ -4,6 +4,18 @@ from uuid import UUID
 from config2.config import config
 from pony.orm import Database, Json, Optional, PrimaryKey, Required, Set
 
+__all__ = [
+    "User",
+    "Organization",
+    "Driver",
+    "Route",
+    "Stop",
+    "Timetable",
+    "Rider",
+    "Checkin",
+    "Time",
+]
+
 db = Database(**config.database)
 
 
@@ -20,11 +32,7 @@ class Organization(db.Entity):
     routes = Set("Route")
 
 
-class Admin(User):
-    pass
-
-
-class Driver(Admin):
+class Driver(User):
     routes = Set("Route", reverse="drivers")
     last_route = Optional("Route", reverse="last_driver")
 

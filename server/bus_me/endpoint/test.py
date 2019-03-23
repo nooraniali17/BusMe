@@ -1,6 +1,8 @@
 from .login import LoginNamespace
 from ._require_auth import require_auth
 
+__all__ = ["TestNamespace"]
+
 
 class TestNamespace(LoginNamespace):
     """Example namespace. Remove later when we actually implement stuff."""
