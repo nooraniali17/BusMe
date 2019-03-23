@@ -1,9 +1,8 @@
-from socketio import AsyncNamespace
-
+from ._async_namespace import _AsyncNamespace
 from ..authentication import authenticate, JWTVerifyError
 
 
-class LoginNamespace(AsyncNamespace):
+class LoginNamespace(_AsyncNamespace):
     """Namespace for handling logins."""
 
     async def on_login(self, sid, data):
