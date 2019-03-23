@@ -1,5 +1,7 @@
 from socketio import AsyncNamespace
 
+__all__ = ["_AsyncNamespace"]
+
 
 class _AsyncNamespace(AsyncNamespace):
     """

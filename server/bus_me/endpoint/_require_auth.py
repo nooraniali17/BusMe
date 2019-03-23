@@ -1,8 +1,8 @@
 from typing import Any, Awaitable, Callable, Coroutine, List, Optional, Union
+from ._async_namespace import _AsyncNamespace
 
 from functools import wraps
 
-from socketio import AsyncNamespace
 from config2.config import config
 
 __all__ = ["require_auth"]
@@ -18,9 +18,9 @@ def _map_permissions(permissions: List[str], strict: bool) -> List[str]:
     return list(map(strict_map if strict else loose_map, permissions))
 
 
-_TYPE_require_auth_receive = Callable[[AsyncNamespace, str, Any, Any], Optional[bool]]
-_TYPE_require_auth_return = Callable[[AsyncNamespace, str, Any], Optional[bool]]
-_TYPE_require_auth_reject = Callable[[AsyncNamespace, str, List[str]], Awaitable[None]]
+_TYPE_require_auth_receive = Callable[[_AsyncNamespace, str, Any, Any], Optional[bool]]
+_TYPE_require_auth_return = Callable[[_AsyncNamespace, str, Any], Optional[bool]]
+_TYPE_require_auth_reject = Callable[[_AsyncNamespace, str, List[str]], Awaitable[None]]
 
 
 def require_auth(
@@ -33,7 +33,7 @@ def require_auth(
 ) -> Callable[[_TYPE_require_auth_receive], _TYPE_require_auth_return]:
     """
     Decorator to check that the session has the correct permissions. Should only
-    be used with the AsyncNamespace class.
+    be used with the internal _AsyncNamespace class.
 
     params:
         skip_fn:
@@ -56,24 +56,56 @@ def require_auth(
     permissions = _map_permissions(permissions, strict_mappings)
 
     def decorator(fn: _TYPE_require_auth_receive) -> _TYPE_require_auth_return:
+        # guess event name, and since we are assuming this is tightly coupled
+        # with the _AsyncNamespace class we can also assume that `on_(.+) => $1`
+        event_name = fn.__name__[3:] if fn.__name__.startswith("on_") else fn.__name__
+
         @wraps(fn)
         async def decorated(
-            self: AsyncNamespace, sid: str, data: Any
+            self: _AsyncNamespace, sid: str, data: Any
         ) -> Optional[bool]:
-            session_data = await self.get_session(sid)
-            session_perms = session_data.get("permissions") or []
+            nonlocal error_event, permissions, reject
+            session_data = (await self.get_session(sid)).get("auth")
 
-            # no login event has taken place or malformed data
-            if not session_data or any(p not in session_perms for p in permissions):
+            async def get_session_perms() -> List[str]:
+                nonlocal self, session_data
+                return await session_data.permissions(self.app["session"])
+
+            async def accept_cb() -> Optional[bool]:
+                nonlocal fn, self, sid, data, session_data
+                return await fn(self, sid, data, session_data)
+
+            async def reject_cb() -> bool:
+                nonlocal self, error_event, permissions, reject, sid
                 if reject:
+                    session_perms = await get_session_perms()
                     await reject(
                         self, sid, [p for p in permissions if p not in session_perms]
                     )
-
                 if error_event:
-                    self.emit(error_event, "insufficient permissions")
+                    await self.emit(
+                        error_event,
+                        {"message": "insufficient permissions", "event": event_name},
+                    )
                 return False
-            return await fn(self, sid, data, session_data)
+
+            async def check_permissions() -> bool:
+                nonlocal permissions, session_data
+                # no auth data means no chance of matching
+                if not session_data:
+                    return False
+
+                # no target permissions means no need to check permissions
+                if not permissions:
+                    return True
+
+                # finally, check that all required permissions are granted
+                session_perms = await get_session_perms()
+                return bool(
+                    session_data and all(p in session_perms for p in permissions)
+                )
+
+            return await (accept_cb if await check_permissions() else reject_cb)()
 
         return decorated
 
