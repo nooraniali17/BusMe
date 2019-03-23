@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from config2.config import config
 from pony.orm import Database, Json, Optional, PrimaryKey, Required, Set
@@ -9,31 +9,19 @@ db = Database(**config.database)
 
 class User(db.Entity):
     id = PrimaryKey(int, auto=True)
-    user_login = Optional("UserLogin")
-    first_name = Required(str)
-    last_name = Optional(str, nullable=True)
-    confirmed = Required(bool, default=False)
-    confirm_token = Optional(UUID)
-
-
-class UserLogin(db.Entity):
-    user = PrimaryKey(User)
-    email = Required(str)
-    password_hash = Required(str)
-    salt = Required(str)
+    oidc_id = Required(str)
 
 
 class Organization(db.Entity):
-    id = PrimaryKey(int, auto=True)
+    id = PrimaryKey(UUID, auto=True)
     name = Optional(str)
     primary_email = Optional(str)
     support_email = Optional(str)
-    members = Set("Admin")
     routes = Set("Route")
 
 
 class Admin(User):
-    organization = Required(Organization)
+    pass
 
 
 class Driver(Admin):
