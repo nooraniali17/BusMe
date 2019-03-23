@@ -24,8 +24,6 @@ _TYPE_require_auth_reject = Callable[[_AsyncNamespace, str, List[str]], Awaitabl
 
 
 def require_auth(
-    skip_fn: _TYPE_require_auth_receive = None,
-    *,
     permissions: List[str] = [],
     strict_mappings: bool = True,
     reject: _TYPE_require_auth_reject = None,
@@ -36,8 +34,6 @@ def require_auth(
     be used with the internal _AsyncNamespace class.
 
     params:
-        skip_fn:
-            Used to distinguish between `@decorator` and `@decorator()` modes.
         permissions:
             Permissions to look for. If permissions is empty or missing, this
             will assume that all users are allowed and simply ensure that an ID
@@ -109,4 +105,4 @@ def require_auth(
 
         return decorated
 
-    return decorator(skip_fn) if skip_fn else decorator
+    return decorator
