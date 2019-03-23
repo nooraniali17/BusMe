@@ -4,3 +4,40 @@
 database:
   provider: sqlite
   filename: ':memory:'
+
+# Various authentication parameters.
+authentication:
+  # API identifier. Should be listed in the dashboard under "identifier", and
+  # should look like a URL (though it doesn't have to).
+  api_id: null
+
+  # parameters to authenticate ID Token JWTs.
+  id_token_params:
+    # A list of acceptable algorithms for verifying JWTs. A list of available
+    # algorithms is provided here:
+    # https://pyjwt.readthedocs.io/en/latest/algorithms.html
+    algorithms: ["RS256"]
+    audience: null
+
+  # OpenID configuration URI.
+  # https://auth0.com/docs/protocols/oidc/openid-connect-discovery
+  # https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
+  openid_discovery: null
+
+  # Management API base URI.
+  management_api: null
+
+  # Management API access token generator parameters
+  # https://auth0.com/docs/api/management/v2/get-access-tokens-for-production
+  management_params:
+    client_id: null
+    client_secret: null
+    audience: null
+    grant_type: client_credentials
+
+# Management API permissions mapping. As this app cannot dynamically generate
+# permissions (or?) it is up to you to map these roles correctly, and ensure
+# that they actually exist on both sides, or else a lot of people will be very
+# unhappy.
+permissions:
+  create_route: create:route
