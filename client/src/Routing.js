@@ -1,33 +1,34 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import { Router, Route, hasHistory } from 'react-router';
-import BusStops from './BusStops';
-import App from './App';
+// import BusStops from './BusStops';
+// import App from './App';
+// import HomePage from './HomePage/Homepage';
 
 const Routing = () => {
-    return(
-        <Router>
-            <div>
-                <ul>
-                    <li>
-                        <Link to="/">Home</Link>
-                    </li>
-                    <li>
-                        <Link to="/menu">Menu</Link>
-                    </li>
-                </ul>
-                <hr></hr>
-                <Route exact path = "/" component={App}/>
-                <Route path ="/menu" component={BusStops}/>
-            </div>
-        </Router>
-    );
+    return(    
+    <Router>
+        <div>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/about">About</Link>
+            </li>
+          </ul>
+  
+          <hr />
+  
+          <Route exact path="/" component={Welcome} />
+          <Route path="/about" component={Stops} />
+        </div>
+      </Router>);
 }
 
-const Home = () => {
+const Welcome = () => {
     return(
         <div>
-            <h1>Home</h1>
+            <h1>Hello world </h1>      
         </div>
     );
 }

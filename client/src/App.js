@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Router, Route, hasHistory } from 'react-router';
 import './static/app.css';
 import './BusStops';
 import BusStops from './BusStops';
 import Routing from './Routing';
+import HomePage from './HomePage/Homepage';
 
 export default class App extends Component {
   
@@ -43,13 +43,8 @@ export default class App extends Component {
     return (
       <div className="App">
         <header className="app-header">
-          <button onClick={ this.findCoordinates }>Press me to find location!</button>
-          <h1>Welcome to BusMe</h1>
-          <h2>Please input total number of passengers:</h2>
-          <input id="inputPane"type="text"></input>
-          <button id="inputBtn"type="submit"onClick={ this.handleInputPassengers }>Submit</button>
-
-          <BusStops/>
+          <HomePage/>
+          <Routing/>
 
         </header>
       </div>
