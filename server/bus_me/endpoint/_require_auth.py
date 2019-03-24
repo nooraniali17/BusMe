@@ -20,14 +20,14 @@ def _map_permissions(permissions: List[str], strict: bool) -> List[str]:
     return list(map(strict_map if strict else loose_map, permissions))
 
 
-# async (_AsyncNamespace<Application>, str, JSONObject, dict<str, Any>) -> bool?
+# async (_AsyncNamespace<Application>, str, JSONObject, dict<str, Any>) -> Any
 _TYPE_require_auth_receive = Callable[
     [_AsyncNamespace[Application], str, JSONObject, JSONDict],
-    Coroutine[Any, Any, Optional[bool]],
+    Coroutine[Any, Any, Any],
 ]
-# async (_AsyncNamespace, str, JSONObject) -> bool?
+# async (_AsyncNamespace, str, JSONObject) -> Any
 _TYPE_require_auth_return = Callable[
-    [_AsyncNamespace[Application], str, JSONObject], Coroutine[Any, Any, Optional[bool]]
+    [_AsyncNamespace[Application], str, JSONObject], Coroutine[Any, Any, Any]
 ]
 # async (_asyncNamespace, str, str[]) -> void
 _TYPE_require_auth_reject = Callable[
@@ -71,7 +71,7 @@ def require_auth(
         @wraps(fn)
         async def decorated(
             self: _AsyncNamespace[Application], sid: str, data: Any
-        ) -> Optional[bool]:
+        ) -> Any:
             nonlocal error_event, permissions, reject
             session_data = (await self.get_session(sid)).get("auth")
 
@@ -79,7 +79,7 @@ def require_auth(
                 nonlocal self, session_data
                 return await session_data.permissions(self.app["session"])
 
-            async def accept_cb() -> Optional[bool]:
+            async def accept_cb() -> Any:
                 nonlocal fn, self, sid, data, session_data
                 return await fn(self, sid, data, session_data)
 
