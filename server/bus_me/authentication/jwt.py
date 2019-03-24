@@ -14,7 +14,7 @@ import jwt
 from aiocache import cached
 from config2.config import config
 from jwt.algorithms import RSAAlgorithm
-from jwt.exceptions import InvalidTokenError
+from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
 
 __all__ = ["decode_jwt"]
 
@@ -22,7 +22,11 @@ __all__ = ["decode_jwt"]
 class JWTVerifyError(ValueError):
     """Could not verify JWT, so here we are."""
 
-    pass
+    expose_error: bool
+
+    def __init__(self, *args, expose_error=False, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.expose_error = expose_error
 
 
 async def _jwk_key(
@@ -98,5 +102,7 @@ async def decode_jwt(
 
     try:
         return jwt.decode(auth_token, **await get_args(), **jwt_kwargs)  # type: ignore
+    except ExpiredSignatureError as e:
+        raise JWTVerifyError(f"JWT token expired.", expose_error=True)
     except InvalidTokenError as e:
         raise JWTVerifyError(f"JWT internal error: {e}")

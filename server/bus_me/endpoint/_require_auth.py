@@ -93,7 +93,8 @@ def require_auth(
                 if error_event:
                     await self.emit(
                         error_event,
-                        {"message": "insufficient permissions", "event": event_name},
+                        {"message": "Insufficient permissions.", "event": event_name},
+                        room=sid,
                     )
                 return False
 

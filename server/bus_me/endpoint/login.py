@@ -19,6 +19,10 @@ class LoginNamespace(_AsyncNamespace):
             await self.save_session(
                 sid, {"auth": await authenticate(data, self.app["session"])}
             )
-            await self.emit("authenticated")
+            await self.emit("authenticated", room=sid)
         except JWTVerifyError as e:
             print(f"error authorizing session {sid}:", e)
+            if e.expose_error:
+                await self.emit(
+                    "error", {"message": str(e), "event": "login"}, room=sid
+                )
