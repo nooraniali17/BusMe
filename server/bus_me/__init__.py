@@ -16,6 +16,7 @@ def attach_session(app: Application) -> None:
     The aiohttp docs say it's better to share client sessions for better
     parallel requests, so here we are.
     """
+
     async def cleanup_ctx(app: Application) -> AsyncIterator[None]:
         app["session"] = session = ClientSession()
         yield
