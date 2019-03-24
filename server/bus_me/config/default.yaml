@@ -40,4 +40,5 @@ authentication:
 # that they actually exist on both sides, or else a lot of people will be very
 # unhappy.
 permissions:
+  create_organization: create:organization
   create_route: create:route
