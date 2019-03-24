@@ -43,7 +43,7 @@ def require_auth(
 ) -> Callable[[_TYPE_require_auth_receive], _TYPE_require_auth_return]:
     """
     Decorator to check that the session has the correct permissions. Should only
-    be used with the internal _AsyncNamespace class.
+    be used with the internal `_AsyncNamespace` class.
 
     params:
         permissions:

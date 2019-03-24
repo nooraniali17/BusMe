@@ -1,3 +1,9 @@
+"""
+Custom authentication flow for the BusMe app.
+
+- Validates ID Token (OpenID Connect).
+- Grabs user permissions from Auth0 (lazy).
+"""
 from typing import Any, Dict, List
 from ..__types import JSONDict
 from aiohttp import ClientSession
@@ -15,6 +21,13 @@ __all__ = ["authenticate", "JWTVerifyError"]
 
 
 class AuthenticationData:
+    """
+    Authentication functionalities and storage.
+    
+    There are very few reasons to create this object on your own. Instead,
+    always refer to the object returned by the `authenticate` call.
+    """
+
     def __init__(
         self: "AuthenticationData",
         id_token: JSONDict,
@@ -102,6 +115,7 @@ class AuthenticationData:
     async def _permissions(
         self: "AuthenticationData", session: ClientSession
     ) -> List[str]:
+        """Grabs simplified permissions list."""
         return [
             p["permission_name"]  # type: ignore
             for p in await self._fetch_permissions(session)

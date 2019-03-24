@@ -12,6 +12,9 @@ class _AsyncNamespace(AsyncNamespace, Generic[T]):
     `aiohttp.web.Application`) in order to allow interactions with non socket
     portions of the app.
 
+    Currently only made with aiohttp in mind, but could technically be expanded
+    to include e.g. Pyramid.
+
     Dumb hack courtesy of:
     https://github.com/miguelgrinberg/python-socketio/issues/142
     """

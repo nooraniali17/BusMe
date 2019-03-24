@@ -1,3 +1,6 @@
+"""
+Socket.io application abstractions, to avoid depending on a global variable.
+"""
 from .test import TestNamespace
 
 __all__ = ["BusMeApplication"]

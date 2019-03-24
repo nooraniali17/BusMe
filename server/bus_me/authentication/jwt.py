@@ -1,3 +1,8 @@
+"""
+JWT decoding convencience function.
+
+- Grabs JWKS from OpenID discovery document.
+"""
 from typing import Any, Dict, List
 from ..__types import JSONObject, JSONDict
 from cryptography.hazmat.backends.openssl.rsa import _RSAPublicKey

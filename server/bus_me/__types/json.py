@@ -1,3 +1,6 @@
+"""
+Typings for JSON objects. Is compatible with most similar "raw data" formats.
+"""
 from typing import Dict, List, Optional, Union
 
 __all__ = ["JSONObject", "JSONList", "JSONDict"]
