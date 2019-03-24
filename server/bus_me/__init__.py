@@ -1,3 +1,5 @@
+import logging
+
 from typing import Any, AsyncIterator
 
 from aiohttp import ClientSession
@@ -9,6 +11,11 @@ from .entities import User
 from .endpoint import BusMeApplication
 
 __all__ = ["main"]
+
+
+def logger_cfg():
+    for module, level in config.loggers.items():
+        logging.getLogger(module).setLevel(level)
 
 
 def attach_session(app: Application) -> None:
@@ -32,6 +39,8 @@ def attach_socketio(app: Application) -> None:
 
 
 def main() -> None:
+    logger_cfg()
+
     app = Application()
     attach_socketio(app)
     attach_session(app)
