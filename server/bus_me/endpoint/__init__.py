@@ -1,13 +1,12 @@
 """
 Socket.io application abstractions, to avoid depending on a global variable.
 """
-from .test import TestNamespace
 from .admin import AdminNamespace
 
 __all__ = ["BusMeApplication"]
 
 
-class BusMeApplication(TestNamespace, AdminNamespace):
+class BusMeApplication(AdminNamespace):
     """
     Aggregate namespace for the application. The other namespaces will not
     work properly if they are separated into namespaces, so this is in
