@@ -4,10 +4,9 @@ from typing import Any, AsyncIterator
 
 from aiohttp import ClientSession
 from aiohttp.web import Application, run_app
-from pony.orm import db_session, select
+from config2.config import config
 from socketio import AsyncServer
 
-from .entities import User
 from .endpoint import BusMeApplication
 
 __all__ = ["main"]

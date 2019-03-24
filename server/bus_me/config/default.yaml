@@ -3,11 +3,10 @@ loggers:
   engineio: 30
 
 # Database connection parameters. Will be splatted, so therefore check out the
-# valid parameters for `pony.orm.Database#__init__`:
-# https://docs.ponyorm.org/database.html
+# valid parameters for the chosen database connection library (eg sqlite3,
+# psycopg...).
 database:
-  provider: sqlite
-  filename: ':memory:'
+  database: a.sqlite
 
 # Various authentication parameters.
 authentication:

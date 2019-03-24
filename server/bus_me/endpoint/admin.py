@@ -1,10 +1,8 @@
 from ..__types import JSONObject, JSONDict
 
-from uuid import UUID
+from uuid import uuid4
 
-from pony.orm import db_session
-
-from ..entities import Organization
+from ..entities import db, Organization
 from .login import LoginNamespace
 from ._require_auth import require_auth
 
@@ -26,18 +24,22 @@ class AdminNamespace(LoginNamespace):
         
         returns: UUID of organization updated (may be different from sent ID).
         """
-        @db_session
-        def db_sync():
-            nonlocal data
-            org = Organization.get(id=UUID(data["id"])) if "id" in data else None
-            if not org:
-                org = Organization()
 
-            value = data["values"]
-            if "id" in value:
-                del value["id"]
-            org.set(**value)
+        org = None
+        if "id" in data:
+            try:
+                org = await db.get(Organization, uuid=data["id"])
+            except Organization.DoesNotExist:
+                pass
 
-            return org
+        if not org:
+            org = await db.create(Organization, uuid=uuid4())
 
-        return str(db_sync().id)
+        # update
+        fields = Organization._meta.sorted_field_names
+        for k, v in data["values"].items():
+            if k not in ("id", "uuid") and k in fields:
+                setattr(org, k, v)
+        await db.update(org)
+
+        return str(org.uuid)
