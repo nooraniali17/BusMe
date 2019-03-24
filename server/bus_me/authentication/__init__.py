@@ -1,4 +1,5 @@
 from typing import Any, Dict, List
+from ..__types import JSONDict
 from aiohttp import ClientSession
 
 from datetime import datetime, timedelta
@@ -15,10 +16,10 @@ __all__ = ["authenticate", "JWTVerifyError"]
 
 class AuthenticationData:
     def __init__(
-        self,
-        id_token: dict,
+        self: "AuthenticationData",
+        id_token: JSONDict,
         management_api: str,
-        management_params: Dict[str, Any],
+        management_params: JSONDict,
         api_id: str,
         session: ClientSession,
     ):
@@ -28,10 +29,12 @@ class AuthenticationData:
         self._api_id = api_id
         self._session = session
 
-    def _api_url(self, endpoint: str):
+    def _api_url(self, endpoint: str) -> str:
         return f"{self._management_api}{endpoint}"
 
-    async def _get_management_key(self, token_url: str, session: ClientSession):
+    async def _get_management_key(
+        self: "AuthenticationData", token_url: str, session: ClientSession
+    ) -> JSONDict:
         """
         Get Auth0 Management API access data.
 
@@ -41,7 +44,7 @@ class AuthenticationData:
         """
 
         @cached()
-        async def _get_management_access():
+        async def _get_management_access() -> JSONDict:
             nonlocal self, token_url
             async with session.post(token_url, json=self._management_params) as res:
                 auth = await res.json()
@@ -55,12 +58,14 @@ class AuthenticationData:
             )
         return auth["access_token"]
 
-    async def _fetch_permissions(self, session: ClientSession) -> List[Dict[str, Any]]:
+    async def _fetch_permissions(
+        self: "AuthenticationData", session: ClientSession
+    ) -> List[JSONDict]:
         """
         Get permissions from standard Management API url. Will stop early if any
         errors occur.
         """
-        permissions = []
+        permissions: List[JSONDict] = []
         manage_key = await self._get_management_key(
             self._api_url("/oauth/token"), session
         )
@@ -91,16 +96,19 @@ class AuthenticationData:
             permissions.extend(res_obj["permissions"])
             if res_obj["total"] <= len(permissions):
                 return permissions
+        return []
 
     @cached()
-    async def _permissions(self, session: ClientSession) -> List[str]:
+    async def _permissions(
+        self: "AuthenticationData", session: ClientSession
+    ) -> List[str]:
         return [
-            p["permission_name"]
+            p["permission_name"]  # type: ignore
             for p in await self._fetch_permissions(session)
             if p["resource_server_identifier"] in self._api_id
         ]
 
-    async def permissions(self, reset=False) -> List[str]:
+    async def permissions(self: "AuthenticationData", reset: bool = False) -> List[str]:
         """
         Fetch a simplified list of permissions for this user, e.g.
         ['read:foo', 'update:foo', 'read:bar']. Only those permissions for
@@ -116,7 +124,7 @@ class AuthenticationData:
             self._session, cache_read=reset
         )
 
-    def use_session(self, session: ClientSession):
+    def use_session(self: "AuthenticationData", session: ClientSession) -> None:
         """Change which session this permission should use."""
         self._session = session
 
@@ -128,9 +136,9 @@ async def authenticate(
     auth_token: str,
     session: ClientSession,
     openid_discovery: str = _auth_config.openid_discovery,
-    id_token_params: Dict[str, Any] = _auth_config.id_token_params,
+    id_token_params: JSONDict = _auth_config.id_token_params,
     management_api: str = _auth_config.management_api,
-    management_params: Dict[str, Any] = _auth_config.management_params,
+    management_params: JSONDict = _auth_config.management_params,
     api_id: str = _auth_config.api_id,
 ) -> AuthenticationData:
     """

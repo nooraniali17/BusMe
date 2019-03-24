@@ -19,12 +19,12 @@ __all__ = [
 db = Database(**config.database)
 
 
-class User(db.Entity):
+class User(db.Entity):  # type: ignore
     id = PrimaryKey(int, auto=True)
     oidc_id = Required(str)
 
 
-class Organization(db.Entity):
+class Organization(db.Entity):  # type: ignore
     id = PrimaryKey(UUID, auto=True)
     name = Optional(str)
     primary_email = Optional(str)
@@ -32,12 +32,12 @@ class Organization(db.Entity):
     routes = Set("Route")
 
 
-class Driver(User):
+class Driver(User):  # type: ignore
     routes = Set("Route", reverse="drivers")
     last_route = Optional("Route", reverse="last_driver")
 
 
-class Route(db.Entity):
+class Route(db.Entity):  # type: ignore
     id = PrimaryKey(int, auto=True)
     organization = Required(Organization)
     drivers = Set(Driver, reverse="routes")
@@ -47,7 +47,7 @@ class Route(db.Entity):
     device_pair = Optional(UUID)
 
 
-class Stop(db.Entity):
+class Stop(db.Entity):  # type: ignore
     id = PrimaryKey(int, auto=True)
     route_stops = Set("Timetable")
     checkins = Set("Checkin")
@@ -57,7 +57,7 @@ class Stop(db.Entity):
     gmaps_query = Optional(Json)
 
 
-class Timetable(db.Entity):
+class Timetable(db.Entity):  # type: ignore
     id = PrimaryKey(int)
     route = Required(Route)
     stop = Required(Stop)
@@ -67,12 +67,12 @@ class Timetable(db.Entity):
     last_time = Optional("Time")
 
 
-class Rider(User):
+class Rider(User):  # type: ignore
     checkin = Optional("Checkin")
     party_size = Required(int)
 
 
-class Checkin(db.Entity):
+class Checkin(db.Entity):  # type: ignore
     id = PrimaryKey(int, auto=True)
     rider = Required(Rider)
     stop = Required(Stop)
@@ -81,7 +81,7 @@ class Checkin(db.Entity):
     fulfilled = Required(bool, default=False)
 
 
-class Time(db.Entity):
+class Time(db.Entity):  # type: ignore
     id = PrimaryKey(datetime, default=lambda: datetime.now(), auto=True)
     duration = Optional(timedelta)
     average_duration = Optional(timedelta)

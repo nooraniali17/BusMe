@@ -1,4 +1,5 @@
 from typing import Any, Dict, List
+from ..__types import JSONObject, JSONDict
 from cryptography.hazmat.backends.openssl.rsa import _RSAPublicKey
 from aiohttp import ClientSession
 
@@ -32,7 +33,7 @@ async def _jwk_key(
     """
 
     @cached(ttl=60 * 60)
-    async def get_jwks(url):
+    async def get_jwks(url: str) -> JSONObject:
         """Get JWK Set from URL. Results are cached for an hour."""
         async with session.get(url) as res:
             return await res.json()
@@ -58,11 +59,8 @@ async def _jwk_key(
 
 
 async def decode_jwt(
-    auth_token: str,
-    openid_discovery: str,
-    jwt_kwargs: Dict[str, Any],
-    session: ClientSession,
-):
+    auth_token: str, openid_discovery: str, jwt_kwargs: JSONDict, session: ClientSession
+) -> JSONDict:
     """
     Decode a JWT, given a raw token and secret key.
 
@@ -73,12 +71,12 @@ async def decode_jwt(
         session: Session to use for remote calls.
     """
 
-    async def get_args():
+    async def get_args() -> JSONDict:
         """Get key and issuer."""
         nonlocal auth_token, openid_discovery, session
 
         @cached(ttl=60 * 60)
-        async def get_discovery(url: str):
+        async def get_discovery(url: str) -> JSONObject:
             """
             Get OpenID Connect Discovery Document. Results are cached for an
             hour.
@@ -94,6 +92,6 @@ async def decode_jwt(
         }
 
     try:
-        return jwt.decode(auth_token, **await get_args(), **jwt_kwargs)
+        return jwt.decode(auth_token, **await get_args(), **jwt_kwargs)  # type: ignore
     except InvalidTokenError as e:
         raise JWTVerifyError(f"JWT internal error: {e}")

@@ -1,5 +1,7 @@
-from typing import Any, Awaitable, Callable, Coroutine, List, Optional, Union
+from typing import Any, Awaitable, Callable, Coroutine, Dict, List, Optional, Union
+from ..__types import JSONObject, JSONDict
 from ._async_namespace import _AsyncNamespace
+from aiohttp.web import Application
 
 from functools import wraps
 
@@ -18,15 +20,25 @@ def _map_permissions(permissions: List[str], strict: bool) -> List[str]:
     return list(map(strict_map if strict else loose_map, permissions))
 
 
-_TYPE_require_auth_receive = Callable[[_AsyncNamespace, str, Any, Any], Optional[bool]]
-_TYPE_require_auth_return = Callable[[_AsyncNamespace, str, Any], Optional[bool]]
-_TYPE_require_auth_reject = Callable[[_AsyncNamespace, str, List[str]], Awaitable[None]]
+# async (_AsyncNamespace<Application>, str, JSONObject, dict<str, Any>) -> bool?
+_TYPE_require_auth_receive = Callable[
+    [_AsyncNamespace[Application], str, JSONObject, JSONDict],
+    Coroutine[Any, Any, Optional[bool]],
+]
+# async (_AsyncNamespace, str, JSONObject) -> bool?
+_TYPE_require_auth_return = Callable[
+    [_AsyncNamespace[Application], str, JSONObject], Coroutine[Any, Any, Optional[bool]]
+]
+# async (_asyncNamespace, str, str[]) -> void
+_TYPE_require_auth_reject = Callable[
+    [_AsyncNamespace[Application], str, List[str]], Coroutine[Any, Any, None]
+]
 
 
 def require_auth(
     permissions: List[str] = [],
     strict_mappings: bool = True,
-    reject: _TYPE_require_auth_reject = None,
+    reject: Optional[_TYPE_require_auth_reject] = None,
     error_event: str = "error",
 ) -> Callable[[_TYPE_require_auth_receive], _TYPE_require_auth_return]:
     """
@@ -58,7 +70,7 @@ def require_auth(
 
         @wraps(fn)
         async def decorated(
-            self: _AsyncNamespace, sid: str, data: Any
+            self: _AsyncNamespace[Application], sid: str, data: Any
         ) -> Optional[bool]:
             nonlocal error_event, permissions, reject
             session_data = (await self.get_session(sid)).get("auth")

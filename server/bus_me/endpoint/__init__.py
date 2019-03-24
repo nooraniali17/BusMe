@@ -1,9 +1,9 @@
 from .test import TestNamespace
 
-__all__ = ["Application"]
+__all__ = ["BusMeApplication"]
 
 
-class Application(TestNamespace):
+class BusMeApplication(TestNamespace):
     """
     Aggregate namespace for the application. The other namespaces will not
     work properly if they are separated into namespaces, so this is in

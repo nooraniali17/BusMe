@@ -1,17 +1,18 @@
-from typing import Any
+from typing import Any, AsyncIterator
 
-from aiohttp import web, ClientSession
+from aiohttp import ClientSession
+from aiohttp.web import Application, run_app
 from pony.orm import db_session, select
 from socketio import AsyncServer
 
 from .entities import User
-from .endpoint import Application
+from .endpoint import BusMeApplication
 
 __all__ = ["main"]
 
 
-def attach_session(app):
-    async def cleanup_ctx(app):
+def attach_session(app: Application) -> None:
+    async def cleanup_ctx(app: Application) -> AsyncIterator[None]:
         app["session"] = session = ClientSession()
         yield
         await session.close()
@@ -19,14 +20,14 @@ def attach_session(app):
     app.cleanup_ctx.append(cleanup_ctx)
 
 
-def attach_socketio(app):
+def attach_socketio(app: Application) -> None:
     socket = AsyncServer()
-    socket.register_namespace(Application(app=app))
+    socket.register_namespace(BusMeApplication(app=app))
     socket.attach(app)
 
 
-def main():
-    app = web.Application()
+def main() -> None:
+    app = Application()
     attach_socketio(app)
     attach_session(app)
-    web.run_app(app)
+    run_app(app)
