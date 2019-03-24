@@ -1,40 +1,49 @@
 import React, { Component } from 'react';
+import MyButton from '../Button';
 
-export default class HomePage extends Component {
+class HomePage extends Component {
+
+    state = {
+        numPassengers: ''
+    }
+
+    setNumPassengers = (event) => {
+        this.setState({numPassengers: event.target.value });
+    }
 
     findCoordinates = () => {
         navigator.geolocation.getCurrentPosition(
           position => {
             this.setState({  location: position.coords });
           }
-          // {
-          //   maximumAge:0,
-          //   enableHighAccuracy: true,
-          //   timeout: 5000
-          // }
         );
       };
     
-      handleInputPassengers = (event) => {
-        const userInput = document.getElementById('inputPane').value;
-    
-        if(isNaN(userInput) || userInput >= 11 || userInput === '') {
-          alert("Please enter a valid integer between 1 and 10!");
+    handleInputPassengers = (event) => {
+        event.preventDefault();
+        const { numPassengers } = this.state;
+        
+        if(isNaN(numPassengers) || numPassengers >= 11 || numPassengers === '') {
+            alert("Please enter a valid integer between 1 and 10!");
+            return false
         }
-        else {
-          window.location = 'menu';
-        }
-      }
+        return true
+}
+
       render() {
-        return(
-            <div>
-            <button onClick={ this.findCoordinates }>Press me to find location!</button>
-              <h1>Welcome to BusMe</h1>
-              <h2>Please input total number of passengers:</h2>
-              <input id="inputPane"type="text"></input>
-              <button id="inputBtn"type="submit"onClick={ this.handleInputPassengers }>Submit</button>
+
+        console.log(this.state);
+        return (
+        <div>
+            <button id="findLocation" onClick={ this.findCoordinates }>Find location!</button>
+              <h1>Welcome to BusMe!</h1>
+              <h3>Please input total number of passengers below</h3>
+              <input id="inputPane" type="text" onChange = { this.setNumPassengers }  ></input>
+              <br></br>
+              <MyButton name="Submit" routeTo="/about" onSubmit = { this.handleInputPassengers }/>
         </div>
         );
-      }
-
+    }
 };
+
+export default HomePage;

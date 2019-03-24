@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import './static/app.css';
 import './BusStops';
-import BusStops from './BusStops';
 import Routing from './Routing';
-import HomePage from './HomePage/Homepage';
 
 export default class App extends Component {
   
@@ -27,24 +25,12 @@ export default class App extends Component {
     );
   };
 
-  handleInputPassengers = (event) => {
-    const userInput = document.getElementById('inputPane').value;
-
-    if(isNaN(userInput) || userInput >= 11 || userInput === '') {
-      alert("Please enter a valid integer between 1 and 10!");
-    }
-    else {
-      window.location = 'menu';
-    }
-  }
-
   render() {
     console.log(this.state);
     return (
       <div className="App">
         <header className="app-header">
-          <HomePage/>
-          <Routing/>
+          <Routing />
 
         </header>
       </div>
