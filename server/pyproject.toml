@@ -20,6 +20,7 @@ attributedict = "^0.3.0"
 [tool.poetry.dev-dependencies]
 black = {version = "^18.3-alpha.0",allows-prereleases = true}
 pylint = "^2.3"
+mypy = "^0.670.0"
 
 [tool.poetry.scripts]
 start = "bus_me:main"
