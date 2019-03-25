@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import HomePage from './HomePage/Homepage';
+import HomePage from './Homepage';
+import MapContainer from './GoogleMapsAPI'
 
 
 export default class Routing extends Component {
@@ -31,9 +32,11 @@ const Welcome = () => {
 }
 
 const Stops = () => {
+
   return(
-      <div>
-          <h1>Nearby stops!</h1>
+    
+      <div style={{ height: '0px' }}>
+          <MapContainer />
       </div>
   );
 }

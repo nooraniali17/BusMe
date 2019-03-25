@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MyButton from '../Button';
+import MyButton from './Button';
 
 class HomePage extends Component {
 
@@ -20,9 +20,7 @@ class HomePage extends Component {
       };
     
     handleInputPassengers = (event) => {
-        event.preventDefault();
         const { numPassengers } = this.state;
-        
         if(isNaN(numPassengers) || numPassengers >= 11 || numPassengers === '') {
             alert("Please enter a valid integer between 1 and 10!");
             return false
