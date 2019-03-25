@@ -12,6 +12,19 @@ _db = SqliteExtDatabase(**config.database)
 
 
 class Model(peewee.Model):
+    def merge(self, excluded=None, **kwargs):
+        """
+        Utility method to merge multiple properties at once.
+
+        params:
+            excluded: A list of fields to ignore (eg identifier)
+        """
+        excluded = excluded or tuple()
+
+        for k, v in kwargs.items():
+            if k not in excluded and k in self._meta.sorted_field_names:
+                setattr(self, k, v)
+
     class Meta:
         database = _db
 

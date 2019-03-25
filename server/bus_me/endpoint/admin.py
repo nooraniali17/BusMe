@@ -3,8 +3,8 @@ from ..__types import JSONObject, JSONDict
 from uuid import uuid4
 
 from ..entities import db, Organization
-from .login import LoginNamespace
 from ._require_auth import require_auth
+from .login import LoginNamespace
 
 
 class AdminNamespace(LoginNamespace):
@@ -36,10 +36,7 @@ class AdminNamespace(LoginNamespace):
             org = await db.create(Organization, uuid=uuid4())
 
         # update
-        fields = Organization._meta.sorted_field_names
-        for k, v in data["values"].items():
-            if k not in ("id", "uuid") and k in fields:
-                setattr(org, k, v)
+        org.merge(("id", "uuid"), **data["values"])
         await db.update(org)
 
         return str(org.uuid)
