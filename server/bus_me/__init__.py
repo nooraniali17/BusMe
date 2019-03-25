@@ -2,6 +2,8 @@ import logging
 
 from typing import Any, AsyncIterator
 
+import ssl
+
 from aiohttp import ClientSession
 from aiohttp.web import Application, run_app
 from config2.config import config
@@ -37,10 +39,19 @@ def attach_socketio(app: Application) -> None:
     socket.attach(app)
 
 
+def get_ssl_context():
+    ctx = None
+    if config.ssl:
+        ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        ctx.load_cert_chain(config.ssl.cert, config.ssl.key)
+    return ctx
+
+
 def main() -> None:
     logger_cfg()
 
     app = Application()
     attach_socketio(app)
     attach_session(app)
-    run_app(app)
+
+    run_app(app, ssl_context=get_ssl_context())

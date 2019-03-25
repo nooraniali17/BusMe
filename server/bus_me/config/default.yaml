@@ -45,3 +45,8 @@ authentication:
 permissions:
   create_organization: create:organization
   create_route: create:route
+
+# ssl stuff (set to null to use plain http, though you probably shouldn't)
+ssl:
+  cert: null
+  key: null
