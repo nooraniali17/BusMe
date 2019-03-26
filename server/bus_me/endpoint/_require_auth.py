@@ -22,8 +22,7 @@ def _map_permissions(permissions: List[str], strict: bool) -> List[str]:
 
 # async (_AsyncNamespace<Application>, str, JSONObject, dict<str, Any>) -> Any
 _TYPE_require_auth_receive = Callable[
-    [_AsyncNamespace[Application], str, JSONObject, JSONDict],
-    Coroutine[Any, Any, Any],
+    [_AsyncNamespace[Application], str, JSONObject, JSONDict], Coroutine[Any, Any, Any]
 ]
 # async (_AsyncNamespace, str, JSONObject) -> Any
 _TYPE_require_auth_return = Callable[
@@ -79,10 +78,6 @@ def require_auth(
                 nonlocal self, session_data
                 return await session_data.permissions(self.app["session"])
 
-            async def accept_cb() -> Any:
-                nonlocal fn, self, sid, data, session_data
-                return await fn(self, sid, data, session_data)
-
             async def reject_cb() -> bool:
                 nonlocal self, error_event, permissions, reject, sid
                 if reject:
@@ -114,7 +109,10 @@ def require_auth(
                     session_data and all(p in session_perms for p in permissions)
                 )
 
-            return await (accept_cb if await check_permissions() else reject_cb)()
+            if await check_permissions():
+                return await fn(self, sid, data, session_data)
+            else:
+                return await reject_cb()
 
         return decorated
 
