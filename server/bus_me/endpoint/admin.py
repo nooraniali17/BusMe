@@ -24,11 +24,7 @@ class AdminNamespace(LoginNamespace):
 
         org = None
         if "id" in data:
-            try:
-                org = await db.get(Organization, uuid=data["id"])
-            except Organization.DoesNotExist:
-                pass
-
+            org = await db.get_or_create(Organization, uuid=data["id"])
         if not org:
             org = await db.create(Organization, uuid=uuid4())
 
