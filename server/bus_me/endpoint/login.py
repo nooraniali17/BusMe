@@ -13,7 +13,7 @@ class LoginNamespace(_AsyncNamespace):
     async def on_login(self: "LoginNamespace", sid: str, data: JSONObject) -> None:
         try:
             if not isinstance(data, str):
-                print("login expected token of type", str, "got", type(data), "instead")
+                print(f"login expected token of {str}, got", type(data), "instead")
                 return
 
             async with self.session(sid) as session:
