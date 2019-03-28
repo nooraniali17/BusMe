@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import HomePage from './Homepage';
-import MapContainer from './GoogleMapsAPI'
+import MapContainer from './GoogleMapsAPI';
+import Places from './Places';
 
 
 export default class Routing extends Component {

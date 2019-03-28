@@ -2,7 +2,6 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 
 const MyButton = withRouter(({ history, ...props }) => (
-    
     <button
       type='button'
       onClick={(event) => {
