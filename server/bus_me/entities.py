@@ -2,13 +2,12 @@ from config2.config import config
 
 import peewee
 import peewee_async
-from peewee import UUIDField, TextField
-
-from .__sqlite_patch import SqliteExtDatabase
+from peewee import Check, FloatField, ForeignKeyField, TextField, UUIDField
+from peewee_asyncext import PostgresqlExtDatabase
 
 __all__ = ["Organization", "db"]
 
-_db = SqliteExtDatabase(**config.database)
+_db = PostgresqlExtDatabase(**config.database)
 
 
 class Model(peewee.Model):

@@ -6,7 +6,11 @@ loggers:
 # valid parameters for the chosen database connection library (eg sqlite3,
 # psycopg...).
 database:
-  database: a.sqlite
+  database: busme
+  user: null
+  host: '127.0.0.1'
+  port: '5432'
+  password: null
 
 # Various authentication parameters.
 authentication:

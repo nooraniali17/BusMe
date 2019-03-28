@@ -15,8 +15,7 @@ websockets = "^7.0"
 aiocache = "^0.10.1"
 attributedict = "^0.3.0"
 peewee-async = "^0.5.12"
-aiomysql = "^0.0.20"
-aiosqlite = "^0.9.0"
+aiopg = "^0.16.0"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^18.3-alpha.0",allows-prereleases = true}
