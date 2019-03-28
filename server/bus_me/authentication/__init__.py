@@ -10,6 +10,7 @@ from aiohttp import ClientSession
 
 from datetime import datetime, timedelta
 from itertools import count
+from warnings import warn
 
 from attributedict.collections import AttributeDict
 from aiocache import cached
@@ -41,6 +42,10 @@ class AuthenticationData:
         self._management_params = management_params
         self._api_id = api_id
         self._session = session
+
+        self.user_id = self.id_token.sub
+        if not self.user_id:
+            warn(f'JWT does not have "sub" field: {id_token}')
 
     def _api_url(self, endpoint: str) -> str:
         return f"{self._management_api}{endpoint}"
