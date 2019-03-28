@@ -1,8 +1,17 @@
 from config2.config import config
 
+from datetime import datetime
+
 import peewee
 import peewee_async
-from peewee import Check, FloatField, ForeignKeyField, TextField, UUIDField
+from peewee import (
+    Check,
+    DateTimeField,
+    FloatField,
+    ForeignKeyField,
+    TextField,
+    UUIDField,
+)
 from peewee_asyncext import PostgresqlExtDatabase
 
 __all__ = ["Organization", "db"]
@@ -28,9 +37,15 @@ class Model(peewee.Model):
         database = _db
 
 
-# class User(db.Entity):  # type: ignore
-#     id = PrimaryKey(int, auto=True)
-#     oidc_id = Required(str)
+class User(Model):
+    oidc_id = TextField(unique=True)
+
+
+class Location(Model):
+    user = ForeignKeyField(User)
+    long = FloatField(constraints=(Check("long >= 0"), Check("long <= 180")))
+    lat = FloatField(constraints=(Check("lat >= -90"), Check("lat <= 90")))
+    time = DateTimeField(default=datetime.utcnow)
 
 
 class Organization(Model):
@@ -95,6 +110,6 @@ class Organization(Model):
 #     average_duration = Optional(timedelta)
 #     timetable = Required(Timetable)
 
-_db.create_tables([Organization], safe=True)
+_db.create_tables((Location, Organization, User), safe=True)
 _db.set_allow_sync(False)
 db = peewee_async.Manager(_db)
