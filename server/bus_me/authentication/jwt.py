@@ -3,11 +3,6 @@ JWT decoding convencience function.
 
 - Grabs JWKS from OpenID discovery document.
 """
-from typing import Any, Dict, List
-from ..__types import JSONObject, JSONDict
-from cryptography.hazmat.backends.openssl.rsa import _RSAPublicKey
-from aiohttp import ClientSession
-
 import json
 
 import jwt
@@ -22,28 +17,30 @@ __all__ = ["decode_jwt"]
 class JWTVerifyError(ValueError):
     """Could not verify JWT, so here we are."""
 
-    expose_error: bool
-
     def __init__(self, *args, expose_error=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.expose_error = expose_error
 
 
-async def _jwk_key(
-    raw_token: str, jwk_url: str, session: ClientSession
-) -> _RSAPublicKey:
+async def _jwk_key(raw_token, jwk_url, session):
     """
     Attempt to grab a matching key from JWK endpoint.
 
     params:
-        raw_token: JWT in encoded format, to check header against.
-        jwk_url: Endpoint from which all public keys are stored.
-        session: HTTPS session to use.
+        raw_token: str: JWT in encoded format, to check header against.
+        jwk_url: str: Endpoint from which all public keys are stored.
+        session: ClientSession: HTTPS session to use.
+    
+    returns: _RSAPublicKey
     """
 
     @cached(ttl=60 * 60)
-    async def get_jwks(url: str) -> JSONObject:
-        """Get JWK Set from URL. Results are cached for an hour."""
+    async def get_jwks(url):
+        """
+        Get JWK Set from URL. Results are cached for an hour.
+        
+        type: (str) -> JSONObject
+        """
         async with session.get(url) as res:
             return await res.json()
 
@@ -67,28 +64,34 @@ async def _jwk_key(
         )
 
 
-async def decode_jwt(
-    auth_token: str, openid_discovery: str, jwt_kwargs: JSONDict, session: ClientSession
-) -> JSONDict:
+async def decode_jwt(auth_token, openid_discovery, jwt_kwargs, session):
     """
     Decode a JWT, given a raw token and secret key.
 
     params:
-        auth_header: Token in encoded format.
-        openid_discovery: OpenID Connect discovery document endpoint URI.
-        jwt_kwargs: All parameters of JWT decoding function. (see PyJWT docs)
-        session: Session to use for remote calls.
+        auth_header: str: Token in encoded format.
+        openid_discovery: str: OpenID Connect discovery document endpoint URI.
+        jwt_kwargs: JSONDict: All parameters of JWT decoding function. (see PyJWT docs)
+        session: ClientSession: Session to use for remote calls.
+    
+    returns: JSONDict
     """
 
-    async def get_args() -> JSONDict:
-        """Get key and issuer."""
+    async def get_args():
+        """
+        Get key and issuer.
+        
+        type: () -> JSONDict
+        """
         nonlocal auth_token, openid_discovery, session
 
         @cached(ttl=60 * 60)
-        async def get_discovery(url: str) -> JSONObject:
+        async def get_discovery(url):
             """
             Get OpenID Connect Discovery Document. Results are cached for an
             hour.
+
+            type: (str) -> JSONObject
             """
             nonlocal session
             async with session.get(url) as res:

@@ -4,10 +4,6 @@ Custom authentication flow for the BusMe app.
 - Validates ID Token (OpenID Connect).
 - Grabs user permissions from Auth0 (lazy).
 """
-from typing import Any, Dict, List
-from ..__types import JSONDict
-from aiohttp import ClientSession
-
 from datetime import datetime, timedelta
 from itertools import count
 from warnings import warn
@@ -34,14 +30,7 @@ class AuthenticationData:
     always refer to the object returned by the `authenticate` call.
     """
 
-    def __init__(
-        self: "AuthenticationData",
-        id_token: JSONDict,
-        management_api: str,
-        management_params: JSONDict,
-        api_id: str,
-        session: ClientSession,
-    ):
+    def __init__(self, id_token, management_api, management_params, api_id, session):
         self.id_token = AttributeDict(id_token)
         self._management_api = management_api
         self._management_params = management_params
@@ -52,22 +41,26 @@ class AuthenticationData:
         if not self.user_id:
             warn(f'JWT does not have "sub" field: {id_token}')
 
-    def _api_url(self, endpoint: str) -> str:
+    def _api_url(self, endpoint):
+        """type: method AuthenticationData (str) -> str"""
         return f"{self._management_api}{endpoint}"
 
-    async def _get_management_key(
-        self: "AuthenticationData", token_url: str, session: ClientSession
-    ) -> JSONDict:
+    async def _get_management_key(self, token_url, session):
         """
         Get Auth0 Management API access data.
 
         params:
-            token_url: Oauth token url (should be under `/oauth/token`).
-            session: Session to use for external requests.
+            token_url: str:
+                Oauth token url (should be under `/oauth/token`).
+            session: ClientSession:
+                Session to use for external requests.
+        
+        returns: JSONDict
         """
 
         @cached()
-        async def _get_management_access() -> JSONDict:
+        async def _get_management_access():
+            """type: () -> JSONDict"""
             nonlocal self, token_url
             async with session.post(token_url, json=self._management_params) as res:
                 auth = await res.json()
@@ -81,14 +74,14 @@ class AuthenticationData:
             )
         return auth["access_token"]
 
-    async def _fetch_permissions(
-        self: "AuthenticationData", session: ClientSession
-    ) -> List[JSONDict]:
+    async def _fetch_permissions(self, session):
         """
         Get permissions from standard Management API url. Will stop early if any
         errors occur.
+
+        type: method AuthenticationData (ClientSession) -> JSONDict[]
         """
-        permissions: List[JSONDict] = []
+        permissions = []
         manage_key = await self._get_management_key(
             self._api_url("/oauth/token"), session
         )
@@ -125,17 +118,19 @@ class AuthenticationData:
         return []
 
     @cached()
-    async def _permissions(
-        self: "AuthenticationData", session: ClientSession
-    ) -> List[str]:
-        """Grabs simplified permissions list."""
+    async def _permissions(self: "AuthenticationData", session):
+        """
+        Grabs simplified permissions list.
+        
+        type: method AuthenticationData (ClientSession) -> str[]
+        """
         return [
-            p["permission_name"]  # type: ignore
+            p["permission_name"]
             for p in await self._fetch_permissions(session)
             if p["resource_server_identifier"] in self._api_id
         ]
 
-    async def permissions(self: "AuthenticationData", reset: bool = False) -> List[str]:
+    async def permissions(self, reset=False):
         """
         Fetch a simplified list of permissions for this user, e.g.
         ['read:foo', 'update:foo', 'read:bar']. Only those permissions for
@@ -145,14 +140,20 @@ class AuthenticationData:
         The result is cached forever.
 
         params:
-            reset: Should the permissions object be reset?
+            reset: bool: Should the permissions object be reset?
+        
+        returns: str[]
         """
         return await self._permissions(  # pylint: disable=unexpected-keyword-arg
             self._session, cache_read=reset
         )
 
-    def use_session(self: "AuthenticationData", session: ClientSession) -> None:
-        """Change which session this permission should use."""
+    def use_session(self, session):
+        """
+        Change which session this permission should use.
+        
+        type: method AuthenticationData (ClientSession) -> None
+        """
         self._session = session
 
 
@@ -160,28 +161,29 @@ _auth_config = config.authentication
 
 
 async def authenticate(
-    auth_token: str,
-    session: ClientSession,
-    openid_discovery: str = _auth_config.openid_discovery,
-    id_token_params: JSONDict = _auth_config.id_token_params,
-    management_api: str = _auth_config.management_api,
-    management_params: JSONDict = _auth_config.management_params,
-    api_id: str = _auth_config.api_id,
-) -> AuthenticationData:
+    auth_token,
+    session,
+    openid_discovery=_auth_config.openid_discovery,
+    id_token_params=_auth_config.id_token_params,
+    management_api=_auth_config.management_api,
+    management_params=_auth_config.management_params,
+    api_id=_auth_config.api_id,
+):
     """
     Authenticate a token, and do housekeeping if necessary.
 
     params:
-        auth_token: OpenID Connect ID Token (JWT).
-        session: Context HTTPS session to use.
-        openid_discovery: OpenID discovery document URI.
-        id_token_params: All parameters of JWT decoding function. (see PyJWT docs)
-        management_api: Auth0 Management API endpoint.
-        management_params:
+        auth_token: str: OpenID Connect ID Token (JWT).
+        session: ClientSession: Context HTTPS session to use.
+        openid_discovery?: str: OpenID discovery document URI.
+        id_token_params?: JSONDict:
+            All parameters of JWT decoding function. (see PyJWT docs)
+        management_api?: str: Auth0 Management API endpoint.
+        management_params?: JSONDict:
             Auth0 Management API OpenID Connect token retrieval URL parameters.
-        api_id: Auth0 Management API Audience Identification string.
+        api_id?: str: Auth0 Management API Audience Identification string.
 
-    returns: Permissions object.
+    returns: AuthenticationData: Permissions object.
     """
     return AuthenticationData(
         await decode_jwt(auth_token, openid_discovery, id_token_params, session),

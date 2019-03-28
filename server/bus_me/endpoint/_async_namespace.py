@@ -1,13 +1,9 @@
-from typing import Generic, TypeVar
-
 from socketio import AsyncNamespace
 
 __all__ = ["_AsyncNamespace"]
 
-T = TypeVar("T")
 
-
-class _AsyncNamespace(AsyncNamespace, Generic[T]):
+class _AsyncNamespace(AsyncNamespace):
     """
     Extended `AsyncNamespace` that accepts a deployment object (eg
     `aiohttp.web.Application`) in order to allow interactions with non socket
@@ -18,8 +14,11 @@ class _AsyncNamespace(AsyncNamespace, Generic[T]):
 
     Dumb hack courtesy of:
     https://github.com/miguelgrinberg/python-socketio/issues/142
+
+    generic: cls<T>
+    constructor: method AsyncNamespace (T, str?)
     """
 
-    def __init__(self: "AsyncNamespace", app: T, namespace: str = None):
+    def __init__(self, app, namespace=None):
         super().__init__(namespace=namespace)
         self.app = app

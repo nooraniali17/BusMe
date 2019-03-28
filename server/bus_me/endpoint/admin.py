@@ -1,6 +1,3 @@
-from ..__types import JSONObject, JSONDict
-from ..authentication import AuthenticationData
-
 from uuid import uuid4
 
 from ..entities import db, Organization
@@ -10,9 +7,7 @@ from .login import LoginNamespace
 
 class AdminNamespace(LoginNamespace):
     @require_auth(permissions=["create_organization"])
-    async def on_update_org(
-        self: "AdminNamespace", sid: str, data: JSONObject, _: AuthenticationData
-    ):
+    async def on_update_org(self, sid, data, _):
         """
         Create or update an organization.
 
@@ -23,7 +18,8 @@ class AdminNamespace(LoginNamespace):
                 created.
             values: dict: Values to update organization with.
         
-        returns: UUID of organization updated (may be different from sent ID).
+        returns: str:
+            UUID of organization updated (may be different from sent ID).
         """
 
         org = None

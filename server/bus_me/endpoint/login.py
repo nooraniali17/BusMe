@@ -14,7 +14,8 @@ __all__ = ["LoginNamespace"]
 class LoginNamespace(_AsyncNamespace):
     """Namespace for handling logins."""
 
-    async def on_login(self: "LoginNamespace", sid: str, data: JSONObject) -> None:
+    async def on_login(self, sid, data):
+        """type: method LoginNamespace (str, JSONObject) -> void"""
         try:
             if not isinstance(data, str):
                 _log.error(f"login expected token of {str}, got {type(data)} instead")

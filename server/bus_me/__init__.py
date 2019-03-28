@@ -1,7 +1,5 @@
 import logging
 
-from typing import Any, AsyncIterator
-
 import ssl
 
 from aiohttp import ClientSession
@@ -15,17 +13,21 @@ __all__ = ["main"]
 
 
 def logger_cfg():
+    """type: (void) -> void"""
     for module, level in config.loggers.items():
         logging.getLogger(module).setLevel(level)
 
 
-def attach_session(app: Application) -> None:
+def attach_session(app):
     """
     The aiohttp docs say it's better to share client sessions for better
     parallel requests, so here we are.
+
+    type: (Application) -> void
     """
 
-    async def cleanup_ctx(app: Application) -> AsyncIterator[None]:
+    async def cleanup_ctx(app):
+        """type: async (Application) -> iter<void>"""
         app["session"] = session = ClientSession()
         yield
         await session.close()
@@ -33,13 +35,15 @@ def attach_session(app: Application) -> None:
     app.cleanup_ctx.append(cleanup_ctx)
 
 
-def attach_socketio(app: Application) -> None:
+def attach_socketio(app):
+    """type: (Application) -> void"""
     socket = AsyncServer()
     socket.register_namespace(BusMeApplication(app=app))
     socket.attach(app)
 
 
 def get_ssl_context():
+    """type: () -> SSLContext"""
     ctx = None
     if config.ssl:
         ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
@@ -47,7 +51,8 @@ def get_ssl_context():
     return ctx
 
 
-def main() -> None:
+def main():
+    """type: () -> void"""
     logger_cfg()
 
     app = Application()
