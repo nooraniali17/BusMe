@@ -18,6 +18,11 @@ from config2.config import config
 
 from .jwt import decode_jwt, JWTVerifyError
 
+import logging
+from inspect import cleandoc
+
+_log = logging.getLogger(__name__)
+
 __all__ = ["authenticate", "JWTVerifyError"]
 
 
@@ -98,16 +103,19 @@ class AuthenticationData:
             ) as res:
                 if res.status == 429:
                     # TODO: actually implementing throttling
-                    print("This app has made too many requests.")
-                    print("Now would be a great time to implement throttling.")
+                    _log.error("This app has made too many requests.")
 
                 if res.status >= 400:
-                    print(f"{res.url}: HTTP", res.status)
-                    print("----- headers -----")
-                    print(res.headers)
-                    print("----- content -----")
-                    print(await res.content.read())
-                    print("-------------------")
+                    _log.error(
+                        cleandoc(
+                            f"""{res.url}: HTTP {res.status}
+                            ----- headers -----
+                            {res.headers}
+                            ----- content -----
+                            {await res.content.read()}
+                            -------------------"""
+                        )
+                    )
                     return permissions
                 res_obj = await res.json()
 
