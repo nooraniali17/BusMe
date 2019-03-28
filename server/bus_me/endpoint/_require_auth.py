@@ -44,9 +44,9 @@ def require_auth(
     
     returns:
         (async (
-            _AsyncNamespace<Application>, str, JSONObject, AuthenticationData
+            _AsyncNamespace<Application>, str, AuthenticationData, ...JSONObject
         ) -> JSONObject)
-            -> async (_AsyncNamespace<Application>, str, JSONObject) -> JSONObject
+            -> async (_AsyncNamespace<Application>, str, ...JSONObject) -> JSONObject
     """
     permissions = _map_permissions(permissions, strict_mappings)
 
@@ -56,7 +56,7 @@ def require_auth(
         event_name = fn.__name__[3:] if fn.__name__.startswith("on_") else fn.__name__
 
         @wraps(fn)
-        async def decorated(self, sid, data):
+        async def decorated(self, sid, *data):
             nonlocal error_event, permissions, reject
             session_data = (await self.get_session(sid)).get("auth")
 
@@ -96,7 +96,7 @@ def require_auth(
                 return session_data and all(p in session_perms for p in permissions)
 
             if await check_permissions():
-                return await fn(self, sid, data, session_data)
+                return await fn(self, sid, session_data, *data)
             await reject_cb()
 
         return decorated

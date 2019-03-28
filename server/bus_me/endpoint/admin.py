@@ -7,7 +7,7 @@ from .login import LoginNamespace
 
 class AdminNamespace(LoginNamespace):
     @require_auth(permissions=["create_organization"])
-    async def on_update_org(self, sid, data, _):
+    async def on_update_org(self, sid, _, data):
         """
         Create or update an organization.
 
