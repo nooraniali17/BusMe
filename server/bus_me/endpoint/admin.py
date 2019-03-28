@@ -1,4 +1,5 @@
 from ..__types import JSONObject, JSONDict
+from ..authentication import AuthenticationData
 
 from uuid import uuid4
 
@@ -10,7 +11,7 @@ from .login import LoginNamespace
 class AdminNamespace(LoginNamespace):
     @require_auth(permissions=["create_organization"])
     async def on_update_org(
-        self: "AdminNamespace", sid: str, data: JSONObject, session_data: JSONDict
+        self: "AdminNamespace", sid: str, data: JSONObject, _: AuthenticationData
     ):
         """
         Create or update an organization.

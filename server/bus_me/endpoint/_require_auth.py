@@ -1,5 +1,6 @@
 from typing import Any, Awaitable, Callable, Coroutine, Dict, List, Optional, Union
 from ..__types import JSONObject, JSONDict
+from ..authentication import AuthenticationData
 from ._async_namespace import _AsyncNamespace
 from aiohttp.web import Application
 
@@ -20,9 +21,10 @@ def _map_permissions(permissions: List[str], strict: bool) -> List[str]:
     return list(map(strict_map if strict else loose_map, permissions))
 
 
-# async (_AsyncNamespace<Application>, str, JSONObject, dict<str, Any>) -> Any
+# async (_AsyncNamespace<Application>, str, JSONObject, AuthenticationData) -> Any
 _TYPE_require_auth_receive = Callable[
-    [_AsyncNamespace[Application], str, JSONObject, JSONDict], Coroutine[Any, Any, Any]
+    [_AsyncNamespace[Application], str, JSONObject, AuthenticationData],
+    Coroutine[Any, Any, Any],
 ]
 # async (_AsyncNamespace, str, JSONObject) -> Any
 _TYPE_require_auth_return = Callable[
