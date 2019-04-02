@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import MyButton from './Button';
 
 class HomePage extends Component {
-
     state = {
         numPassengers: ''
     }
@@ -28,17 +27,17 @@ class HomePage extends Component {
         return true
 }
 
-      render() {
+    render() {
 
-        console.log(this.state);
-        return (
+      console.log(this.state);
+      return (
         <div>
             <button id="findLocation" onClick={ this.findCoordinates }>Find location!</button>
-              <h1>Welcome to BusMe!</h1>
-              <h3>Please input total number of passengers below</h3>
-              <input id="inputPane" type="text" onChange = { this.setNumPassengers }  ></input>
-              <br></br>
-              <MyButton name="Submit" routeTo="/about" onSubmit = { this.handleInputPassengers }/>
+            <h1>Welcome to BusMe!</h1>
+            <h3>Please input total number of passengers below</h3>
+            <input id="inputPane" type="text" onChange = { this.setNumPassengers }  ></input>
+            <br></br>
+            <MyButton name="Submit" routeTo="/about" onSubmit = { this.handleInputPassengers }/>
         </div>
         );
     }

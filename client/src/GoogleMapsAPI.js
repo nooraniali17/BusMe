@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
 import CurrentLocation from './CurrentLocation';
+import Locations from './BusLocations';
 
 export class MapContainer extends Component {
-
     state = {
         showingInfoWindow: false,
         activeMarker: {},
@@ -25,14 +25,21 @@ export class MapContainer extends Component {
           });
         }
       };
-    
+
       render() {
         return (
+          // <Locations lat='37.9809884'
+          //            lng='-121.3178416'>
+          // </Locations>
+
           <CurrentLocation
             centerAroundCurrentLocation
+            lat = '37.9809884'
+            lng = '-121.3178416'
             google={this.props.google}
           >
             <Marker onClick={this.onMarkerClick} name={'Your Location'} />
+            <Marker onClick={this.onMarkerClick} name={'Bus Stop #1'}/>
             <InfoWindow
               marker={this.state.activeMarker}
               visible={this.state.showingInfoWindow}
@@ -42,7 +49,7 @@ export class MapContainer extends Component {
                 <h4>{this.state.selectedPlace.name}</h4>
               </div>
             </InfoWindow>
-          </CurrentLocation>
+           </CurrentLocation>
         );
       }
 }
