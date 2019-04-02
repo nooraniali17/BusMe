@@ -114,3 +114,4 @@ CurrentLocation.defaultProps = {
     centerAroundCurrentLocation: false,
     visible: true
   };
+
