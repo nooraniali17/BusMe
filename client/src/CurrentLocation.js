@@ -14,14 +14,13 @@ export class CurrentLocation extends Component {
   
     constructor(props) {
         super(props);
-        const { lat, lng } = this.props.initialCenter;
         this.state = {
-          // children: null,
-          busStops: [],   
+          busStops: [],
           currentLocation: {
-              lat: lat,
-              lng: lng
-          }
+            lat: 0,
+            lng: 0
+          }   
+
         };
     }
 
@@ -55,6 +54,19 @@ export class CurrentLocation extends Component {
                   lat: location.latitude,
                   lng: location.longitude
                 }
+              }, () => {
+                this.loadMap();
+                var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+                new google.maps.Marker({
+                  position: {
+                    lat: location.latitude,
+                    lng: location.longitude
+                  },
+                  map: this.map,
+                  title: 'Current location',
+                  icon: image
+                });
+                return;
               });
             });
           }
@@ -64,8 +76,8 @@ export class CurrentLocation extends Component {
 
     callback = (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
-          const latt = parseFloat(37.475982);
-          const longg = parseFloat(-121.145168);
+          const latt = this.state.currentLocation.lat;
+          const longg = this.state.currentLocation.lng;
           const location = {
             lat: latt,
             lng: longg
@@ -83,12 +95,12 @@ export class CurrentLocation extends Component {
             title: stop.name
           });
           marker.addListener('click', () => {
-            console.log('marker selected ===> ', marker);
-            this.map.setZoom(20);
-            this.map.setCenter(marker.getPosition());
+            // console.log('marker selected ===> ', marker);
+            // this.map.setZoom(20);
+            // this.map.setCenter(marker.getPosition());
+            console.log(marker.title);
           });
         });
-
       }
     }
 
@@ -102,6 +114,7 @@ export class CurrentLocation extends Component {
           const node = ReactDOM.findDOMNode(mapRef);
           let { zoom } = this.props;
           const { lat, lng } = this.state.currentLocation;
+
           const center = new maps.LatLng(lat, lng);
           const mapConfig = Object.assign({}, {
               center: center,
@@ -113,18 +126,15 @@ export class CurrentLocation extends Component {
 
           var service;
           // SET THIS TO YOUR CURRENT LOCATION
-          const latt = parseFloat(37.475982);
-          const longg = parseFloat(-121.145168);
           const location = {
-            lat: latt,
-            lng: longg
+            lat: this.state.currentLocation.lat,
+            lng: this.state.currentLocation.lng
           };
           var request = {
             location: location,
             radius: '50',
             query: 'bus stops'
           };
-  
           service = new google.maps.places.PlacesService(this.map);
           service.textSearch(request, this.callback);
         }
@@ -160,10 +170,6 @@ export default CurrentLocation;
 
 CurrentLocation.defaultProps = {
     zoom: 17,
-    initialCenter: {
-      lat: -5.2884,
-      lng: 13.8233
-    },
     centerAroundCurrentLocation: false,
     visible: true
   };
