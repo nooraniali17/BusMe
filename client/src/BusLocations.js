@@ -3,6 +3,7 @@ import {GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
 
 
 const locations = ( props ) => {
+    
         return(
         <div>
             <p> This is the location: { props.lat } + { props.lng } </p>
