@@ -1,16 +1,62 @@
-from flask import Flask
-from flask_socketio import SocketIO, emit
+import logging
+
+import ssl
+
+from aiohttp import ClientSession
+from aiohttp.web import Application, run_app
+from config2.config import config
+from socketio import AsyncServer
+
+from .endpoint import BusMeApplication
 
 __all__ = ["main"]
 
-app = Flask(__name__)
-socketio = SocketIO(app)
+
+def logger_cfg():
+    """type: (void) -> void"""
+    for module, level in config.loggers.items():
+        logging.getLogger(module).setLevel(level)
 
 
-@socketio.on("my event")
-def test_message(message):
-    emit("my response", {"data": "got it!"})
+def attach_session(app):
+    """
+    The aiohttp docs say it's better to share client sessions for better
+    parallel requests, so here we are.
+
+    type: (Application) -> void
+    """
+
+    async def cleanup_ctx(app):
+        """type: async (Application) -> iter<void>"""
+        app["session"] = session = ClientSession()
+        yield
+        await session.close()
+
+    app.cleanup_ctx.append(cleanup_ctx)
+
+
+def attach_socketio(app):
+    """type: (Application) -> void"""
+    socket = AsyncServer()
+    socket.register_namespace(BusMeApplication(app=app))
+    socket.attach(app)
+
+
+def get_ssl_context():
+    """type: () -> SSLContext"""
+    ctx = None
+    if config.ssl:
+        ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        ctx.load_cert_chain(config.ssl.cert, config.ssl.key)
+    return ctx
 
 
 def main():
-    socketio.run(app)
+    """type: () -> void"""
+    logger_cfg()
+
+    app = Application()
+    attach_socketio(app)
+    attach_session(app)
+
+    run_app(app, ssl_context=get_ssl_context())
