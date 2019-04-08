@@ -1,6 +1,3 @@
-from typing import Optional
-from ..__types import JSONObject
-
 from ._async_namespace import _AsyncNamespace
 from ..authentication import authenticate, JWTVerifyError
 

@@ -1,5 +1,3 @@
-from ..__types import JSONObject, JSONDict
-
 from datetime import datetime, timedelta
 
 from peewee import IntegrityError
