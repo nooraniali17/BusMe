@@ -18,7 +18,17 @@ from peewee import (
 from peewee_asyncext import PostgresqlExtDatabase
 from playhouse.postgres_ext import IntervalField
 
-__all__ = ["Organization", "db"]
+
+__all__ = [
+    "db",
+    "Location",
+    "Organization",
+    "Route",
+    "Stop",
+    "Timetable",
+    "User",
+    "UserLocation",
+]
 
 _db = PostgresqlExtDatabase(**config.database)
 
