@@ -5,14 +5,18 @@ from datetime import datetime
 import peewee
 import peewee_async
 from peewee import (
+    BooleanField,
     Check,
     DateTimeField,
+    DeferredForeignKey,
     FloatField,
     ForeignKeyField,
+    IntegerField,
     TextField,
     UUIDField,
 )
 from peewee_asyncext import PostgresqlExtDatabase
+from playhouse.postgres_ext import IntervalField
 
 __all__ = ["Organization", "db"]
 
@@ -39,12 +43,16 @@ class Model(peewee.Model):
 
 class User(Model):
     oidc_id = TextField(unique=True)
+    location = DeferredForeignKey("UserLocation", null=True)
 
 
 class Location(Model):
-    user = ForeignKeyField(User)
     long = FloatField(constraints=(Check("long >= 0"), Check("long <= 180")))
     lat = FloatField(constraints=(Check("lat >= -90"), Check("lat <= 90")))
+
+
+class UserLocation(Location):
+    user = ForeignKeyField(User)
     time = DateTimeField(default=datetime.utcnow)
 
 
@@ -60,33 +68,36 @@ class Organization(Model):
 #     last_route = Optional("Route", reverse="last_driver")
 
 
+class Route(Model):
+    name = TextField()
+    active = BooleanField(default=True)
+    timetable = DeferredForeignKey("Timetable", null=True)
+
+
 # class Route(db.Entity):  # type: ignore
-#     id = PrimaryKey(int, auto=True)
 #     organization = Required(Organization)
 #     drivers = Set(Driver, reverse="routes")
 #     last_driver = Optional(Driver, reverse="last_route")
-#     timetable = Set("Timetable")
-#     name = Required(str)
 #     device_pair = Optional(UUID)
 
 
+class Stop(Model):
+    location = ForeignKeyField(Location, unique=True)
+
+
 # class Stop(db.Entity):  # type: ignore
-#     id = PrimaryKey(int, auto=True)
 #     route_stops = Set("Timetable")
 #     checkins = Set("Checkin")
-#     name = Required(str)
-#     longitude = Required(float)
-#     latitude = Required(float)
-#     gmaps_query = Optional(Json)
+
+
+class Timetable(Model):
+    route = ForeignKeyField(Route)
+    stop = ForeignKeyField(Stop)
+    next_stop = ForeignKeyField("self", null=True)
+    expected_duration = IntervalField()
 
 
 # class Timetable(db.Entity):  # type: ignore
-#     id = PrimaryKey(int)
-#     route = Required(Route)
-#     stop = Required(Stop)
-#     next_stop = Required("Timetable", reverse="prev_stop")
-#     prev_stop = Optional("Timetable", reverse="next_stop")
-#     expected_duration = Required(timedelta)
 #     last_time = Optional("Time")
 
 
@@ -110,6 +121,8 @@ class Organization(Model):
 #     average_duration = Optional(timedelta)
 #     timetable = Required(Timetable)
 
-_db.create_tables((Location, Organization, User), safe=True)
+_db.create_tables(
+    (Location, Organization, Route, Stop, Timetable, User, UserLocation), safe=True
+)
 _db.set_allow_sync(False)
 db = peewee_async.Manager(_db)
