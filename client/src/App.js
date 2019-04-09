@@ -1,13 +1,17 @@
-import React from 'react';
-
+import React, { Component } from 'react';
 import './static/app.css';
+import Routing from './Routing';
 
-export default function App() {
-  return (
-    <div className="app">
-      <header className="app-header">
-        <h1>Welcome to BusMe</h1>
-      </header>
-    </div>
-  );
-};
+export default class App extends Component {
+
+  render() {
+    console.log(this.state);
+    return (
+      <div className="App">
+        <header className="app-header">
+        </header>
+      <Routing/>
+      </div>
+    );
+  }
+}
