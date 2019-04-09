@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from peewee import IntegrityError
 
-from ..entities import db, Location, Stop, UserLocation, User
+from ..entities import db, Location, Route, Stop, Timetable, UserLocation, User
 from ._require_auth import require_auth
 from .login import LoginNamespace
 
@@ -44,20 +44,21 @@ class RiderNamespace(LoginNamespace):
     async def on_sub_stops(self, sid, auth, long_dist=0.01, lat_dist=0.01):
         """
         Start subscription to stops, once every 10 seconds. Yields to event
-        "stops".
+        `"stops"`.
 
         schema: [float, float]: (default: (0.01, 0.01))
             Degrees longitude and latitude from current location to search
             within.
         
-        yields: int[]: List of nearby stops by ID.
+        yields: dict[]: per:
+            [id]: [float, float]: Longitude, latitude of stop keyed by stop ID.
         """
 
         async def update_stops():
             nonlocal self, sid, auth, long_dist, lat_dist
             # get location
 
-            user = await db.get(User, oidc_id=auth.user_id)
+            user, _ = await db.get_or_create(User, oidc_id=auth.user_id)
             if user:
                 with db.allow_sync():
                     location = user.location
@@ -73,16 +74,16 @@ class RiderNamespace(LoginNamespace):
             lat_min = location.lat - lat_dist
             lat_max = location.lat + lat_dist
 
-            with db.allow_sync():
-                stop_query = (
-                    Stop.select()
-                    .join(Location)
-                    .where(
-                        Location.long.between(long_min, long_max)
-                        & Location.lat.between(lat_min, lat_max)
-                    )
+            stop_query = (
+                Stop.select()
+                .join(Location)
+                .where(
+                    Location.long.between(long_min, long_max)
+                    & Location.lat.between(lat_min, lat_max)
                 )
-                stops = [s.id for s in stop_query]
+            )
+            with db.allow_sync():
+                stops = {s.id: (s.location.long, s.location.lat) for s in stop_query}
 
             await self.emit("stops", stops, room=sid)
 
@@ -93,3 +94,28 @@ class RiderNamespace(LoginNamespace):
                 _log.info(f"User {auth.user_id} inactive, stopping stops updates.")
                 return
             await update_stops()
+
+    async def on_stop_data(self, sid, stop_id):
+        """
+        Get stop data.
+
+        schema: int: Stop ID, given by `sub_stops`.
+
+        returns: int[]: List of time tables at this stop by ID.
+        TODO: fill out return schema
+        """
+        tr_query = (
+            Timetable.select(Timetable, Route)
+            .join(Stop)
+            .switch(Timetable)
+            .join(Route)
+            .where(Stop.id == stop_id)
+        )
+        with db.allow_sync():
+            return {
+                tr.id: {
+                    "route": tr.route.id,
+                    "expected_duration": tr.expected_duration.seconds,
+                }
+                for tr in tr_query
+            }
