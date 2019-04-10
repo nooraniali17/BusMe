@@ -20,9 +20,6 @@ function setNumInParty(event){
     document.location.href = url;
 }
 
-// function getNumInParty(){
-//     return numInParty;
-// }
 
 function initMap(){
     var myMapCenter = {lat: 37.981161, lng: -121.312040};
