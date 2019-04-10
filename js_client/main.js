@@ -97,6 +97,7 @@ function createMarker(place) {
     });
     google.maps.event.addListener(marker, 'click', function() {
         infoWindow.setContent(place.name);
+        console.log(place.name);
         infoWindow.open(map, this);
     });
 }
