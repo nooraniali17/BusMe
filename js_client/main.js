@@ -5,53 +5,44 @@ var image = 'https://developers.google.com/maps/documentation/javascript/example
 var infoWindow;
 
 
-function setNumInParty(event){
+function setNumInParty() {
     numInParty = document.getElementById("numInParty").value
-    if(isNaN(numInParty)){
-        alert("Please enter a number!");
+    if (isNaN(numInParty)) {
+        alert("Please enter a number.");
         return;
     }
-    if(numInParty < 1 || numInParty >= 10){
-        alert("Please enter a number greater than 0 but less than 10!");
+    if (numInParty < 1 || numInParty >= 10) {
+        alert("Please enter a number between 0 and 10.");
         return;
     }
-    url = './passengerSubmission.html?numInParty=' + encodeURIComponent(numInParty);
+    url = `./passengerSubmission.html?numInParty=${encodeURIComponent(numInParty)}`;
 
     document.location.href = url;
 }
 
 
-function initMap(){
-    var myMapCenter = {lat: 37.981161, lng: -121.312040};
+function initMap() {
+    var myMapCenter = { lat: 37.981161, lng: -121.312040 };
     infoWindow = new google.maps.InfoWindow();
-    
+
     //Map loads this area first
-    map = new google.maps.Map(document.getElementById('map'),{
+    map = new google.maps.Map(document.getElementById('map'), {
         center: myMapCenter,
         zoom: 15,
         gestureHandling: 'greedy'
     });
 
-    //Creating marker at myMapCenter
-    var startingMarker = new google.maps.Marker({
-        position: myMapCenter,
-        map: map,
-        icon: image
-    });
-
-    
-
-    if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(function(position){
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
             var myLocation = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
             myLat = myLocation.lat;
             myLong = myLocation.lng;
-            myLocation = {lat: parseFloat(myLat), lng: parseFloat(myLong)};
+            myLocation = { lat: parseFloat(myLat), lng: parseFloat(myLong) };
             infoWindow.setPosition(myLocation);
-            
+
             infoWindow.setContent("Location Found");
             infoWindow.open(map);
 
@@ -62,29 +53,20 @@ function initMap(){
                 query: 'bus stops'
             };
             service = new google.maps.places.PlacesService(map);
-            service.textSearch(request, callback);
-            
+            service.textSearch(request, (results, status) => {
+                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                    for (var i = 0; i < results.length; i++) {
+                        createMarker(results[i]);
+                    }
+                }
+            });
+
             map.setCenter(myLocation);
-        }, function(){
-            handleLocationError(true, infoWindow, map.getCenter());
+        }, () => {
+            infoWindow.setPosition(map.getCenter());
+            infoWindow.setContent('Error: The Geolocation service has failed.');
+            infoWindow.open(map);
         });
-    }
-}
-
-function handleLocationError(browserHasGeolocation, infoWindow, myLocation){
-    infoWindow.setPosition(myLocation);
-    infoWindow.setContent(browserHasGeolocation ?
-        'Error: The Geolocation service failed.' :
-        'Error: Your browser doesn\'t support geolocation.');
-    infoWindow.open(map);
-}
-
-function callback(results, status){
-    if(status == google.maps.places.PlacesServiceStatus.OK){
-        for(var i=0; i<results.length; i++){
-            var place = results[i];
-            createMarker(results[i]);
-        }
     }
 }
 
@@ -95,7 +77,7 @@ function createMarker(place) {
         position: place.geometry.location,
         animation: google.maps.Animation.DROP
     });
-    google.maps.event.addListener(marker, 'click', function() {
+    google.maps.event.addListener(marker, 'click', () => {
         infoWindow.setContent(place.name);
         infoWindow.open(map, this);
     });
