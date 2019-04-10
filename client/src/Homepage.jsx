@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import MyButton from "./Button";
 
-class HomePage extends Component {
+export default class HomePage extends Component {
   state = {
     numPassengers: ""
   };
@@ -45,5 +45,3 @@ class HomePage extends Component {
     );
   }
 }
-
-export default HomePage;

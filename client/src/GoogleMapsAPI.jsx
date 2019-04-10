@@ -30,7 +30,7 @@ export class MapContainer extends Component {
 
   render() {
     return (
-      <div>
+      <>
         <CurrentLocation
           setBusStops={this.setBusStops}
           centerAroundCurrentLocation
@@ -38,7 +38,7 @@ export class MapContainer extends Component {
         >
           <Marker onClick={this.onMarkerClick} name={"My Location!!"} />
         </CurrentLocation>
-      </div>
+      </>
     );
   }
 }

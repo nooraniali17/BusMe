@@ -161,10 +161,10 @@ export class CurrentLocation extends Component {
   render() {
     const style = Object.assign({}, mapStyles.map);
     return (
-      <div>
+      <>
         <div style={style} ref="map" />
         {this.renderChildren()}
-      </div>
+      </>
     );
   }
 }
