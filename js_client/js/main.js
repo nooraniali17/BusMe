@@ -1,5 +1,6 @@
 import authenticate from "./authenticate.js";
 import navigator from "./es6-compat/navigator.js";
+import socket from "./socket.js";
 
 // shortcuts
 const gmaps = google.maps;
@@ -7,6 +8,7 @@ const places = gmaps.places;
 
 let map;
 let infoWindow;
+let sio;
 
 window.setPartySize = () => {
   const party = document.getElementById('party').value;
@@ -62,7 +64,6 @@ async function initMap() {
   }
 }
 
-//EXPERIMENT WITH CREATING MARKERS
 function createMarker(place) {
   google.maps.event.addListener(new gmaps.Marker({
     map: map,
@@ -77,14 +78,11 @@ function createMarker(place) {
 
 window.addEventListener('load', async () => {
   try {
-    const idToken = await authenticate();
+    sio = await socket(await authenticate());
     window.location.hash = '';
-    console.log(idToken);
     await initMap();
   } catch (e) {
     console.log(e);
     alert(`Error: ${e.message}. Check the console for further details.`);
   }
 });
-
-//https://maps.googleapis.com/maps/api/place/textsearch/json?query=bus+stops&fields=name,%20place_id&location=37.981052,%20-121.312022&radius=1&key=AIzaSyCDg2zhsGJpYuDRbjC_dUOfiT4bJY0IFA8
