@@ -42,6 +42,12 @@ def attach_socketio(app):
     socket.attach(app)
 
 
+def attach_static(app):
+    """type: (Application) -> void"""
+    for path in config.static_files or []:
+        app.router.add_static("/", path)
+
+
 def get_ssl_context():
     """type: () -> SSLContext"""
     ctx = None
@@ -58,5 +64,6 @@ def main():
     app = Application()
     attach_socketio(app)
     attach_session(app)
+    attach_static(app)
 
     run_app(app, ssl_context=get_ssl_context())

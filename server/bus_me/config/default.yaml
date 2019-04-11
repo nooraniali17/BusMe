@@ -54,3 +54,8 @@ permissions:
 ssl:
   cert: null
   key: null
+
+# A list of folders where all the static files are located, if any.
+# (should only be used in development)
+static_files:
+  - ../js_client
