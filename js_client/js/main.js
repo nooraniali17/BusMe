@@ -76,9 +76,12 @@ function createMarker(place) {
   });
 }
 
+// this will redirect out of page before render if new authentication is needed
+// this way the redirect is seamless
+(async () => sio = await socket(await authenticate()))()
+
 window.addEventListener('load', async () => {
   try {
-    sio = await socket(await authenticate());
     await initMap();
   } catch (e) {
     console.log(e);
