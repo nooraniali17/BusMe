@@ -3,13 +3,13 @@ const image = 'https://developers.google.com/maps/documentation/javascript/examp
 let infoWindow;
 
 function setPartySize() {
-  const party = document.getElementById("party").value;
+  const party = document.getElementById('party').value;
   if (isNaN(party)) {
-    alert("Please enter a number.");
+    alert('Please enter a number.');
     return;
   }
   if (party < 1 || party >= 10) {
-    alert("Please enter a number between 0 and 10.");
+    alert('Please enter a number between 0 and 10.');
     return;
   }
   document.location.href = `./submit.html?party=${encodeURIComponent(party)}`;
@@ -33,10 +33,10 @@ function initMap() {
       };
       infoWindow.setPosition(location);
 
-      infoWindow.setContent("Location Found");
+      infoWindow.setContent('Location Found');
       infoWindow.open(map);
 
-      service = new google.maps.places.PlacesService(map);
+      const service = new google.maps.places.PlacesService(map);
       service.textSearch({
         location,
         radius: '50',
@@ -70,5 +70,7 @@ function createMarker(place) {
     infoWindow.open(map, this);
   });
 }
+
+window.addEventListener('load', initMap);
 
 //https://maps.googleapis.com/maps/api/place/textsearch/json?query=bus+stops&fields=name,%20place_id&location=37.981052,%20-121.312022&radius=1&key=AIzaSyCDg2zhsGJpYuDRbjC_dUOfiT4bJY0IFA8
