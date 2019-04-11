@@ -70,6 +70,7 @@ function createMarker(place) {
     animation: google.maps.Animation.DROP
   }), 'click', function () {
     infoWindow.setContent(place.name);
+    console.log(place.name);
     infoWindow.open(map, this);
   });
 }
