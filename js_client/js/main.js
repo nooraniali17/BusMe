@@ -1,3 +1,5 @@
+import authenticate from "./authenticate.js";
+
 let map;
 const image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
 let infoWindow;
@@ -71,6 +73,16 @@ function createMarker(place) {
   });
 }
 
-window.addEventListener('load', initMap);
+window.addEventListener('load', async () => {
+  try {
+    const idToken = await authenticate();
+    window.location.hash = '';
+    console.log(idToken);
+    initMap();
+  } catch (e) {
+    console.log(e);
+    alert(`Error: ${e.message}. Check the console for further details.`);
+  }
+});
 
 //https://maps.googleapis.com/maps/api/place/textsearch/json?query=bus+stops&fields=name,%20place_id&location=37.981052,%20-121.312022&radius=1&key=AIzaSyCDg2zhsGJpYuDRbjC_dUOfiT4bJY0IFA8
