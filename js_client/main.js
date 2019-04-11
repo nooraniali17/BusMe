@@ -2,17 +2,17 @@ let map;
 const image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
 let infoWindow;
 
-function setNumInParty() {
-    const numInParty = document.getElementById("numInParty").value;
-    if (isNaN(numInParty)) {
+function setPartySize() {
+    const party = document.getElementById("party").value;
+    if (isNaN(party)) {
         alert("Please enter a number.");
         return;
     }
-    if (numInParty < 1 || numInParty >= 10) {
+    if (party < 1 || party >= 10) {
         alert("Please enter a number between 0 and 10.");
         return;
     }
-    document.location.href = `./passengerSubmission.html?numInParty=${encodeURIComponent(numInParty)}`;
+    document.location.href = `./submit.html?party=${encodeURIComponent(party)}`;
 }
 
 function initMap() {
@@ -27,20 +27,20 @@ function initMap() {
 
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
-            const myLocation = {
+            const location = {
                 lat: parseFloat(position.coords.latitude),
                 lng: parseFloat(position.coords.longitude)
             };
-            infoWindow.setPosition(myLocation);
+            infoWindow.setPosition(location);
 
             infoWindow.setContent("Location Found");
             infoWindow.open(map);
 
             service = new google.maps.places.PlacesService(map);
             service.textSearch({
-                location: myLocation,
+                location,
                 radius: '50',
-                center: myLocation,
+                center: location,
                 query: 'bus stops'
             }, (results, status) => {
                 if (status == google.maps.places.PlacesServiceStatus.OK) {
@@ -50,7 +50,7 @@ function initMap() {
                 }
             });
 
-            map.setCenter(myLocation);
+            map.setCenter(location);
         }, () => {
             infoWindow.setPosition(map.getCenter());
             infoWindow.setContent('Error: The Geolocation service has failed.');
@@ -61,12 +61,11 @@ function initMap() {
 
 //EXPERIMENT WITH CREATING MARKERS
 function createMarker(place) {
-    const marker = new google.maps.Marker({
+    google.maps.event.addListener(new google.maps.Marker({
         map: map,
         position: place.geometry.location,
         animation: google.maps.Animation.DROP
-    });
-    google.maps.event.addListener(marker, 'click', () => {
+    }), 'click', () => {
         infoWindow.setContent(place.name);
         infoWindow.open(map, this);
     });
