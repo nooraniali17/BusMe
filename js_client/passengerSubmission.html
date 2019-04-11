@@ -33,8 +33,13 @@
     <input type="button" onclick="cancelRequest(event)" value="Cancel Request" />
     
     <script>
-            let numInParty = window.location.href.split('=').pop();
+            //numInParty=3?lat=38.017823?lng=-121.35499500000003
+            let finalLng = window.location.href.split('=').pop()
+            // let finalLat = window.location.href.split('=').pop();
+            // let numInParty = window.location.href.split('=');
             console.log(numInParty);
+            console.log(finalLat);
+            console.log(finalLng);
             document.getElementById("passengersInPartyLabel").innerHTML = numInParty
     </script>
     <!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDg2zhsGJpYuDRbjC_dUOfiT4bJY0IFA8&libraries=places&callback=initMap"></script> -->

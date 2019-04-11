@@ -3,6 +3,9 @@ var myLocation, myLat, myLong;
 var map;
 var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
 var infoWindow;
+var finalLat;
+var finalLng;
+
 
 
 function setNumInParty(event){
@@ -15,7 +18,8 @@ function setNumInParty(event){
         alert("Please enter a number greater than 0 but less than 10!");
         return;
     }
-    url = './passengerSubmission.html?numInParty=' + encodeURIComponent(numInParty);
+    
+    url = './passengerSubmission.html?numInParty=' + encodeURIComponent(numInParty) + '?lat=' + encodeURIComponent(finalLat) + '?lng=' +encodeURIComponent(finalLng);
 
     document.location.href = url;
 }
@@ -90,6 +94,8 @@ function callback(results, status){
 
 //EXPERIMENT WITH CREATING MARKERS
 function createMarker(place) {
+    var getLat = place.geometry.location.lat();
+    var getLng = place.geometry.location.lng();
     var marker = new google.maps.Marker({
         map: map,
         position: place.geometry.location,
@@ -98,6 +104,10 @@ function createMarker(place) {
     google.maps.event.addListener(marker, 'click', function() {
         infoWindow.setContent(place.name);
         console.log(place.name);
+        console.log("Latitude: "+getLat);
+        console.log("Longitude: "+getLng);
+        finalLat = getLat;
+        finalLng = getLng;
         infoWindow.open(map, this);
     });
 }
