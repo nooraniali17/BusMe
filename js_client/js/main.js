@@ -37,10 +37,6 @@ async function initMap() {
       lat: parseFloat(position.coords.latitude),
       lng: parseFloat(position.coords.longitude)
     };
-    infoWindow.setPosition(location);
-
-    infoWindow.setContent('Location Found');
-    infoWindow.open(map);
 
     const service = new places.PlacesService(map);
 
