@@ -79,7 +79,6 @@ function createMarker(place) {
 window.addEventListener('load', async () => {
   try {
     sio = await socket(await authenticate());
-    window.location.hash = '';
     await initMap();
   } catch (e) {
     console.log(e);

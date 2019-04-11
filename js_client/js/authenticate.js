@@ -26,6 +26,7 @@ export default function authenticate(auth = undefined) {
           expires: (idTokenPayload.exp || 0) * 1000
         }));
 
+        window.location.hash = '';
         y(idToken);
       } else {
         auth.authorize();
