@@ -19,7 +19,7 @@ function setNumInParty(event){
         return;
     }
     
-    url = './passengerSubmission.html?numInParty=' + encodeURIComponent(numInParty) + '?lat=' + encodeURIComponent(finalLat) + '?lng=' +encodeURIComponent(finalLng);
+    url = './passengerSubmission.html?numInParty=' + encodeURIComponent(numInParty) + '&lat=' + encodeURIComponent(finalLat) + '&lng=' +encodeURIComponent(finalLng);
 
     document.location.href = url;
 }
