@@ -136,22 +136,21 @@ class Rider(User):
 #     average_duration = Optional(timedelta)
 #     timetable = Required(Timetable)
 
-_db.drop_tables(
-    (Checkin, Location, Organization, Rider, Route, Stop, Timetable, User, UserLocation)
+tables = (
+    Checkin,
+    Location,
+    Organization,
+    Rider,
+    Route,
+    Stop,
+    Timetable,
+    User,
+    UserLocation,
 )
-_db.create_tables(
-    (
-        Checkin,
-        Location,
-        Organization,
-        Rider,
-        Route,
-        Stop,
-        Timetable,
-        User,
-        UserLocation,
-    ),
-    safe=True,
-)
+
+if config.db_startup_wipe:
+    _db.drop_tables(tables)
+_db.create_tables(tables, safe=True)
+
 _db.set_allow_sync(False)
 db = peewee_async.Manager(_db)
