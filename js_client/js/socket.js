@@ -1,6 +1,6 @@
-import authenticate from "./authenticate.js";
+import authenticate, { forceAuthenticate } from "./authenticate.js";
 
-let sio;
+let thisSio;
 
 function createSocket(idToken) {
   return new Promise((y, n) => {
@@ -20,9 +20,15 @@ function createSocket(idToken) {
 }
 
 export default async function socket() {
-  return sio = sio || await createSocket(await authenticate());
+  while (true) {
+    try {
+      return thisSio = thisSio || await createSocket(await authenticate());
+    } catch {
+      await forceAuthenticate();
+    }
+  }
 }
 
 // this will redirect out of page before render if new authentication is needed
 // this way the redirect is seamless
-(async () => sio = await socket())()
+socket();
