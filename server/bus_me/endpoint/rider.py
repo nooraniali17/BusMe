@@ -74,18 +74,21 @@ class RiderNamespace(LoginNamespace):
             lat_min = location.lat - lat_dist
             lat_max = location.lat + lat_dist
 
-            stop_query = (
+            stop_query = await db.prefetch(
                 Stop.select()
                 .join(Location)
                 .where(
                     Location.long.between(long_min, long_max)
                     & Location.lat.between(lat_min, lat_max)
-                )
+                ),
+                Location.select(),
             )
-            with db.allow_sync():
-                stops = {s.id: (s.location.long, s.location.lat) for s in stop_query}
 
-            await self.emit("stops", stops, room=sid)
+            await self.emit(
+                "stops",
+                {s.id: (s.location.long, s.location.lat) for s in stop_query},
+                room=sid,
+            )
 
         _log.info(f"User {auth.user_id} subscribed to stops.")
         await update_stops()
@@ -104,18 +107,14 @@ class RiderNamespace(LoginNamespace):
         returns: int[]: List of time tables at this stop by ID.
         TODO: fill out return schema
         """
-        tr_query = (
-            Timetable.select(Timetable, Route)
-            .join(Stop)
-            .switch(Timetable)
-            .join(Route)
-            .where(Stop.id == stop_id)
+        tr_query = await db.prefetch(
+            Timetable.select().join(Stop).where(Stop.id == stop_id), Route.select()
         )
-        with db.allow_sync():
-            return {
-                tr.id: {
-                    "route": tr.route.id,
-                    "expected_duration": tr.expected_duration.seconds,
-                }
-                for tr in tr_query
+
+        return {
+            tr.id: {
+                "route": tr.route.id,
+                "expected_duration": tr.expected_duration.seconds,
             }
+            for tr in tr_query
+        }
