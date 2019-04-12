@@ -16,16 +16,20 @@ __all__ = ["RiderNamespace"]
 
 class RiderNamespace(LoginNamespace):
     @require_auth()
-    async def on_location(self, sid, auth, lng, lat):
+    async def on_location(self, sid, auth, data):
         """
         Update user location. Note that this will not attempt to preserve order,
         as the user will not usually move very far in the time interval in which
         out-of-order problems may occur.
         
-        schema: [float, float]:
-            Longitude, latitude. Should be provided by something like Google
-            Maps.
+        schema: dict:
+            Should be provided by something like Google Maps.
+            lng: Longitude.
+            lat: Latitude.
         """
+        lng = data["lng"]
+        lat = data["lat"]
+
         try:
             user, _ = await db.get_or_create(User, oidc_id=auth.user_id)
             user.location = await db.create(UserLocation, user=user, lng=lng, lat=lat)
