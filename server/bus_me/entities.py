@@ -57,7 +57,7 @@ class User(Model):
 
 
 class Location(Model):
-    lng = FloatField(constraints=(Check("lng >= 0"), Check("lng <= 180")))
+    lng = FloatField(constraints=(Check("lng >= -180"), Check("lng <= 180")))
     lat = FloatField(constraints=(Check("lat >= -90"), Check("lat <= 90")))
 
 
