@@ -65,8 +65,8 @@ class AdminNamespace(LoginNamespace):
 
         # prepare stops and locations
         locations = [
-            (await db.get_or_create(Location, long=long, lat=lat))[0]
-            for long, lat in (s["at"] for s in stop_data)
+            (await db.get_or_create(Location, lng=lng, lat=lat))[0]
+            for lng, lat in (s["at"] for s in stop_data)
         ]
         stops = (
             (stop, (await db.get_or_create(Stop, location=location))[0])

@@ -16,7 +16,7 @@ __all__ = ["RiderNamespace"]
 
 class RiderNamespace(LoginNamespace):
     @require_auth()
-    async def on_location(self, sid, auth, long, lat):
+    async def on_location(self, sid, auth, lng, lat):
         """
         Update user location. Note that this will not attempt to preserve order,
         as the user will not usually move very far in the time interval in which
@@ -28,21 +28,21 @@ class RiderNamespace(LoginNamespace):
         """
         try:
             user, _ = await db.get_or_create(User, oidc_id=auth.user_id)
-            user.location = await db.create(UserLocation, user=user, long=long, lat=lat)
+            user.location = await db.create(UserLocation, user=user, lng=lng, lat=lat)
             await db.update(user)
-            _log.info(f"User {auth.user_id} updated location to {(long, lat)}")
+            _log.info(f"User {auth.user_id} updated location to {(lng, lat)}")
         except IntegrityError:
             await self.emit(
                 "error",
                 {
-                    "message": f"Invalid geographic coordinates {(long, lat)}",
+                    "message": f"Invalid geographic coordinates {(lng, lat)}",
                     "event": "location",
                 },
                 room=sid,
             )
 
     @require_auth()
-    async def on_sub_stops(self, sid, auth, long_dist=0.01, lat_dist=0.01):
+    async def on_sub_stops(self, sid, auth, lng_dist=0.01, lat_dist=0.01):
         """
         Start subscription to stops, once every 10 seconds. Yields to event
         `"stops"`.
@@ -56,7 +56,7 @@ class RiderNamespace(LoginNamespace):
         """
 
         async def update_stops():
-            nonlocal self, sid, auth, long_dist, lat_dist
+            nonlocal self, sid, auth, lng_dist, lat_dist
             # get location
 
             user, _ = await db.get_or_create(User, oidc_id=auth.user_id)
@@ -70,8 +70,8 @@ class RiderNamespace(LoginNamespace):
                 _log.info(f"User {auth.user_id} does not have a location.")
                 return
 
-            long_min = location.long - long_dist
-            long_max = location.long + long_dist
+            lng_min = location.lng - lng_dist
+            lng_max = location.lng + lng_dist
             lat_min = location.lat - lat_dist
             lat_max = location.lat + lat_dist
 
@@ -79,7 +79,7 @@ class RiderNamespace(LoginNamespace):
                 Stop.select()
                 .join(Location)
                 .where(
-                    Location.long.between(long_min, long_max)
+                    Location.lng.between(lng_min, lng_max)
                     & Location.lat.between(lat_min, lat_max)
                 ),
                 Location.select(),
@@ -87,7 +87,7 @@ class RiderNamespace(LoginNamespace):
 
             await self.emit(
                 "stops",
-                {s.id: (s.location.long, s.location.lat) for s in stop_query},
+                {s.id: (s.location.lng, s.location.lat) for s in stop_query},
                 room=sid,
             )
 
