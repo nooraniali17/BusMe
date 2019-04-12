@@ -112,10 +112,18 @@ class RiderNamespace(LoginNamespace):
             id: int: Timetable ID to check in to.
             party: int: Party size. (0 < i <= 10) 
         """
-        # timetable = await db.get(Timetable, id=data["id"])
-        user, _ = await db.get_or_create(Rider, oidc_id=auth.user_id)
-        user.checkin = await db.create(
-            Checkin,
-            party_size=data["party"],
-            # route=timetable
-        )
+        try:
+            # timetable = await db.get(Timetable, id=data["id"])
+            user, _ = await db.get_or_create(Rider, oidc_id=auth.user_id)
+            user.checkin = await db.create(
+                Checkin,
+                party_size=data["party"],
+                # route=timetable
+            )
+        except IntegrityError:
+            await self.emit(
+                "error",
+                {"message": f"Party size not within valid range", "event": "check_in"},
+                room=sid,
+            )
+        _log.info(f"User {auth.user_id} checked in with party of {data['party']}")

@@ -28,7 +28,3 @@ export default async function socket() {
     }
   }
 }
-
-// this will redirect out of page before render if new authentication is needed
-// this way the redirect is seamless
-socket();
