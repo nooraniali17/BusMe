@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import { Router, Route, hasHistory } from 'react-router';
 import BusStops from './BusStops';
 import App from './App';
 
