@@ -128,7 +128,7 @@ class Checkin(Model):
 
 
 class Rider(User):
-    party_size = ForeignKeyField(Checkin)
+    checkin = ForeignKeyField(Checkin, null=True)
 
 
 # class Time(db.Entity):  # type: ignore
