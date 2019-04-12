@@ -116,13 +116,18 @@ class Timetable(Model):
 #     party_size = Required(int)
 
 
-# class Checkin(db.Entity):  # type: ignore
-#     id = PrimaryKey(int, auto=True)
-#     rider = Required(Rider)
-#     stop = Required(Stop)
-#     start_time = Required(datetime, default=lambda: datetime.now())
-#     end_time = Optional(datetime)
-#     fulfilled = Required(bool, default=False)
+class Checkin(Model):
+    party_size = IntegerField(
+        constraints=(Check("party_size > 0"), Check("party_size <= 10"))
+    )
+    route = ForeignKeyField(Timetable)
+    start_time = DateTimeField(default=datetime.now)
+    end_time = DateTimeField(null=True)
+    fulfilled = BooleanField(default=False)
+
+
+class Rider(User):
+    party_size = ForeignKeyField(Checkin)
 
 
 # class Time(db.Entity):  # type: ignore
@@ -131,8 +136,22 @@ class Timetable(Model):
 #     average_duration = Optional(timedelta)
 #     timetable = Required(Timetable)
 
+_db.drop_tables(
+    (Checkin, Location, Organization, Rider, Route, Stop, Timetable, User, UserLocation)
+)
 _db.create_tables(
-    (Location, Organization, Route, Stop, Timetable, User, UserLocation), safe=True
+    (
+        Checkin,
+        Location,
+        Organization,
+        Rider,
+        Route,
+        Stop,
+        Timetable,
+        User,
+        UserLocation,
+    ),
+    safe=True,
 )
 _db.set_allow_sync(False)
 db = peewee_async.Manager(_db)

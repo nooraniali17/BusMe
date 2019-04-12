@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from peewee import IntegrityError
 
-from ..entities import db, Location, Stop, UserLocation, User
+from ..entities import db, Checkin, Location, Rider, Stop, Timetable, UserLocation, User
 from ._require_auth import require_auth
 from .login import LoginNamespace
 
@@ -18,12 +18,13 @@ class RiderNamespace(LoginNamespace):
     @require_auth()
     async def on_location(self, sid, auth, long, lat):
         """
-        Update user location. Note that this will not attempt to preserver order, as
-        the user will not usually move very far in the time interval in which
+        Update user location. Note that this will not attempt to preserve order,
+        as the user will not usually move very far in the time interval in which
         out-of-order problems may occur.
         
         schema: [float, float]:
-            Longitude, latitude. Should be provided by something like Google Maps.
+            Longitude, latitude. Should be provided by something like Google
+            Maps.
         """
         try:
             user, _ = await db.get_or_create(User, oidc_id=auth.user_id)
@@ -97,3 +98,18 @@ class RiderNamespace(LoginNamespace):
                 _log.info(f"User {auth.user_id} inactive, stopping stops updates.")
                 return
             await update_stops()
+
+    @require_auth()
+    async def on_check_in(self, sid, auth, data):
+        """
+        Check in to a stop.
+
+        schema: dict:
+            id: int: Timetable ID to check in to.
+            party: int: Party size. (0 < i <= 10) 
+        """
+        timetable = await db.get(Timetable, id=data["id"])
+        user, _ = await db.get_or_create(Rider, oidc_id=auth.user_id)
+        user.checkin = await db.create(
+            Checkin, party_size=data["party"], route=timetable
+        )
