@@ -108,8 +108,10 @@ class RiderNamespace(LoginNamespace):
             id: int: Timetable ID to check in to.
             party: int: Party size. (0 < i <= 10) 
         """
-        timetable = await db.get(Timetable, id=data["id"])
+        # timetable = await db.get(Timetable, id=data["id"])
         user, _ = await db.get_or_create(Rider, oidc_id=auth.user_id)
         user.checkin = await db.create(
-            Checkin, party_size=data["party"], route=timetable
+            Checkin,
+            party_size=data["party"],
+            # route=timetable
         )

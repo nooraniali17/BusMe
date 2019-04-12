@@ -120,7 +120,8 @@ class Checkin(Model):
     party_size = IntegerField(
         constraints=(Check("party_size > 0"), Check("party_size <= 10"))
     )
-    route = ForeignKeyField(Timetable)
+    # TODO: implement timetables
+    # route = ForeignKeyField(Timetable)
     start_time = DateTimeField(default=datetime.now)
     end_time = DateTimeField(null=True)
     fulfilled = BooleanField(default=False)
