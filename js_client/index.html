@@ -19,10 +19,10 @@
     <div id="map"></div>
 
     <h2>How many people are in your party?</h2>
-    <input type="number" id="party" />
-    <br />
-    <br />
-    <input type="button" onclick="setPartySize(event)" value="Submit" />
+    <form onsubmit="setPartySize(event)">
+        <input type="number" min="1" max="10" inputmode="numeric" />
+        <input type="submit" value="Submit" />
+    </form>
 </body>
 
 </html>
