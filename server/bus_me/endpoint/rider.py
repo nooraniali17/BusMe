@@ -2,6 +2,7 @@ from asyncio import sleep
 from datetime import timedelta
 
 from peewee import IntegrityError
+from psycopg2.errors import CheckViolation
 
 from ..entities import db, Checkin, Location, Rider, Stop, Timetable, UserLocation, User
 from ._require_auth import require_auth
@@ -114,13 +115,14 @@ class RiderNamespace(LoginNamespace):
         """
         try:
             # timetable = await db.get(Timetable, id=data["id"])
-            user, _ = await db.get_or_create(Rider, oidc_id=auth.user_id)
-            user.checkin = await db.create(
+            user, _ = await db.get_or_create(User, oidc_id=auth.user_id)
+            rider, _ = await db.get_or_create(Rider, user=user)
+            rider.checkin = await db.create(
                 Checkin,
                 party_size=data["party"],
                 # route=timetable
             )
-        except IntegrityError:
+        except (IntegrityError, CheckViolation):
             await self.emit(
                 "error",
                 {"message": f"Party size not within valid range", "event": "check_in"},

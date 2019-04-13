@@ -127,7 +127,8 @@ class Checkin(Model):
     fulfilled = BooleanField(default=False)
 
 
-class Rider(User):
+class Rider(Model):
+    user = ForeignKeyField(User)
     checkin = ForeignKeyField(Checkin, null=True)
 
 
