@@ -6,7 +6,7 @@ import socket from "./socket.js";
 window.setPartySize = async e => {
   const party = Number(e.target[0].value);
 
-  (await socket()).emitAsync("check_in", { party });
+  (await socket()).emit("check_in", { party });
 
   e.preventDefault();
   // document.location.href = `./submit.html?party=${encodeURIComponent(party)}`;
