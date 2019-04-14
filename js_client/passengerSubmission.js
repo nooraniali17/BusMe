@@ -1,12 +1,14 @@
 function initPage() {
+  // POSTING  tripInfo
   const tripInfo = localStorage.getItem("tripInfo");
   const parsedTripInfo = JSON.parse(tripInfo);
 
+  document.getElementById("busStopLabel").innerHTML = parsedTripInfo.stop_name;
   document.getElementById("passengersInPartyLabel").innerHTML =
     parsedTripInfo.num_pass;
 
   //LEARNING HOW TO GET
-  const Url = "http://d6c8b38c.ngrok.io/";
+  const Url = "http://6ec3888c.ngrok.io/";
   const payLoad = {
     headers: {
       "Content-Type": "application/json"
