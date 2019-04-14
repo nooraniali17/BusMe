@@ -1,6 +1,3 @@
-from typing import Optional
-from ..__types import JSONObject
-
 from ._async_namespace import _AsyncNamespace
 from ..authentication import authenticate, JWTVerifyError
 
@@ -27,7 +24,11 @@ class LoginNamespace(_AsyncNamespace):
             await self.emit("authenticated", room=sid)
         except JWTVerifyError as e:
             _log.error(f"error authorizing session {sid}: {e}")
-            if e.expose_error:
-                await self.emit(
-                    "error", {"message": str(e), "event": "login"}, room=sid
-                )
+            await self.emit(
+                "error",
+                {
+                    "message": str(e) if e.expose_error else "Failed login",
+                    "event": "login",
+                },
+                room=sid,
+            )

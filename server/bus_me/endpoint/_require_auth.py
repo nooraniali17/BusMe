@@ -2,6 +2,10 @@ from functools import wraps
 
 from config2.config import config
 
+import logging
+
+_log = logging.getLogger(__name__)
+
 __all__ = ["require_auth"]
 
 
@@ -68,6 +72,7 @@ def require_auth(
             async def reject_cb():
                 """type: () -> void"""
                 nonlocal self, error_event, permissions, reject, sid
+                _log.info(f'event "{event_name}" rejected for session {sid}')
                 if reject:
                     session_perms = await get_session_perms()
                     await reject(

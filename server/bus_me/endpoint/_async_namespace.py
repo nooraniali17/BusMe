@@ -19,6 +19,14 @@ class _AsyncNamespace(AsyncNamespace):
     constructor: method AsyncNamespace (T, str?)
     """
 
+    active_users = set()
+
     def __init__(self, app, namespace=None):
         super().__init__(namespace=namespace)
         self.app = app
+
+    def on_connect(self, sid, environ):
+        self.active_users.add(sid)
+
+    async def on_disconnect(self, sid):
+        self.active_users.remove(sid)

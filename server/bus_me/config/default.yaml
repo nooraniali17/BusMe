@@ -54,3 +54,11 @@ permissions:
 ssl:
   cert: null
   key: null
+
+# A list of folders where all the static files are located, if any.
+# (should only be used in development)
+static_files:
+  - ../js_client
+
+# Should the tables be dropped each time the server starts up?
+db_startup_wipe: False
