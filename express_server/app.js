@@ -42,22 +42,6 @@ app.get("/", (req, res) => {
   }
 });
 
-app.get("/busStop", (req, res) => {
-  try {
-    const sql = "select * from pass_info";
-
-    connection.query(sql, function(err, results) {
-      if (err) {
-        return res.sendStatus(500);
-      }
-      return res.send(results);
-    });
-  } catch (e) {
-    console.log(e);
-    res.sendStatus(500);
-  }
-});
-
 app.post("/", (req, res) => {
   try {
     const { body } = req;
