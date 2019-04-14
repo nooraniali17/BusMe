@@ -1,16 +1,22 @@
-
 function initPage() {
-    let url = new URL(window.location);
-    let finalNumInParty = url.searchParams.get('numInParty');
-    let finalLat = url.searchParams.get('lat');
-    let finalLng = url.searchParams.get('lng');
+  const tripInfo = localStorage.getItem("tripInfo");
+  const parsedTripInfo = JSON.parse(tripInfo);
 
-    console.log(finalNumInParty);
-    console.log(finalLat);
-    console.log(finalLng);
-    
-    document.getElementById("passengersInPartyLabel").innerHTML = finalNumInParty;
+  document.getElementById("passengersInPartyLabel").innerHTML =
+    parsedTripInfo.num_pass;
+
+  //LEARNING HOW TO GET
+  const Url = "http://d6c8b38c.ngrok.io/";
+  const payLoad = {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    method: "GET"
+  };
+  fetch(Url, payLoad)
+    .then(data => data.json())
+    .then(res => console.log(res))
+    .catch(error => console.log(error));
 }
-
 
 window.onload = initPage;
