@@ -1,6 +1,6 @@
 function initPage() {
   //LEARNING HOW TO GET
-  const Url = "http://6ec3888c.ngrok.io/";
+  const Url = "http://3d13fbc4.ngrok.io/";
   const payLoad = {
     headers: {
       "Content-Type": "application/json"
@@ -28,6 +28,10 @@ function initPage() {
       console.log(myMap);
     })
     .catch(error => console.log(error));
+}
+
+function reloadPage(event) {
+  location.reload();
 }
 
 window.onload = initPage;
