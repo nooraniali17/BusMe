@@ -7,7 +7,6 @@ var finalLng;
 var finalName;
 let image =
   "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
-
 let locations;
 let marker;
 
@@ -41,10 +40,11 @@ function initPage() {
           myMap.set(res[index].stop_name, value);
         }
         locations = { stopLat: parseFloat(res[index].latitude), stopLng: parseFloat(res[index].longitude) };
-        console.log(locations);
+        // console.log(locations);
       }
 
       generateTable(myMap);
+      setMap(myMap);
     })
     .catch(error => console.log(error));
 }
@@ -86,6 +86,15 @@ function generateTable(myMap) {
   tbl.appendChild(tblBody);
   body.appendChild(tbl);
   tbl.setAttribute("border", "2");
+}
+
+function setMap(myMap) {
+  mapOptions = {
+    zoom: 12,
+    center: { lat: 37.981161, lng: -121.31204 } // this line won't work yet
+    }
+    let numPassengers = [...myMap.values()];    
+    console.log(numPassengers);
 }
 
 window.onload = initPage;
