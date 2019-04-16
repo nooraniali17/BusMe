@@ -46,24 +46,12 @@ function generateTable(myMap) {
   let cellText;
   let mapIter = myMap.entries();
   let hashMapEntry = mapIter.next().value;
-  console.log("HashMApEntry Stop: " + hashMapEntry[0]);
-  console.log("HashMApEntry Number of people: " + hashMapEntry[1]);
-
-  console.log("HELLO");
-  //   for (const [k, v] of myMap.entries()) {
-  //     console.log(k);
-  //     console.log(v);
-  //   }
-
-  //this gives stop name
-  //console.log(mapIter.next().value);
 
   // creating the cells below
   for (i = 0; i < myMap.size; i++) {
     // creates the correct number of rows from the number
     // of rows in our HashMap
     let row = document.createElement("tr");
-
     for (j = 0; j < 2; j++) {
       let cell = document.createElement("td");
       if (j == 0) {
@@ -82,36 +70,5 @@ function generateTable(myMap) {
   body.appendChild(tbl);
   tbl.setAttribute("border", "2");
 }
-
-// function generate_table() {
-//   // get the reference for the body
-//   var body = document.getElementsByTagName("body")[0]; // creates a <table> element and a <tbody> element
-
-//   var tbl = document.createElement("table");
-//   var tblBody = document.createElement("tbody"); // creating all cells
-
-//   for (var i = 0; i < 2; i++) {
-//     // creates a table row
-//     var row = document.createElement("tr");
-
-//     for (var j = 0; j < 2; j++) {
-//       // Create a <td> element and a text node, make the text
-//       // node the contents of the <td>, and put the <td> at
-//       // the end of the table row
-//       var cell = document.createElement("td");
-//       var cellText = document.createTextNode(
-//         "cell in row " + i + ", column " + j
-//       );
-//       cell.appendChild(cellText);
-//       row.appendChild(cell);
-//     } // add the row to the end of the table body
-
-//     tblBody.appendChild(row);
-//   } // put the <tbody> in the <table>
-
-//   tbl.appendChild(tblBody); // appends <table> into <body>
-//   body.appendChild(tbl); // sets the border attribute of tbl to 2;
-//   tbl.setAttribute("border", "2");
-// }
 
 window.onload = initPage;
