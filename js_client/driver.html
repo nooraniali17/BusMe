@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+  <meta http-equiv="Refresh" content="10">
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -37,6 +38,8 @@
 
     <br />
     <input type="button" onclick="reloadPage(event)" value="Reload" />
+
+            <div id="map"></div>
     <br />
     <br />
     <h2>Stop Information Below:</h2>
@@ -48,6 +51,12 @@
     </table>
 
     <br />
+
+
+    <script
+      type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDg2zhsGJpYuDRbjC_dUOfiT4bJY0IFA8&callback=initMap"
+    ></script>
     <script
       type="text/javascript"
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

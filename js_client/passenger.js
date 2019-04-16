@@ -19,7 +19,7 @@ function setNumInParty(event) {
     return;
   }
 
-  const Url = "http://3d13fbc4.ngrok.io/";
+  const Url = "http://76d06896.ngrok.io";
   const Data = {
     num_pass: numInParty,
     latitude: finalLat,
@@ -75,7 +75,6 @@ function initMap() {
         myLat = myLocation.lat;
         myLong = myLocation.lng;
         myLocation = { lat: parseFloat(myLat), lng: parseFloat(myLong) };
-        infoWindow.setPosition(myLocation);
 
         infoWindow.setContent("Location Found");
         infoWindow.open(map);
