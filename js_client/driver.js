@@ -1,6 +1,17 @@
+var numInParty = 0;
+var myLocation, myLat, myLong;
+var map;
+var infoWindow;
+var finalLat;
+var finalLng;
+var finalName;
+let image =
+  "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
+let locations;
+
 function initPage() {
   //LEARNING HOW TO GET
-  const Url = "http://3d13fbc4.ngrok.io/";
+  const Url = "http://467263a5.ngrok.io";
   const payLoad = {
     headers: {
       "Content-Type": "application/json"
@@ -11,11 +22,14 @@ function initPage() {
   fetch(Url, payLoad)
     .then(data => data.json())
     .then(res => {
-      console.log(res);
+
       //GOING THROUGH DATABASE AND MAKING HASHMAP
       const myMap = new Map();
       let index = 0;
       let value = 0;
+
+      let infoWindow = new google.maps.InfoWindow();
+
       for (index = 0; index < res.length; index++) {
         if (!myMap.has(res[index].stop_name)) {
           myMap.set(res[index].stop_name, res[index].num_pass);
@@ -24,12 +38,30 @@ function initPage() {
           value = value + res[index].num_pass;
           myMap.set(res[index].stop_name, value);
         }
+        locations = { stopLat: parseFloat(res[index].latitude), stopLng: parseFloat(res[index].longitude) };
+        let sLat = locations.stopLat;
+        let sLng = locations.stopLng;
+        let places = res[index].stop_name;
+        let stopLocations = { lat: parseFloat(sLat), lng: parseFloat(sLng) };
+        
+        createMarker(stopLocations, places);
       }
-      console.log(myMap);
+
       generateTable(myMap);
-      //   generate_table();
     })
     .catch(error => console.log(error));
+}
+
+function createMarker(stopLocations, places) {
+  let marker = new google.maps.Marker({
+    position: stopLocations,
+    map: map
+  });
+  google.maps.event.addListener(marker, "click", function() {
+    infoWindow.setContent(places);
+    infoWindow.open(map, this);
+  });
+
 }
 
 function reloadPage(event) {
@@ -72,3 +104,52 @@ function generateTable(myMap) {
 }
 
 window.onload = initPage;
+
+// CREATING MAP FOR BUS DRIVER
+function initMap() {
+  infoWindow = new google.maps.InfoWindow();
+  var myMapCenter = { lat: 37.981161, lng: -121.31204 };
+  // infoWindow = new google.maps.infoWindow();
+
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: myMapCenter,
+    zoom: 12,
+  });
+
+  var startMarker = new google.maps.Marker({
+    position: myMapCenter,
+    map: map,
+    icon: image
+  });
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        var myLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        myLat = myLocation.lat;
+        myLong = myLocation.lng;
+        myLocation = { lat: parseFloat(myLat), lng: parseFloat(myLong) };
+        infoWindow.setPosition(myLocation);
+        infoWindow.setContent("Bus Location Found");
+        infoWindow.open(map);
+        map.setCenter(myLocation);
+      },
+      function() {
+        handleLocationError(true, infoWindow, map.getCenter());
+      }
+    );
+  }
+}
+
+function handleLocationError(browserHasGeolocation, infoWindow, myLocation) {
+  infoWindow.setPosition(myLocation);
+  infoWindow.setContent(
+    browserHasGeolocation
+      ? "Error: The Geolocation service failed."
+      : "Error: Your browser doesn't support geolocation."
+  );
+  infoWindow.open(map);
+}
