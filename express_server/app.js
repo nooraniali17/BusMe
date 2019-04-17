@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 
 // credentials needed to connect to database on Kurt's machine
 const connection = mysql.createConnection({
+  multipleStatements: true,
   host: "127.0.0.1",
   user: "root",
   password: "password",
@@ -81,6 +82,29 @@ app.post("/", (req, res) => {
       return res.sendStatus(204);
     });
   } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+});
+
+app.post('./cancelRequest', (req, res) => {
+  try {
+    const { body } = req;
+
+    if (!body) {
+      return res.sendStatus(400);
+    }  
+    const sql = `delete from pass_info where stop_name = "Calvary First Church"`;
+
+    connection.query(sql, function(err, result) {
+      if(err) {
+        console.log("error " + err);
+        return res.sendStatus(500);
+      }
+      return res.sendStatus(204);
+    });
+  }
+  catch(e) {
     console.log(e);
     res.sendStatus(500);
   }
