@@ -8,6 +8,7 @@ var finalName;
 let image =
   "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
 let locations;
+let button;
 
 function initPage() {
   //LEARNING HOW TO GET
@@ -57,7 +58,8 @@ function initPage() {
 function createMarker(stopLocations, places) {
   let marker = new google.maps.Marker({
     position: stopLocations,
-    map: map
+    map: map,
+    animation: google.maps.Animation.DROP
   });
   google.maps.event.addListener(marker, "click", function() {
     infoWindow.setContent(places);
@@ -77,7 +79,7 @@ function generateTable(myMap) {
   let i = 0;
   let j = 0;
   let cellText;
-  let btn;
+  let breakTag = document.createElement("BR");
   let mapIter = myMap.entries();
   let hashMapEntry = mapIter.next().value;
 
@@ -87,8 +89,10 @@ function generateTable(myMap) {
     // of rows in our HashMap
 
     let row = document.createElement("tr");
-    let button = document.createElement("button");
+    button = document.createElement("button");
     button.innerHTML = "Select";
+    buttonLogic(button, i);
+
     for (j = 0; j < 2; j++) {
       let cell = document.createElement("td");
       if (j == 0) {
@@ -100,16 +104,28 @@ function generateTable(myMap) {
       row.appendChild(cell);
       row.append(button);
     }
+
     tblBody.appendChild(row);
     hashMapEntry = mapIter.next().value;
   }
 
   tbl.appendChild(tblBody);
   body.appendChild(tbl);
-  tbl.setAttribute("border", "2");
+  tbl.setAttribute("border", "4");
+  body.appendChild(breakTag);
+  body.appendChild(breakTag);
+  body.appendChild(breakTag);
+  body.appendChild(breakTag);
+  body.appendChild(breakTag);
 }
 
 window.onload = initPage;
+
+function buttonLogic(button, i) {
+  button.onclick = function() {
+    alert("TEST");
+  };
+}
 
 // CREATING MAP FOR BUS DRIVER
 function initMap() {
@@ -127,7 +143,7 @@ function initMap() {
     map: map,
     icon: image
   });
-
+  //remove if block below to not get bus location
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       function(position) {
