@@ -70,9 +70,7 @@ app.post("/", (req, res) => {
         (${body.num_pass}, ${body.latitude}, ${body.longitude}, '${
       body.stop_name
     }')
-    `
-    sql = `delete from pass_info where stop_name = "Calvary First Church";`
-    ;
+    `;
 
     // catch block needed to elegantly exit program
     // if something goes wrong
@@ -84,6 +82,29 @@ app.post("/", (req, res) => {
       return res.sendStatus(204);
     });
   } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+});
+
+app.post('./cancelRequest', (req, res) => {
+  try {
+    const { body } = req;
+
+    if (!body) {
+      return res.sendStatus(400);
+    }  
+    const sql = `delete from pass_info where stop_name = "Calvary First Church"`;
+
+    connection.query(sql, function(err, result) {
+      if(err) {
+        console.log("error " + err);
+        return res.sendStatus(500);
+      }
+      return res.sendStatus(204);
+    });
+  }
+  catch(e) {
     console.log(e);
     res.sendStatus(500);
   }
