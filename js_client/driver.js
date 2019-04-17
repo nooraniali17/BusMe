@@ -12,7 +12,7 @@ let button;
 
 function initPage() {
   //LEARNING HOW TO GET
-  const Url = "http://467263a5.ngrok.io";
+  const Url = "http://2abb7c15.ngrok.io/";
   const payLoad = {
     headers: {
       "Content-Type": "application/json"
@@ -79,7 +79,7 @@ function generateTable(myMap) {
     let row = document.createElement("tr");
     button = document.createElement("button");
     button.innerHTML = "Select";
-    buttonLogic(button, i);
+    buttonLogic(button, i, myMap);
 
     for (j = 0; j < 2; j++) {
       let cell = document.createElement("td");
@@ -109,9 +109,15 @@ function generateTable(myMap) {
 
 window.onload = initPage;
 
-function buttonLogic(button, i) {
+function buttonLogic(button, i, myMap) {
   button.onclick = function() {
-    alert("TEST");
+    console.log(i);
+    let mapIter = myMap.entries();
+    let hashMapEntry;
+    for (let index = 0; index < i + 1; index++) {
+      hashMapEntry = mapIter.next().value;
+    }
+    console.log(hashMapEntry);
   };
 }
 
