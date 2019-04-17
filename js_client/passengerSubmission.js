@@ -8,4 +8,8 @@ function initPage() {
     parsedTripInfo.num_pass;
 }
 
+function cancelRequest() {
+  
+}
+
 window.onload = initPage;

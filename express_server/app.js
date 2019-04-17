@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 
 // credentials needed to connect to database on Kurt's machine
 const connection = mysql.createConnection({
+  multipleStatements: true,
   host: "127.0.0.1",
   user: "root",
   password: "password",
@@ -69,7 +70,9 @@ app.post("/", (req, res) => {
         (${body.num_pass}, ${body.latitude}, ${body.longitude}, '${
       body.stop_name
     }')
-    `;
+    `
+    sql = `delete from pass_info where stop_name = "Calvary First Church";`
+    ;
 
     // catch block needed to elegantly exit program
     // if something goes wrong

@@ -11,7 +11,7 @@ let locations;
 
 function initPage() {
   //LEARNING HOW TO GET
-  const Url = "http://467263a5.ngrok.io";
+  const Url = "http://5f12f90b.ngrok.io";
   const payLoad = {
     headers: {
       "Content-Type": "application/json"

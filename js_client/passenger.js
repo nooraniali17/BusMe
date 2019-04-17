@@ -19,7 +19,7 @@ function setNumInParty(event) {
     return;
   }
 
-  const Url = "http://467263a5.ngrok.io";
+  const Url = "http://5f12f90b.ngrok.io";
   const Data = {
     num_pass: numInParty,
     latitude: finalLat,
@@ -75,10 +75,8 @@ function initMap() {
         myLat = myLocation.lat;
         myLong = myLocation.lng;
         myLocation = { lat: parseFloat(myLat), lng: parseFloat(myLong) };
-
         infoWindow.setContent("Location Found");
         infoWindow.open(map);
-
         var request = {
           location: myLocation,
           radius: "50",
@@ -87,7 +85,6 @@ function initMap() {
         };
         service = new google.maps.places.PlacesService(map);
         service.textSearch(request, callback);
-
         map.setCenter(myLocation);
       },
       function() {
