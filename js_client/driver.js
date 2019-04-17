@@ -22,7 +22,6 @@ function initPage() {
   fetch(Url, payLoad)
     .then(data => data.json())
     .then(res => {
-
       //GOING THROUGH DATABASE AND MAKING HASHMAP
       const myMap = new Map();
       let index = 0;
@@ -38,12 +37,15 @@ function initPage() {
           value = value + res[index].num_pass;
           myMap.set(res[index].stop_name, value);
         }
-        locations = { stopLat: parseFloat(res[index].latitude), stopLng: parseFloat(res[index].longitude) };
+        locations = {
+          stopLat: parseFloat(res[index].latitude),
+          stopLng: parseFloat(res[index].longitude)
+        };
         let sLat = locations.stopLat;
         let sLng = locations.stopLng;
         let places = res[index].stop_name;
         let stopLocations = { lat: parseFloat(sLat), lng: parseFloat(sLng) };
-        
+
         createMarker(stopLocations, places);
       }
 
@@ -61,7 +63,6 @@ function createMarker(stopLocations, places) {
     infoWindow.setContent(places);
     infoWindow.open(map, this);
   });
-
 }
 
 function reloadPage(event) {
@@ -76,6 +77,7 @@ function generateTable(myMap) {
   let i = 0;
   let j = 0;
   let cellText;
+  let btn;
   let mapIter = myMap.entries();
   let hashMapEntry = mapIter.next().value;
 
@@ -83,7 +85,10 @@ function generateTable(myMap) {
   for (i = 0; i < myMap.size; i++) {
     // creates the correct number of rows from the number
     // of rows in our HashMap
+
     let row = document.createElement("tr");
+    let button = document.createElement("button");
+    button.innerHTML = "Select";
     for (j = 0; j < 2; j++) {
       let cell = document.createElement("td");
       if (j == 0) {
@@ -93,6 +98,7 @@ function generateTable(myMap) {
       }
       cell.append(cellText);
       row.appendChild(cell);
+      row.append(button);
     }
     tblBody.appendChild(row);
     hashMapEntry = mapIter.next().value;
@@ -113,7 +119,7 @@ function initMap() {
 
   map = new google.maps.Map(document.getElementById("map"), {
     center: myMapCenter,
-    zoom: 12,
+    zoom: 12
   });
 
   var startMarker = new google.maps.Marker({
