@@ -55,18 +55,6 @@ function initPage() {
     .catch(error => console.log(error));
 }
 
-function createMarker(stopLocations, places) {
-  let marker = new google.maps.Marker({
-    position: stopLocations,
-    map: map,
-    animation: google.maps.Animation.DROP
-  });
-  google.maps.event.addListener(marker, "click", function() {
-    infoWindow.setContent(places);
-    infoWindow.open(map, this);
-  });
-}
-
 function reloadPage(event) {
   location.reload();
 }
@@ -174,4 +162,16 @@ function handleLocationError(browserHasGeolocation, infoWindow, myLocation) {
       : "Error: Your browser doesn't support geolocation."
   );
   infoWindow.open(map);
+}
+
+function createMarker(stopLocations, places) {
+  let marker = new google.maps.Marker({
+    position: stopLocations,
+    map: map,
+    animation: google.maps.Animation.DROP
+  });
+  google.maps.event.addListener(marker, "click", function() {
+    infoWindow.setContent(places);
+    infoWindow.open(map, this);
+  });
 }
