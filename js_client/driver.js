@@ -17,7 +17,7 @@ let markerArray = [];
 
 function initPage() {
   //LEARNING HOW TO GET
-  const Url = "http://66cc3b6a.ngrok.io";
+  const Url = "http://373e2eef.ngrok.io";
   const payLoad = {
     headers: {
       "Content-Type": "application/json"
@@ -169,26 +169,26 @@ function initMap() {
     icon: image
   });
   //remove if block below to not get bus location
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      function(position) {
-        var myLocation = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-        myLat = myLocation.lat;
-        myLong = myLocation.lng;
-        myLocation = { lat: parseFloat(myLat), lng: parseFloat(myLong) };
-        infoWindow.setPosition(myLocation);
-        infoWindow.setContent("Bus Location Found");
-        infoWindow.open(map);
-        map.setCenter(myLocation);
-      },
-      function() {
-        handleLocationError(true, infoWindow, map.getCenter());
-      }
-    );
-  }
+  // if (navigator.geolocation) {
+  //   navigator.geolocation.getCurrentPosition(
+  //     function(position) {
+  //       var myLocation = {
+  //         lat: position.coords.latitude,
+  //         lng: position.coords.longitude
+  //       };
+  //       myLat = myLocation.lat;
+  //       myLong = myLocation.lng;
+  //       myLocation = { lat: parseFloat(myLat), lng: parseFloat(myLong) };
+  //       infoWindow.setPosition(myLocation);
+  //       infoWindow.setContent("Bus Location Found");
+  //       infoWindow.open(map);
+  //       map.setCenter(myLocation);
+  //     },
+  //     function() {
+  //       handleLocationError(true, infoWindow, map.getCenter());
+  //     }
+  //   );
+  // }
 }
 
 function handleLocationError(browserHasGeolocation, infoWindow, myLocation) {
@@ -207,7 +207,8 @@ function createMarker(stopLocations, places) {
     map: map,
     animation: google.maps.Animation.DROP
   });
-  markerArray.push(marker);
+  markerArray.push(marker); 
+  map.setCenter(marker.getPosition());
   google.maps.event.addListener(marker, "click", function() {
     infoWindow.setContent(places);
     infoWindow.open(map, this);
