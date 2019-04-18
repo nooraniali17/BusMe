@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- <meta http-equiv="Refresh" content="10"> -->
+    <!-- <meta http-equiv="Refresh" content="2" /> -->
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -39,14 +39,16 @@
     <h2>Driver Portal</h2>
 
     <br />
-    <input type="button" onclick="reloadPage(event)" value="Reload" />
 
     <div id="map"></div>
 
     <br />
+    <input type="button" onclick="reloadPage(event)" value="Reload Page" />
+    <br />
+    <br />
     <h3>How many people did you pick up?</h3>
     <input type="number" id="numPickedUp" />
-    <input type="button" onclick="setNumInParty(event)" value="Submit" />
+    <input type="button" onclick="setPeoplePickedUp(event)" value="Submit" />
 
     <br />
     <br />

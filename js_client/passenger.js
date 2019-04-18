@@ -19,7 +19,7 @@ function setNumInParty(event) {
     return;
   }
 
-  const Url = "http://2abb7c15.ngrok.io";
+  const Url = "http://184993bd.ngrok.io";
   const Data = {
     num_pass: numInParty,
     latitude: finalLat,
@@ -62,7 +62,6 @@ function initMap() {
   var startingMarker = new google.maps.Marker({
     position: myMapCenter,
     map: map,
-    icon: image
   });
 
   if (navigator.geolocation) {
@@ -75,7 +74,20 @@ function initMap() {
         myLat = myLocation.lat;
         myLong = myLocation.lng;
         myLocation = { lat: parseFloat(myLat), lng: parseFloat(myLong) };
-        infoWindow.setContent("Location Found");
+
+        let myMarker = new google.maps.Marker({
+          position: myLocation,
+          map: map, 
+          icon: image,
+          title: "Your Location"
+        });
+
+        myMarker.addListener('click', function() {
+          infoWindow.open(map, myMarker);
+        });
+
+        let yourLocation = "Your location";
+        infoWindow.setContent(yourLocation);
         infoWindow.open(map);
         var request = {
           location: myLocation,

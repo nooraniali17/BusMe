@@ -8,10 +8,11 @@ var finalName;
 let image =
   "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
 let locations;
+let button;
 
 function initPage() {
   //LEARNING HOW TO GET
-  const Url = "http://2abb7c15.ngrok.io";
+  const Url = "http://184993bd.ngrok.io";
   const payLoad = {
     headers: {
       "Content-Type": "application/json"
@@ -26,8 +27,9 @@ function initPage() {
       const myMap = new Map();
       let index = 0;
       let value = 0;
-
       let infoWindow = new google.maps.InfoWindow();
+
+      let stopLocations = { };
 
       for (index = 0; index < res.length; index++) {
         if (!myMap.has(res[index].stop_name)) {
@@ -41,28 +43,16 @@ function initPage() {
           stopLat: parseFloat(res[index].latitude),
           stopLng: parseFloat(res[index].longitude)
         };
-        let sLat = locations.stopLat;
-        let sLng = locations.stopLng;
-        let places = res[index].stop_name;
-        let stopLocations = { lat: parseFloat(sLat), lng: parseFloat(sLng) };
-
+        const sLat = locations.stopLat;
+        const sLng = locations.stopLng;
+        const places = res[index].stop_name;
+        stopLocations = { lat: parseFloat(sLat), lng: parseFloat(sLng) };
+        console.log(stopLocations);
         createMarker(stopLocations, places);
       }
-
       generateTable(myMap);
     })
     .catch(error => console.log(error));
-}
-
-function createMarker(stopLocations, places) {
-  let marker = new google.maps.Marker({
-    position: stopLocations,
-    map: map
-  });
-  google.maps.event.addListener(marker, "click", function() {
-    infoWindow.setContent(places);
-    infoWindow.open(map, this);
-  });
 }
 
 function reloadPage(event) {
@@ -77,7 +67,7 @@ function generateTable(myMap) {
   let i = 0;
   let j = 0;
   let cellText;
-  let btn;
+  let breakTag = document.createElement("BR");
   let mapIter = myMap.entries();
   let hashMapEntry = mapIter.next().value;
 
@@ -87,8 +77,10 @@ function generateTable(myMap) {
     // of rows in our HashMap
 
     let row = document.createElement("tr");
-    let button = document.createElement("button");
+    button = document.createElement("button");
     button.innerHTML = "Select";
+    doBoth(button, i, myMap);
+
     for (j = 0; j < 2; j++) {
       let cell = document.createElement("td");
       if (j == 0) {
@@ -100,16 +92,45 @@ function generateTable(myMap) {
       row.appendChild(cell);
       row.append(button);
     }
+
     tblBody.appendChild(row);
     hashMapEntry = mapIter.next().value;
   }
 
   tbl.appendChild(tblBody);
   body.appendChild(tbl);
-  tbl.setAttribute("border", "2");
+  tbl.setAttribute("border", "4");
+  body.appendChild(breakTag);
+  body.appendChild(breakTag);
+  body.appendChild(breakTag);
+  body.appendChild(breakTag);
+  body.appendChild(breakTag);
 }
 
 window.onload = initPage;
+
+function buttonLogic(button, i, myMap) {
+  button.onclick = function() {
+    let marker = new google.maps.Marker({
+
+    })
+    let mapIter = myMap.entries();
+    let hashMapEntry;
+    for (let index = 0; index < i + 1; index++) {
+      hashMapEntry = mapIter.next().value;
+    }
+    console.log(hashMapEntry);
+  };
+}
+
+function addMarker(button, i, myMap) {
+
+}
+
+function doBoth(button, i, myMap) {
+  buttonLogic(button, i, myMap);
+  addMarker(button, i, myMap);
+}
 
 // CREATING MAP FOR BUS DRIVER
 function initMap() {
@@ -127,7 +148,7 @@ function initMap() {
     map: map,
     icon: image
   });
-
+  //remove if block below to not get bus location
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       function(position) {
@@ -158,4 +179,16 @@ function handleLocationError(browserHasGeolocation, infoWindow, myLocation) {
       : "Error: Your browser doesn't support geolocation."
   );
   infoWindow.open(map);
+}
+
+function createMarker(stopLocations, places) {
+  let marker = new google.maps.Marker({
+    position: stopLocations,
+    map: map,
+    animation: google.maps.Animation.DROP
+  });
+  google.maps.event.addListener(marker, "click", function() {
+    infoWindow.setContent(places);
+    infoWindow.open(map, this);
+  });
 }
