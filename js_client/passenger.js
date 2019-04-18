@@ -19,7 +19,7 @@ function setNumInParty(event) {
     return;
   }
 
-  const Url = "http://184993bd.ngrok.io/o";
+  const Url = "http://66cc3b6a.ngrok.io/";
   const Data = {
     num_pass: numInParty,
     latitude: finalLat,

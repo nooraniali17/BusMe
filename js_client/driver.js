@@ -16,7 +16,7 @@ let iterator = 0;
 
 function initPage() {
   //LEARNING HOW TO GET
-  const Url = "http://184993bd.ngrok.io/";
+  const Url = "http://66cc3b6a.ngrok.io/";
   const payLoad = {
     headers: {
       "Content-Type": "application/json"
