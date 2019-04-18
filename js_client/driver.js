@@ -47,6 +47,7 @@ function initPage() {
         }
       }
       generateTable(myMap);
+
     })
     .catch(error => console.log(error));
 }
@@ -138,7 +139,7 @@ function buttonLogic(button, i, myMap) {
     console.log(stopLocations);
     clearMarkers();
     createMarker(stopLocations, places);
-  };
+    };
 }
 
 function clearMarkers() {
