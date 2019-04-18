@@ -12,7 +12,7 @@ let button;
 
 function initPage() {
   //LEARNING HOW TO GET
-  const Url = "http://184993bd.ngrok.io";
+  const Url = "http://66cc3b6a.ngrok.io";
   const payLoad = {
     headers: {
       "Content-Type": "application/json"
@@ -27,9 +27,7 @@ function initPage() {
       const myMap = new Map();
       let index = 0;
       let value = 0;
-      let infoWindow = new google.maps.InfoWindow();
-
-      let stopLocations = { };
+      infoWindow = new google.maps.InfoWindow();
 
       for (index = 0; index < res.length; index++) {
         if (!myMap.has(res[index].stop_name)) {
@@ -46,7 +44,7 @@ function initPage() {
         const sLat = locations.stopLat;
         const sLng = locations.stopLng;
         const places = res[index].stop_name;
-        stopLocations = { lat: parseFloat(sLat), lng: parseFloat(sLng) };
+        let stopLocations = { lat: parseFloat(sLat), lng: parseFloat(sLng) };
         console.log(stopLocations);
         createMarker(stopLocations, places);
       }

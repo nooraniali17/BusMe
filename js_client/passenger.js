@@ -19,7 +19,7 @@ function setNumInParty(event) {
     return;
   }
 
-  const Url = "http://184993bd.ngrok.io";
+  const Url = "http://66cc3b6a.ngrok.io";
   const Data = {
     num_pass: numInParty,
     latitude: finalLat,
@@ -78,17 +78,14 @@ function initMap() {
         let myMarker = new google.maps.Marker({
           position: myLocation,
           map: map, 
-          icon: image,
-          title: "Your Location"
+          icon: image
         });
 
         myMarker.addListener('click', function() {
           infoWindow.open(map, myMarker);
+          infoWindow.setContent("Your Location");
         });
 
-        let yourLocation = "Your location";
-        infoWindow.setContent(yourLocation);
-        infoWindow.open(map);
         var request = {
           location: myLocation,
           radius: "50",
@@ -98,6 +95,7 @@ function initMap() {
         service = new google.maps.places.PlacesService(map);
         service.textSearch(request, callback);
         map.setCenter(myLocation);
+
       },
       function() {
         handleLocationError(true, infoWindow, map.getCenter());
@@ -137,7 +135,6 @@ function createMarker(place) {
   google.maps.event.addListener(marker, "click", function() {
     infoWindow.setContent(place.name);
     finalName = place.name;
-    // console.log(finalName);
     finalLat = getLat;
     finalLng = getLng;
     infoWindow.open(map, this);
