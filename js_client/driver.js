@@ -11,6 +11,8 @@ let locations;
 let button;
 let stopLatMarker = [];
 let stopLngMarker = [];
+let placesMarker = [];
+let iterator = 0;
 
 function initPage() {
   //LEARNING HOW TO GET
@@ -35,31 +37,14 @@ function initPage() {
       for (index = 0; index < res.length; index++) {
         if (!myMap.has(res[index].stop_name)) {
           myMap.set(res[index].stop_name, res[index].num_pass);
-          console.log(res[index].latitude);
-          console.log(res[index].longitude);
           stopLatMarker.push(res[index].latitude);
           stopLngMarker.push(res[index].longitude);
+          placesMarker.push(res[index].stop_name);
         } else {
           value = myMap.get(res[index].stop_name);
           value = value + res[index].num_pass;
           myMap.set(res[index].stop_name, value);
         }
-        // locations = {
-        //   stopLat: parseFloat(res[index].latitude),
-        //   stopLng: parseFloat(res[index].longitude)
-        // };
-        // console.log(
-        //   "Lat: " +
-        //     parseFloat(res[index].latitude) +
-        //     " Long: " +
-        //     parseFloat(res[index].longitude)
-        // );
-        // let sLat = locations.stopLat;
-        // let sLng = locations.stopLng;
-        // let places = res[index].stop_name;
-        // let stopLocations = { lat: parseFloat(sLat), lng: parseFloat(sLng) };
-
-        // createMarker(stopLocations, places);
       }
 
       generateTable(myMap);
@@ -128,8 +113,25 @@ function buttonLogic(button, i, myMap) {
     let hashMapEntry;
     for (let index = 0; index < i + 1; index++) {
       hashMapEntry = mapIter.next().value;
+      //   hashMapEntry[0] will give location
     }
     console.log(hashMapEntry);
+    console.log(stopLatMarker);
+    console.log(stopLngMarker);
+    console.log(placesMarker);
+
+    locations = {
+      stopLat: parseFloat(stopLatMarker[i]),
+      stopLng: parseFloat(stopLngMarker[i])
+    };
+
+    let sLat = locations.stopLat;
+    let sLng = locations.stopLng;
+    let places = placesMarker[i];
+    let stopLocations = { lat: parseFloat(sLat), lng: parseFloat(sLng) };
+    console.log(stopLocations);
+
+    createMarker(stopLocations, places);
   };
 }
 
