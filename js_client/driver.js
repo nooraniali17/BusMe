@@ -9,6 +9,8 @@ let image =
   "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
 let locations;
 let button;
+let stopLatMarker = [];
+let stopLngMarker = [];
 
 function initPage() {
   //LEARNING HOW TO GET
@@ -33,21 +35,31 @@ function initPage() {
       for (index = 0; index < res.length; index++) {
         if (!myMap.has(res[index].stop_name)) {
           myMap.set(res[index].stop_name, res[index].num_pass);
+          console.log(res[index].latitude);
+          console.log(res[index].longitude);
+          stopLatMarker.push(res[index].latitude);
+          stopLngMarker.push(res[index].longitude);
         } else {
           value = myMap.get(res[index].stop_name);
           value = value + res[index].num_pass;
           myMap.set(res[index].stop_name, value);
         }
-        locations = {
-          stopLat: parseFloat(res[index].latitude),
-          stopLng: parseFloat(res[index].longitude)
-        };
-        let sLat = locations.stopLat;
-        let sLng = locations.stopLng;
-        let places = res[index].stop_name;
-        let stopLocations = { lat: parseFloat(sLat), lng: parseFloat(sLng) };
+        // locations = {
+        //   stopLat: parseFloat(res[index].latitude),
+        //   stopLng: parseFloat(res[index].longitude)
+        // };
+        // console.log(
+        //   "Lat: " +
+        //     parseFloat(res[index].latitude) +
+        //     " Long: " +
+        //     parseFloat(res[index].longitude)
+        // );
+        // let sLat = locations.stopLat;
+        // let sLng = locations.stopLng;
+        // let places = res[index].stop_name;
+        // let stopLocations = { lat: parseFloat(sLat), lng: parseFloat(sLng) };
 
-        createMarker(stopLocations, places);
+        // createMarker(stopLocations, places);
       }
 
       generateTable(myMap);
@@ -138,26 +150,26 @@ function initMap() {
     icon: image
   });
   //remove if block below to not get bus location
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      function(position) {
-        var myLocation = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-        myLat = myLocation.lat;
-        myLong = myLocation.lng;
-        myLocation = { lat: parseFloat(myLat), lng: parseFloat(myLong) };
-        infoWindow.setPosition(myLocation);
-        infoWindow.setContent("Bus Location Found");
-        infoWindow.open(map);
-        map.setCenter(myLocation);
-      },
-      function() {
-        handleLocationError(true, infoWindow, map.getCenter());
-      }
-    );
-  }
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       function(position) {
+  //         var myLocation = {
+  //           lat: position.coords.latitude,
+  //           lng: position.coords.longitude
+  //         };
+  //         myLat = myLocation.lat;
+  //         myLong = myLocation.lng;
+  //         myLocation = { lat: parseFloat(myLat), lng: parseFloat(myLong) };
+  //         infoWindow.setPosition(myLocation);
+  //         infoWindow.setContent("Bus Location Found");
+  //         infoWindow.open(map);
+  //         map.setCenter(myLocation);
+  //       },
+  //       function() {
+  //         handleLocationError(true, infoWindow, map.getCenter());
+  //       }
+  //     );
+  //   }
 }
 
 function handleLocationError(browserHasGeolocation, infoWindow, myLocation) {
