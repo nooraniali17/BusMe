@@ -18,8 +18,8 @@ function setNumInParty(event) {
     alert("Please enter a number greater than 0 but less than 10!");
     return;
   }
-
-  const Url = "http://66cc3b6a.ngrok.io";
+  
+  const Url = "http://66cc3b6a.ngrok.io/";
   const Data = {
     num_pass: numInParty,
     latitude: finalLat,
@@ -58,11 +58,6 @@ function initMap() {
     gestureHandling: "greedy"
   });
 
-  //Creating marker at myMapCenter
-  var startingMarker = new google.maps.Marker({
-    position: myMapCenter,
-    map: map,
-  });
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(

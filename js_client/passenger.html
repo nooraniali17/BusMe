@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html>
+
   <head>
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    <link rel="stylesheet" href="master.css">
     <title>Passenger</title>
     <meta charset="utf-8" />
     <style>
@@ -15,6 +13,7 @@
       #map {
         height: 50%;
       }
+
       /* Optional: Makes the sample page fill the window. */
       html,
       body {
@@ -22,41 +21,36 @@
         margin: 0;
         padding: 10px;
       }
+
     </style>
   </head>
 
   <body>
     <script src="passenger.js"></script>
-    <h1>Welcome to BusMe!</h1>
-    <h2>Passenger Portal</h2>
-
-    <h3>Please select a marker on the map below to be picked up from:</h3>
+    <div class="driver">
+      <h4>Passenger Portal</h4>
+      <h6>Please select a marker on the map below to be picked up from:</h6>
+    </div>
     <div id="map"></div>
 
-    <h2>How many people are in your party?</h2>
+    <div class="driver">
+      <h5>How many people are in your party?</h5>
+    </div>
     <input type="number" id="numInParty" />
-    <br />
-    <br />
-    <input type="button" onclick="setNumInParty(event)" value="Submit" />
-    <script
-      type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDg2zhsGJpYuDRbjC_dUOfiT4bJY0IFA8&libraries=places&callback=initMap"
-    ></script>
+    <input id="numPickedUpBtn" type="button" onclick="setNumInParty(event)" value="Submit" />
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDg2zhsGJpYuDRbjC_dUOfiT4bJY0IFA8&libraries=places&callback=initMap">
+    </script>
 
-    <script
-      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
   </body>
+
 </html>

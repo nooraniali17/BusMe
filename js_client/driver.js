@@ -9,6 +9,10 @@ let image =
   "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
 let locations;
 let button;
+let stopLatMarker = [];
+let stopLngMarker = [];
+let placesMarker = [];
+let iterator = 0;
 
 function initPage() {
   //LEARNING HOW TO GET
@@ -32,21 +36,14 @@ function initPage() {
       for (index = 0; index < res.length; index++) {
         if (!myMap.has(res[index].stop_name)) {
           myMap.set(res[index].stop_name, res[index].num_pass);
+          stopLatMarker.push(res[index].latitude);
+          stopLngMarker.push(res[index].longitude);
+          placesMarker.push(res[index].stop_name);
         } else {
           value = myMap.get(res[index].stop_name);
           value = value + res[index].num_pass;
           myMap.set(res[index].stop_name, value);
         }
-        locations = {
-          stopLat: parseFloat(res[index].latitude),
-          stopLng: parseFloat(res[index].longitude)
-        };
-        const sLat = locations.stopLat;
-        const sLng = locations.stopLng;
-        const places = res[index].stop_name;
-        let stopLocations = { lat: parseFloat(sLat), lng: parseFloat(sLng) };
-        console.log(stopLocations);
-        createMarker(stopLocations, places);
       }
       generateTable(myMap);
     })
@@ -76,8 +73,13 @@ function generateTable(myMap) {
 
     let row = document.createElement("tr");
     button = document.createElement("button");
+    button.style.fontWeight = "bold";
+    button.style.backgroundColor = "#9dbdf2";
+    button.style.border = "#9dbdf2";
+    button.style.color = "white";
+
     button.innerHTML = "Select";
-    doBoth(button, i, myMap);
+    buttonLogic(button, i, myMap);
 
     for (j = 0; j < 2; j++) {
       let cell = document.createElement("td");
@@ -116,18 +118,26 @@ function buttonLogic(button, i, myMap) {
     let hashMapEntry;
     for (let index = 0; index < i + 1; index++) {
       hashMapEntry = mapIter.next().value;
+      //   hashMapEntry[0] will give location
     }
     console.log(hashMapEntry);
+    console.log(stopLatMarker);
+    console.log(stopLngMarker);
+    console.log(placesMarker);
+
+    locations = {
+      stopLat: parseFloat(stopLatMarker[i]),
+      stopLng: parseFloat(stopLngMarker[i])
+    };
+
+    let sLat = locations.stopLat;
+    let sLng = locations.stopLng;
+    let places = placesMarker[i];
+    let stopLocations = { lat: parseFloat(sLat), lng: parseFloat(sLng) };
+    console.log(stopLocations);
+
+    createMarker(stopLocations, places);
   };
-}
-
-function addMarker(button, i, myMap) {
-
-}
-
-function doBoth(button, i, myMap) {
-  buttonLogic(button, i, myMap);
-  addMarker(button, i, myMap);
 }
 
 // CREATING MAP FOR BUS DRIVER
@@ -147,26 +157,26 @@ function initMap() {
     icon: image
   });
   //remove if block below to not get bus location
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      function(position) {
-        var myLocation = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-        myLat = myLocation.lat;
-        myLong = myLocation.lng;
-        myLocation = { lat: parseFloat(myLat), lng: parseFloat(myLong) };
-        infoWindow.setPosition(myLocation);
-        infoWindow.setContent("Bus Location Found");
-        infoWindow.open(map);
-        map.setCenter(myLocation);
-      },
-      function() {
-        handleLocationError(true, infoWindow, map.getCenter());
-      }
-    );
-  }
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       function(position) {
+  //         var myLocation = {
+  //           lat: position.coords.latitude,
+  //           lng: position.coords.longitude
+  //         };
+  //         myLat = myLocation.lat;
+  //         myLong = myLocation.lng;
+  //         myLocation = { lat: parseFloat(myLat), lng: parseFloat(myLong) };
+  //         infoWindow.setPosition(myLocation);
+  //         infoWindow.setContent("Bus Location Found");
+  //         infoWindow.open(map);
+  //         map.setCenter(myLocation);
+  //       },
+  //       function() {
+  //         handleLocationError(true, infoWindow, map.getCenter());
+  //       }
+  //     );
+  //   }
 }
 
 function handleLocationError(browserHasGeolocation, infoWindow, myLocation) {

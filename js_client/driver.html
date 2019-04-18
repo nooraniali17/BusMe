@@ -1,86 +1,52 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <!-- <meta http-equiv="Refresh" content="2" /> -->
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    <link rel="stylesheet" href="master.css">
     <title>Driver</title>
     <meta charset="utf-8" />
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-        * element that contains the map. */
-      #map {
-        height: 50%;
-      }
-
-      /* Optional: Makes the sample page fill the window. */
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        padding: 10px;
-      }
-
-      table,
-      th,
-      td {
-        border: 1px solid black;
-      }
-    </style>
   </head>
 
   <body>
     <script src="driver.js"></script>
-    <h1>Welcome to BusMe!</h1>
-    <h2>Driver Portal</h2>
+    <div class="driver">
+      <h2>Driver Portal</h2>
+      <input id="reloadBtn" type="button" onclick="reloadPage(event)" value="Reload Page" />
 
-    <br />
+    </div>
+
 
     <div id="map"></div>
 
-    <br />
-    <input type="button" onclick="reloadPage(event)" value="Reload Page" />
-    <br />
-    <br />
-    <h3>How many people did you pick up?</h3>
-    <input type="number" id="numPickedUp" />
-    <input type="button" onclick="setPeoplePickedUp(event)" value="Submit" />
+    <div class="moreStuff">
+      <table>
+        <tr id="tables">
+        </tr>
+      </table>
+    </div>
 
-    <br />
-    <br />
-    <h2>Stop Information Below:</h2>
-    <table>
-      <tr>
-        <th>Stop Name</th>
-        <th>Number of Passengers</th>
-      </tr>
-    </table>
+    <div class="userInput">
+      <input id="txtInputBox" placeholder="How Many Passengers?" type="number" id="numPickedUp" />
+      <input id="numPickedUpBtn" type="button" onclick="setPeoplePickedUp(event)" value="Submit" />
+    </div>
 
-    <br />
 
-    <script
-      type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDg2zhsGJpYuDRbjC_dUOfiT4bJY0IFA8&callback=initMap"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"
-    ></script>
+
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDg2zhsGJpYuDRbjC_dUOfiT4bJY0IFA8&callback=initMap">
+    </script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
   </body>
+
 </html>
