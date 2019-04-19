@@ -5,6 +5,7 @@ import socket from "./socket.js";
 const gmaps = google.maps;
 const places = gmaps.places;
 
+var userStop;
 let thisMap;
 let infoWindow;
 
@@ -73,8 +74,17 @@ function createMarker(place, map) {
     position: place.geometry.location,
     animation: google.maps.Animation.DROP
   }), 'click', function () {
+    userStop = place.name;
     infoWindow.setContent(place.name);
     console.log(place.name);
     infoWindow.open(map, this);
   });
+}
+
+export async function getStop() {
+  try {
+    return userStop
+  } catch (e) {
+    console.log(e);
+  }
 }

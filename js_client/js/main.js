@@ -1,15 +1,15 @@
 import authenticate from "./authenticate.js";
 import { sleep } from "./es6-compat/util.js";
-import getMap, { updatePosition } from "./map.js";
+import getMap, { updatePosition, getStop } from "./map.js";
 import socket from "./socket.js";
 
 window.setPartySize = async e => {
   const party = Number(e.target[0].value);
-
+  stop = await getStop();
   (await socket()).emit("check_in", { party });
 
   e.preventDefault();
-  // document.location.href = `./submit.html?party=${encodeURIComponent(party)}`;
+  document.location.href = `./submit.html?party=${encodeURIComponent(party)}`;
 }
 
 window.addEventListener('load', async function main() {

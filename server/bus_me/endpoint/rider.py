@@ -3,6 +3,8 @@ from datetime import timedelta
 
 from peewee import IntegrityError
 from psycopg2.errors import CheckViolation
+from datetime import datetime
+
 
 from ..entities import db, Checkin, Location, Rider, Stop, Timetable, UserLocation, User
 from ._require_auth import require_auth
@@ -122,10 +124,50 @@ class RiderNamespace(LoginNamespace):
                 party_size=data["party"],
                 # route=timetable
             )
+            await db.update(rider)
         except (IntegrityError, CheckViolation):
             await self.emit(
                 "error",
                 {"message": f"Party size not within valid range", "event": "check_in"},
                 room=sid,
             )
-        _log.info(f"User {auth.user_id} checked in with party of {data['party']}")
+        _log.info(f"User {auth.user_id} checked in with party of {data['party']} at stop checkin {rider.checkin}")
+
+    @require_auth()
+    async def on_get_party(self, sid, auth):
+        try:
+            # timetable = await db.get(Timetable, id=data["id"])
+            user = await db.get(User, oidc_id=auth.user_id)
+            rider = await db.get(Rider, user=user)
+            check = await db.get(Checkin, id=rider.checkin)
+            # await self.emit(
+            #     "party_size",
+            #     {"message": check.party_size},
+            #     room=sid,
+            # )
+            return check.party_size
+        except (IntegrityError, CheckViolation):
+            await self.emit(
+                "error",
+                {"message": f"couldnt get party", "event": "get_party"},
+                room=sid,
+            )
+        _log.info(f"Sent {check.party_size} to User {auth.user_id}")
+    
+    @require_auth()
+    async def on_cancel_request(self, sid, auth):
+        try:
+            user = await db.get(User, oidc_id=auth.user_id)
+            rider = await db.get(Rider, user=user)
+            check = await db.get(Checkin, id=rider.checkin)
+            check.end_time = datetime.now()
+            await db.update(check)
+            await db.delete(rider)
+        except (IntegrityError, CheckViolation):
+            await self.emit(
+                "error",
+                {"message": f"couldnt delete", "event": "cancel_request"},
+                room=sid,
+            )
+            _log.info(f"{IntegrityError}, {CheckViolation}")
+        _log.info(f"deleted rider for user {auth.user_id}")

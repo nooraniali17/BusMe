@@ -93,6 +93,8 @@ class Route(Model):
 
 class Stop(Model):
     location = ForeignKeyField(Location, unique=True)
+    name = TextField()
+    
 
 
 # class Stop(db.Entity):  # type: ignore
@@ -154,5 +156,5 @@ if config.db_startup_wipe:
     _db.drop_tables(tables)
 _db.create_tables(tables, safe=True)
 
-_db.set_allow_sync(False)
+_db.set_allow_sync(True)
 db = peewee_async.Manager(_db)
