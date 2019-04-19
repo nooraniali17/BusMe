@@ -7,7 +7,6 @@ const sqlite = require("sqlite");
 const SQL = require("sql-template-strings");
 
 const app = express();
-const port = 3000;
 
 function asyncCatch(fn) {
   return (req, res) => Promise.resolve(fn(req, res)).catch(err => {
@@ -86,4 +85,4 @@ app.post("/api/checkin/cancel", asyncCatch(async ({ body = {} }, res) => {
 
 app.use(serveStatic("../js_client", { index: "passenger.html" }));
 
-app.listen(port, () => console.log(`listening on port ${port}`));
+module.exports = app;

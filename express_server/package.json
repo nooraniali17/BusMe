@@ -13,6 +13,7 @@
     "config": "^3.1.0",
     "cors": "^2.8.5",
     "express": "^4.16.4",
+    "greenlock-express": "^2.7.6",
     "js-yaml": "^3.13.1",
     "serve-static": "^1.13.2",
     "sql-template-strings": "^2.2.2",
