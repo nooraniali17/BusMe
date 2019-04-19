@@ -46,8 +46,7 @@ function setNumInParty(event) {
     .then(({ id }) => {
       Data.tripId = id;
       localStorage.setItem("tripInfo", JSON.stringify(Data));
-      url = "./passengerSubmission.html";
-      document.location.href = url;
+      document.location.href = "./submit.html";
     })
     .catch(console.error);
 }
