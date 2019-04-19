@@ -21,9 +21,7 @@ function cancelRequest() {
     })
       .then(console.log)
       .catch(console.error);
-    alert("You've cancelled your request...");
-  } else {
-    alert("Your bus will be arriving shortly...");
+    document.location.href = "./";
   }
 }
 
