@@ -19,7 +19,6 @@ function setNumInParty(event) {
     return;
   }
   
-  const Url = "http://373e2eef.ngrok.io";
   const Data = {
     num_pass: numInParty,
     latitude: finalLat,
@@ -36,15 +35,21 @@ function setNumInParty(event) {
   };
 
   console.log(payLoad);
-
-  fetch(Url, payLoad)
+  fetch("/api/checkin", payLoad)
     .then(res => {
       console.log(res);
+      if (res.status >= 400) {
+        throw new Error("bad request; maybe some fields are missing?");
+      }
+      return res.json();
+    })
+    .then(({ id }) => {
+      Data.tripId = id;
+      localStorage.setItem("tripInfo", JSON.stringify(Data));
       url = "./passengerSubmission.html";
       document.location.href = url;
-      localStorage.setItem("tripInfo", JSON.stringify(Data));
     })
-    .catch(error => console.log(error));
+    .catch(console.error);
 }
 
 function initMap() {

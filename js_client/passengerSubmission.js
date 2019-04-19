@@ -1,49 +1,28 @@
 let finalName;
+let tripInfo;
 
 function initPage() {
-  const tripInfo = localStorage.getItem("tripInfo");
-  const parsedTripInfo = JSON.parse(tripInfo);
+  tripInfo = JSON.parse(localStorage.getItem("tripInfo"));
 
-  document.getElementById("busStopLabel").innerHTML = parsedTripInfo.stop_name;
+  document.getElementById("busStopLabel").innerHTML = tripInfo.stop_name;
   document.getElementById("passengersInPartyLabel").innerHTML =
-    parsedTripInfo.num_pass;
+    tripInfo.num_pass;
 }
 
 function cancelRequest() {
-
-  let c = confirm("Are you sure you wish to continue?") 
-
-  if (c) {
-    
-    const Url = "http://2abb7c15.ngrok.io";
+  if (confirm("Are you sure you wish to continue?") ) {
     const numInParty = document.getElementById("numInParty");
     const finalName = document.getElementById("busStopLabel");
   
-    const Data = {
-      num_pass: numInParty,
-      stop_name: finalName
-    };
-  
-    const payLoad = {
-      headers: {
-        "Content-Type": "application/json"
-      },
-      method: "GET"
-    };
-  
-  
-    fetch(Url, payLoad)
-      .then(data => data.json())
-      .then(res => {
-  
-        console.log(res);
-      })
-      .catch(error => console.log(error));
-
-      alert("You've cancelled your request...");
-  }
-
-  else {
+    fetch("/api/checkin/cancel", {
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: tripInfo.tripId }),
+      method: "POST"
+    })
+      .then(console.log)
+      .catch(console.error);
+    alert("You've cancelled your request...");
+  } else {
     alert("Your bus will be arriving shortly...");
   }
 }
