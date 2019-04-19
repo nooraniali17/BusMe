@@ -30,9 +30,7 @@ connection.connect(function (err) {
 // get all current checkins
 app.get("/", (req, res) => {
   try {
-    const sql = "select * from pass_info";
-
-    connection.query(sql, (err, results) => {
+    connection.query("select * from pass_info", (err, results) => {
       if (err) {
         return res.sendStatus(500);
       }
@@ -45,28 +43,30 @@ app.get("/", (req, res) => {
 });
 
 // add new checkin
-app.post("/", ({ body }, res) => {
+app.post("/", ({ body = {} }, res) => {
   try {
-    if (!body) {
+    const params = [
+      "num_pass",
+      "latitude",
+      "longitude",
+      "stop_name"
+    ].map(k => body[k]);
+
+    if (!params.every(v => v)) {
       return res.sendStatus(400);
     }
 
-    const sql = `
+    connection.query(`
       insert into pass_info
         (num_pass, latitude, longitude, stop_name)
-      values
-        (${body.num_pass}, ${body.latitude}, ${body.longitude}, '${
-      body.stop_name
-      }')
-    `;
-
-    connection.query(sql, (err, result) => {
-      if (err) {
-        console.log("error " + err);
-        return res.sendStatus(500);
-      }
-      return res.sendStatus(204);
-    });
+      values (?, ?, ?, ?)
+    `, params, err => {
+        if (err) {
+          console.error("error", err);
+          return res.sendStatus(500);
+        }
+        return res.sendStatus(204);
+      });
   } catch (e) {
     console.error(e);
     res.sendStatus(500);
@@ -79,15 +79,16 @@ app.post('/cancelRequest', ({ body }, res) => {
     if (!body) {
       return res.sendStatus(400);
     }
-    const sql = `delete from pass_info where stop_name = "Calvary First Church"`;
 
-    connection.query(sql, function (err, result) {
-      if (err) {
-        console.log("error " + err);
-        return res.sendStatus(500);
-      }
-      return res.sendStatus(204);
-    });
+    connection.query(`delete from pass_info
+      where
+        stop_name = "Calvary First Church"`, err => {
+        if (err) {
+          console.error("error", err);
+          return res.sendStatus(500);
+        }
+        return res.sendStatus(204);
+      });
   } catch (e) {
     console.error(e);
     res.sendStatus(500);
