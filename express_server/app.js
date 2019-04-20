@@ -15,10 +15,11 @@ const app = express();
  * @param fn Async function to wrap.
  */
 function asyncCatch(fn) {
-  return (req, res) => Promise.resolve(fn(req, res)).catch(err => {
-    console.log(err);
-    res.sendStatus(500);
-  })
+  return (req, res, ...args) => Promise.resolve(fn(req, res, ...args))
+    .catch(err => {
+      console.log(err);
+      res.sendStatus(500);
+    })
 }
 
 // https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
