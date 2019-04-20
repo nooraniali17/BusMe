@@ -9,8 +9,19 @@ const SQL = require("sql-template-strings");
 const app = express();
 
 /**
- * Wrap middleware function with error handling, so that there is no need to
- * add try-catch blocks manually.
+ * Wrap middleware function with default error handling, so that there is no
+ * need to add try-catch blocks manually.
+ * 
+ * Equivalent of:
+ * 
+ * ```js
+ * try {
+ *  await fn(...args);
+ * } catch (e) {
+ *  console.log(err);
+ *  res.sendStatus(500);
+ * }
+ * ```
  * 
  * @param fn Async function to wrap.
  */
@@ -112,7 +123,7 @@ app.post("/api/checkin/cancel", asyncCatch(async ({ body = {} }, res) => {
   return res.sendStatus(204);
 }));
 
-// proxy static files to avoid multi origin trouble
+// proxy static files to avoid multi origin trouble during local development
 app.use(serveStatic("../js_client", { index: "passenger.html" }));
 
 module.exports = app;
