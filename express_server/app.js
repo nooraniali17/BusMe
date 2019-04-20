@@ -6,8 +6,6 @@ const serveStatic = require("serve-static");
 const sqlite = require("sqlite");
 const SQL = require("sql-template-strings");
 
-const app = express();
-
 /**
  * Wrap middleware function with default error handling, so that there is no
  * need to add try-catch blocks manually.
@@ -30,14 +28,8 @@ function asyncCatch(fn) {
     .catch(err => {
       console.log(err);
       res.sendStatus(500);
-    })
+    });
 }
-
-// https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
-app.use(cors());
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 if (!config.has("db")) {
   throw new Error("Please specify a file to use as sqlite database.");
@@ -50,6 +42,14 @@ const db = (async () => {
   await _.migrate({ force: "last" });
   return _
 })();
+
+const app = express();
+
+// https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
+app.use(cors());
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // add endpoint logging (eg `GET /endpoint`, or `POST /endpoint { key: data }`)
 // this has no effect on the endpoints themselves.
