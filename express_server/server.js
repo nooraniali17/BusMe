@@ -6,6 +6,8 @@ try {
   greenlockConfig = config.get("greenlock");
 } catch (e) { }
 
+// if greenlock config could not be retrieved or it is not an object,
+// then we use it the regular way.
 if (greenlockConfig) {
   require("greenlock-express").create({
     ...greenlockConfig,
