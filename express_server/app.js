@@ -2,6 +2,7 @@ const bodyParser = require("body-parser");
 const config = require("config");
 const cors = require("cors");
 const express = require("express");
+const morgan = require("morgan");
 const serveStatic = require("serve-static");
 const sqlite = require("sqlite");
 const SQL = require("sql-template-strings");
@@ -45,23 +46,14 @@ const db = (async () => {
 
 const app = express();
 
+// logging (e.g. `::ffff:127.0.0.1 - GET / HTTP/1.1 304 - - 9.584 ms`)
+app.use(morgan("short"));
+
 // https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
 app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-// add endpoint logging (eg `GET /endpoint`, or `POST /endpoint { key: data }`)
-// this has no effect on the endpoints themselves.
-app.use((req, res, next) => {
-  const logs = [req.method, req.path];
-  // don't include body if it is a GET request
-  if (req.method !== "GET") {
-    logs.push(req.body);
-  }
-  console.log(...logs);
-  next();
-});
 
 // get all current checkins (table dump)
 app.get("/api/checkin", asyncCatch(async (req, res) => {
