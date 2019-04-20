@@ -40,6 +40,7 @@ const db = (async () => {
 })();
 
 // add endpoint logging (eg `GET /endpoint`, or `POST /endpoint { key: data }`)
+// this has no effect on the endpoints themselves.
 app.use((req, res, next) => {
   const logs = [req.method, req.path];
   // don't include body if it is a GET request
@@ -60,7 +61,8 @@ app.get("/api/checkin", asyncCatch(async (req, res) => {
  * 
  * schema: dict:
  *  num_pass: int: number of passengers (1..10).
- *  latitude, longitude: float: geolocation of stop (should be handled by gmaps).
+ *  latitude, longitude: float:
+ *    geolocation of stop (should be handled by gmaps).
  *  stop_name: str: google maps query for the stop.
  * 
  * returns: int: id for future reference in POST /api/checkin/cancel

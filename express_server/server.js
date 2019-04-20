@@ -9,6 +9,7 @@ try {
 // if greenlock config could not be retrieved or it is not an object,
 // then we use it the regular way.
 if (greenlockConfig) {
+  // TODO: actually implement ssl
   require("greenlock-express").create({
     ...greenlockConfig,
     store: require("greenlock-store-fs"),

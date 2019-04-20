@@ -1,4 +1,6 @@
 # which file should be sqlite target?
+# do note that you need to ensure the containing folders exist, e.g. for
+# this we would need to touch `db`.
 db: db/83384d31-cb64-414d-b779-4b71cdefb423.sqlite
 port: 3000
 
