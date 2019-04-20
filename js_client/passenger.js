@@ -44,7 +44,7 @@ function setNumInParty(event) {
       return res.json();
     })
     .then(({ id }) => {
-      Data.tripId = id;
+      Data.tripId = id; // ensure that we remember cancel id on next page
       localStorage.setItem("tripInfo", JSON.stringify(Data));
       document.location.href = "./submit.html";
     })
