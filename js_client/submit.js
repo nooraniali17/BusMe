@@ -19,9 +19,11 @@ function cancelRequest() {
       body: JSON.stringify({ id: tripInfo.tripId }),
       method: "POST"
     })
-      .then(console.log)
+      .then(res => {
+        console.log(res);
+        document.location.href = "./";
+      })
       .catch(console.error);
-    document.location.href = "./";
   }
 }
 
