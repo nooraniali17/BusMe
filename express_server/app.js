@@ -111,6 +111,7 @@ app.post("/api/checkin", asyncCatch(async ({ body = {} }, res) => {
  */
 app.post("/api/checkin/cancel", asyncCatch(async ({ body = {} }, res) => {
   if (!body.id) {
+    console.log("no id provided, instead got", body);
     return res.sendStatus(400);
   }
 
