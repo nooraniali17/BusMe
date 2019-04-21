@@ -17,7 +17,7 @@ let markerArray = [];
 
 function initPage() {
   //LEARNING HOW TO GET
-  const Url = "http://373e2eef.ngrok.io";
+  const Url = "http://89d17e77.ngrok.io";
   const payLoad = {
     headers: {
       "Content-Type": "application/json"

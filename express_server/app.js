@@ -52,35 +52,74 @@ app.get("/", (req, res) => {
   }
 });
 
+app.post("/updatePassengerInformation", (req, res) => {
+  try{
+    const sql = ""
+
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+})
+
 // sends and saves information to the database
 app.post("/", (req, res) => {
   try {
+    // destructuring request EX: req.body.stop_name
     const { body } = req;
 
     if (!body) {
       return res.sendStatus(400);
     }
 
-    // creating sql command to put values in the
-    // correct columns of database
-    const sql = `
-      insert into pass_info
-        (num_pass, latitude, longitude, stop_name)
-      values
-        (${body.num_pass}, ${body.latitude}, ${body.longitude}, '${
-      body.stop_name
-    }')
-    `;
+    const existsSql  = `select * from pass_info where stop_name = '${body.stop_name}'`;
 
-    // catch block needed to elegantly exit program
-    // if something goes wrong
-    connection.query(sql, function(err, result) {
+    connection.query(existsSql, function(err, result) {
       if (err) {
         console.log("error " + err);
         return res.sendStatus(500);
       }
-      return res.sendStatus(204);
+      const exists = result[0];
+
+      if (exists) {
+        // do an update here
+        // body.picked_up is not in database, send numpass and picked up to API, do math and send passengersWaiting later
+        let passengersWaiting = body.num_pass - body.picked_up;
+
+        const updateSQL =
+          `update pass_info 
+            set num_pass = ${passengersWaiting} 
+            where stop_name = '${body.stop_name}'`;
+
+            connection.query(updateSQL, function(err, result) {
+              if(err) {
+                console.log("error" + err);
+                return res.sendStatus(500);
+              }
+              return res.sendStatus(204);
+            });
+      } 
+      else {
+        const insertSql = `
+          insert into pass_info
+            (num_pass, latitude, longitude, stop_name)
+          values
+            (${body.num_pass}, ${body.latitude}, ${body.longitude}, '${
+          body.stop_name}')
+        `;
+
+        connection.query(insertSql, function(err, result) {
+          if (err) {
+            console.log("error " + err);
+            return res.sendStatus(500);
+          }
+          return res.sendStatus(204);
+        });
+      }
     });
+    // creating sql command to put values in the
+    // correct columns of database
+  // }
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
