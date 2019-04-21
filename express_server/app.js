@@ -61,6 +61,64 @@ app.get("/api/checkin", asyncCatch(async (req, res) => {
 }));
 
 /**
+ * Get passenger count at a stop.
+ * 
+ * @param stop_name Google maps query of which stop to get count for.
+ * @returns Number of passengers, or `undefined` if the stop doesn't exist.
+ */
+async function getPassengerCountAt(stop_name) {
+  const data = await (await db).get(SQL`
+    select num_pass from pass_info
+    where
+      stop_name = ${stop_name}
+    limit 1
+  `);
+
+  if (data) {
+    return data.num_pass;
+  }
+}
+
+/**
+ * Set number of passengers at `stop_name` to `num_pass` passengers.
+ */
+async function setPassengerCount(stop_name, num_pass) {
+  return (await db).run(SQL`
+    update pass_info
+      set num_pass = ${num_pass}
+      where stop_name = ${stop_name}
+  `);
+}
+
+/**
+ * Pick user up.
+ * 
+ * schema: dict:
+ *  num_pass: int: number of passengers that got picked up.
+ *  stop_name: str: google maps query for the stop.
+ */
+app.post("/api/pickup", asyncCatch(async ({ body = {} }, res) => {
+  const { num_pass, stop_name } = body;
+  if (!num_pass || !stop_name) {
+    console.log("not all params are filled,", num_pass, stop_name);
+    return res.sendStatus(400);
+  }
+
+  const waitingPassCount = await getPassengerCountAt(stop_name);
+  if (!waitingPassCount) {
+    console.log(`trying to pick up at a stop (${stop_name}) that doesn't have any passengers`);
+    return res.sendStatus(400);
+  } else if (num_pass <= 0 || num_pass > waitingPassCount) {
+    console.log(`trying to pick up a weird amount of passengers (${num_pass})`);
+    return res.sendStatus(400);
+  }
+
+  await setPassengerCount(stop_name, waitingPassCount - num_pass);
+
+  return res.sendStatus(204);
+}));
+
+/**
  * Add new checkin.
  * 
  * schema: dict:
@@ -85,13 +143,23 @@ app.post("/api/checkin", asyncCatch(async ({ body = {} }, res) => {
   }
 
   const [pass, lat, lng, stop] = params;
-  const { lastID } = await (await db).run(SQL`
-    insert into pass_info
-      (num_pass, latitude, longitude, stop_name)
-    values (${pass}, ${lat}, ${lng}, ${stop})
-  `)
 
-  return res.send({ id: lastID });
+  if (pass <= 0 || pass > 10) {
+    console.log("passenger count not between 1 and 10, got", pass, "instead");
+    return res.sendStatus(400);
+  }
+
+  // calculate existing passenger count after this checkin
+  const numAtStop = ((await getPassengerCountAt(stop)) || 0) + pass;
+
+  // update values
+  await (await db).run(SQL`
+    insert or replace into stop
+      (num_pass, latitude, longitude, stop_name)
+    values (${numAtStop}, ${lat}, ${lng}, ${stop})
+  `);
+
+  return res.sendStatus(204);
 }));
 
 /**
@@ -102,17 +170,16 @@ app.post("/api/checkin", asyncCatch(async ({ body = {} }, res) => {
  *    ID to delete (should be kept from the return result of POST /api/checkin)
  */
 app.post("/api/checkin/cancel", asyncCatch(async ({ body = {} }, res) => {
-  if (!body.id) {
-    console.log("no id provided, instead got", body);
+  const { stop_name, num_pass } = body;
+  if (!stop_name || !num_pass) {
+    console.log("no stop name or passenger count provided, instead got", body);
     return res.sendStatus(400);
   }
 
-  await (await db).run(SQL`
-    delete from pass_info
-    where
-      id = ${body.id}
-  `);
-
+  const numAtStop = Math.max(
+    ((await getPassengerCountAt(stop_name)) || 0) - num_pass, 0
+  );
+  await setPassengerCount(stop_name, numAtStop);
   return res.sendStatus(204);
 }));
 
