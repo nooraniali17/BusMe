@@ -52,16 +52,6 @@ app.get("/", (req, res) => {
   }
 });
 
-app.post("/updatePassengerInformation", (req, res) => {
-  try{
-    const sql = ""
-
-  } catch (e) {
-    console.log(e);
-    res.sendStatus(500);
-  }
-})
-
 // sends and saves information to the database
 app.post("/", (req, res) => {
   try {
@@ -83,14 +73,18 @@ app.post("/", (req, res) => {
 
       if (exists) {
         // do an update here
-        // body.picked_up is not in database, send numpass and picked up to API, do math and send passengersWaiting later
-        let passengersWaiting = body.num_pass - body.picked_up;
+		// body.picked_up is not in database, send numpass and picked up to API, do math and s passengersWaiting later
+		let passengersWaiting = body.num_pass - body.picked_up;
+		
+		if (!passengersWaiting) {
+			return res.sendStatus(400);
+		}
 
         const updateSQL =
           `update pass_info 
             set num_pass = ${passengersWaiting} 
             where stop_name = '${body.stop_name}'`;
-
+			
             connection.query(updateSQL, function(err, result) {
               if(err) {
                 console.log("error" + err);
@@ -117,14 +111,69 @@ app.post("/", (req, res) => {
         });
       }
     });
-    // creating sql command to put values in the
-    // correct columns of database
-  // }
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
   }
 });
+
+
+// sends and saves information to the database
+app.post("/addPassenger", (req, res) => {
+	try {
+	  // destructuring request EX: req.body.stop_name
+	  const { body } = req;
+  
+	  if (!body) {
+		return res.sendStatus(400);
+	  }
+  
+	  const existsSql  = `select * from pass_info where stop_name = '${body.stop_name}'`;
+  
+	  connection.query(existsSql, function(err, result) {
+		if (err) {
+		  console.log("error " + err);
+		  return res.sendStatus(500);
+		}
+		const exists = result[0];
+  
+		if (exists) {
+		  const updateSQL =
+			`update pass_info 
+			  set num_pass = num_pass + ${body.num_pass} 
+			  where stop_name = '${body.stop_name}'`;
+			  
+			connection.query(updateSQL, function(err, result) {
+				if (err) {
+					console.log("error" + err);
+					return res.sendStatus(500);
+				}
+				return res.sendStatus(204);
+			});
+		} else {
+		  const insertSql = `
+			insert into pass_info
+			  (num_pass, latitude, longitude, stop_name)
+			values
+			  (${body.num_pass}, ${body.latitude}, ${body.longitude}, '${
+			body.stop_name}')
+		  `;
+  
+		  connection.query(insertSql, function(err, result) {
+			if (err) {
+			  console.log("error " + err);
+			  return res.sendStatus(500);
+			}
+			return res.sendStatus(204);
+		  });
+		}
+	  });
+	} catch (e) {
+	  console.log(e);
+	  res.sendStatus(500);
+	}
+  });
+
 
 app.post('./cancelRequest', (req, res) => {
   try {

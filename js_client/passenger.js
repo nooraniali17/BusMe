@@ -19,8 +19,9 @@ function setNumInParty(event) {
     return;
   }
   
-  const Url = "http://89d17e77.ngrok.io";
+  const Url = "http://89d17e77.ngrok.io/addPassenger";
   const Data = {
+    picked_up: 2,
     num_pass: numInParty,
     latitude: finalLat,
     longitude: finalLng,
@@ -35,6 +36,7 @@ function setNumInParty(event) {
     method: "POST"
   };
 
+  debugger;
   console.log(payLoad);
 
   fetch(Url, payLoad)

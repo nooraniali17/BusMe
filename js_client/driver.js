@@ -14,10 +14,13 @@ let stopLngMarker = [];
 let placesMarker = [];
 let iterator = 0;
 let markerArray = [];
+const Url = "http://89d17e77.ngrok.io";
+let myMap;
+let hashMapEntry;
+
 
 function initPage() {
   //LEARNING HOW TO GET
-  const Url = "http://89d17e77.ngrok.io";
   const payLoad = {
     headers: {
       "Content-Type": "application/json"
@@ -29,7 +32,7 @@ function initPage() {
     .then(data => data.json())
     .then(res => {
       //GOING THROUGH DATABASE AND MAKING HASHMAP
-      const myMap = new Map();
+      myMap = new Map();
       let index = 0;
       let value = 0;
       infoWindow = new google.maps.InfoWindow();
@@ -66,7 +69,7 @@ function generateTable(myMap) {
   let cellText;
   let breakTag = document.createElement("BR");
   let mapIter = myMap.entries();
-  let hashMapEntry = mapIter.next().value;
+  hashMapEntry = mapIter.next().value;
 
   // creating the cells below
   for (i = 0; i < myMap.size; i++) {
@@ -117,7 +120,6 @@ function buttonLogic(button, i, myMap) {
 
     })
     let mapIter = myMap.entries();
-    let hashMapEntry;
     for (let index = 0; index < i + 1; index++) {
       hashMapEntry = mapIter.next().value;
       //   hashMapEntry[0] will give location
@@ -216,4 +218,35 @@ function createMarker(stopLocations, places) {
     map.setZoom(17);
     map.setCenter(marker.getPosition());
   });
+}
+
+function setPeoplePickedUp() {
+  let peoplePickedUp = document.getElementById("txtInputBox").value;
+
+  debugger;
+  console.log("TEST" + hashMapEntry[1]);
+
+  const Data = {
+    stop_name: hashMapEntry[0],
+    picked_up: peoplePickedUp,
+    num_pass: hashMapEntry[1]
+  };
+
+  const payLoad = {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(Data),
+    method: "POST"
+  };
+
+  debugger;
+  console.log(payLoad);
+
+  fetch(Url, payLoad)
+    .then(data => console.log(data))
+    .then(res => {
+      alert("Saved!");
+    })
+
 }
