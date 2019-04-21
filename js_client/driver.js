@@ -14,6 +14,45 @@ let stopLngMarker = [];
 let placesMarker = [];
 let iterator = 0;
 let markerArray = [];
+let myMap;
+let hashMapEntry;
+
+
+function initPage() {
+  //LEARNING HOW TO GET
+  const payLoad = {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    method: "GET"
+  };
+  //part of the js api
+  fetch("/api/checkin", payLoad)
+    .then(data => data.json())
+    .then(res => {
+      //GOING THROUGH DATABASE AND MAKING HASHMAP
+      myMap = new Map();
+      let index = 0;
+      let value = 0;
+      infoWindow = new google.maps.InfoWindow();
+
+      for (index = 0; index < res.length; index++) {
+        if (!myMap.has(res[index].stop_name)) {
+          myMap.set(res[index].stop_name, res[index].num_pass);
+          stopLatMarker.push(res[index].latitude);
+          stopLngMarker.push(res[index].longitude);
+          placesMarker.push(res[index].stop_name);
+        } else {
+          value = myMap.get(res[index].stop_name);
+          value = value + res[index].num_pass;
+          myMap.set(res[index].stop_name, value);
+        }
+      }
+      generateTable(myMap);
+
+    })
+    .catch(error => console.log(error));
+}
 
 function reloadPage(event) {
   location.reload();
@@ -29,7 +68,7 @@ function generateTable(myMap) {
   let cellText;
   let breakTag = document.createElement("BR");
   let mapIter = myMap.entries();
-  let hashMapEntry = mapIter.next().value;
+  hashMapEntry = mapIter.next().value;
 
   // creating the cells below
   for (i = 0; i < myMap.size; i++) {
@@ -72,33 +111,7 @@ function generateTable(myMap) {
   body.appendChild(breakTag);
 }
 
-window.onload = async () => {
-  const data = await fetch("/api/checkin", {
-    headers: { "Content-Type": "application/json" },
-    method: "GET"
-  });
-  const res = await data.json();
-
-  const myMap = new Map();
-  let index = 0;
-  let value = 0;
-  infoWindow = new google.maps.InfoWindow();
-
-  for (index = 0; index < res.length; index++) {
-    if (!myMap.has(res[index].stop_name)) {
-      myMap.set(res[index].stop_name, res[index].num_pass);
-      stopLatMarker.push(res[index].latitude);
-      stopLngMarker.push(res[index].longitude);
-      placesMarker.push(res[index].stop_name);
-    } else {
-      value = myMap.get(res[index].stop_name);
-      value = value + res[index].num_pass;
-      myMap.set(res[index].stop_name, value);
-    }
-  }
-
-  generateTable(myMap);
-};
+window.onload = initPage;
 
 function buttonLogic(button, i, myMap) {
   button.onclick = function() {
@@ -106,7 +119,6 @@ function buttonLogic(button, i, myMap) {
 
     })
     let mapIter = myMap.entries();
-    let hashMapEntry;
     for (let index = 0; index < i + 1; index++) {
       hashMapEntry = mapIter.next().value;
       //   hashMapEntry[0] will give location
@@ -205,4 +217,32 @@ function createMarker(stopLocations, places) {
     map.setZoom(17);
     map.setCenter(marker.getPosition());
   });
+}
+
+function setPeoplePickedUp() {
+  let peoplePickedUp = document.getElementById("txtInputBox").value;
+
+  console.log("TEST" + hashMapEntry[1]);
+
+  const Data = {
+    stop_name: hashMapEntry[0],
+    picked_up: peoplePickedUp,
+    num_pass: hashMapEntry[1]
+  };
+
+  const payLoad = {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(Data),
+    method: "POST"
+  };
+
+  console.log(payLoad);
+
+  fetch("/api/pickup", payLoad)
+    .then(data => {
+      console.log(data);
+      alert("Saved!");
+    })
 }

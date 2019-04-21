@@ -94,7 +94,7 @@ async function setPassengerCount(stop_name, num_pass) {
  * Pick user up.
  * 
  * schema: dict:
- *  num_pass: int: number of passengers that got picked up.
+ *  picked_up: int: number of passengers that got picked up.
  *  stop_name: str: google maps query for the stop.
  */
 app.post("/api/pickup", asyncCatch(async ({ body = {} }, res) => {
@@ -113,7 +113,7 @@ app.post("/api/pickup", asyncCatch(async ({ body = {} }, res) => {
     return res.sendStatus(400);
   }
 
-  await setPassengerCount(stop_name, waitingPassCount - num_pass);
+  await setPassengerCount(stop_name, waitingPassCount - picked_up);
 
   return res.sendStatus(204);
 }));
@@ -154,7 +154,7 @@ app.post("/api/checkin", asyncCatch(async ({ body = {} }, res) => {
 
   // update values
   await (await db).run(SQL`
-    insert or replace into stop
+    insert or replace into pass_info
       (num_pass, latitude, longitude, stop_name)
     values (${numAtStop}, ${lat}, ${lng}, ${stop})
   `);

@@ -20,6 +20,7 @@ function setNumInParty(event) {
   }
   
   const Data = {
+    picked_up: 2,
     num_pass: numInParty,
     latitude: finalLat,
     longitude: finalLng,
@@ -33,22 +34,15 @@ function setNumInParty(event) {
     body: JSON.stringify(Data),
     method: "POST"
   };
-
   console.log(payLoad);
+
   fetch("/api/checkin", payLoad)
     .then(res => {
       console.log(res);
-      if (res.status >= 400) {
-        throw new Error("bad request; maybe some fields are missing?");
-      }
-      return res.json();
-    })
-    .then(({ id }) => {
-      Data.tripId = id; // ensure that we remember cancel id on next page
-      localStorage.setItem("tripInfo", JSON.stringify(Data));
       document.location.href = "./submit.html";
+      localStorage.setItem("tripInfo", JSON.stringify(Data));
     })
-    .catch(console.error);
+    .catch(error => console.log(error));
 }
 
 function initMap() {
