@@ -98,9 +98,9 @@ async function setPassengerCount(stop_name, num_pass) {
  *  stop_name: str: google maps query for the stop.
  */
 app.post("/api/pickup", asyncCatch(async ({ body = {} }, res) => {
-  const { num_pass, stop_name } = body;
-  if (!num_pass || !stop_name) {
-    console.log("not all params are filled,", num_pass, stop_name);
+  const { picked_up, stop_name } = body;
+  if (!picked_up || !stop_name) {
+    console.log("not all params are filled;", picked_up, stop_name);
     return res.sendStatus(400);
   }
 
@@ -108,8 +108,8 @@ app.post("/api/pickup", asyncCatch(async ({ body = {} }, res) => {
   if (!waitingPassCount) {
     console.log(`trying to pick up at a stop (${stop_name}) that doesn't have any passengers`);
     return res.sendStatus(400);
-  } else if (num_pass <= 0 || num_pass > waitingPassCount) {
-    console.log(`trying to pick up a weird amount of passengers (${num_pass})`);
+  } else if (picked_up <= 0 || picked_up > waitingPassCount) {
+    console.log(`trying to pick up a weird amount of passengers (${picked_up})`);
     return res.sendStatus(400);
   }
 
@@ -124,7 +124,7 @@ app.post("/api/pickup", asyncCatch(async ({ body = {} }, res) => {
  * schema: dict:
  *  num_pass: int: number of passengers (1..10).
  *  latitude, longitude: float:
- *    geolocation of stop (should be handled by gmaps).
+ *    geolocation of stop (should be handpicked_upmaps).
  *  stop_name: str: google maps query for the stop.
  * 
  * returns: int: id for future reference in POST /api/checkin/cancel
@@ -138,7 +138,7 @@ app.post("/api/checkin", asyncCatch(async ({ body = {} }, res) => {
   ].map(k => body[k]);
 
   if (!params.every(v => v)) {
-    console.log("not all params are filled,", params);
+    console.log("not all params are filled;", params);
     return res.sendStatus(400);
   }
 
