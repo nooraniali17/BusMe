@@ -14,7 +14,7 @@ let stopLngMarker = [];
 let placesMarker = [];
 let iterator = 0;
 let markerArray = [];
-const Url = "http://89d17e77.ngrok.io";
+const Url = "http://ba88259a.ngrok.io";
 let myMap;
 let hashMapEntry;
 
@@ -223,7 +223,6 @@ function createMarker(stopLocations, places) {
 function setPeoplePickedUp() {
   let peoplePickedUp = document.getElementById("txtInputBox").value;
 
-  debugger;
   console.log("TEST" + hashMapEntry[1]);
 
   const Data = {
@@ -240,7 +239,6 @@ function setPeoplePickedUp() {
     method: "POST"
   };
 
-  debugger;
   console.log(payLoad);
 
   fetch(Url, payLoad)
@@ -248,5 +246,4 @@ function setPeoplePickedUp() {
     .then(res => {
       alert("Saved!");
     })
-
 }
