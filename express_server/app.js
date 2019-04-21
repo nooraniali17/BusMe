@@ -17,7 +17,7 @@ const SQL = require("sql-template-strings");
  * try {
  *  await fn(...args);
  * } catch (e) {
- *  console.log(err);
+ *  console.error(err);
  *  res.sendStatus(500);
  * }
  * ```
@@ -27,7 +27,7 @@ const SQL = require("sql-template-strings");
 function asyncCatch(fn) {
   return (req, res, ...args) => Promise.resolve(fn(req, res, ...args))
     .catch(err => {
-      console.log(err);
+      console.error(err);
       res.sendStatus(500);
     });
 }
