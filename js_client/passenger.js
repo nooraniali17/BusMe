@@ -9,7 +9,7 @@ var finalLng;
 var finalName;
 
 function setNumInParty(event) {
-  numInParty = document.getElementById("numInParty").value;
+  numInParty = parseInt(document.getElementById("numInParty").value, 10);
   if (isNaN(numInParty)) {
     alert("Please enter a number!");
     return;
