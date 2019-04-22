@@ -124,7 +124,7 @@ app.post("/api/pickup", asyncCatch(async ({ body = {} }, res) => {
  * schema: dict:
  *  num_pass: int: number of passengers (1..10).
  *  latitude, longitude: float:
- *    geolocation of stop (should be handpicked_upmaps).
+ *    geolocation of stop (should be handled by gmaps).
  *  stop_name: str: google maps query for the stop.
  * 
  * returns: int: id for future reference in POST /api/checkin/cancel
