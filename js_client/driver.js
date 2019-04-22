@@ -70,6 +70,8 @@ function generateTable(myMap) {
   let mapIter = myMap.entries();
   hashMapEntry = mapIter.next().value;
 
+  const stopRows = [];
+
   // creating the cells below
   for (i = 0; i < myMap.size; i++) {
     // creates the correct number of rows from the number
@@ -87,18 +89,20 @@ function generateTable(myMap) {
 
     for (j = 0; j < 2; j++) {
       let cell = document.createElement("td");
-      if (j == 0) {
-        cellText = document.createTextNode(hashMapEntry[j]);
-      } else {
-        cellText = document.createTextNode(hashMapEntry[j]);
-      }
+      cellText = document.createTextNode(hashMapEntry[j]);
       cell.append(cellText);
       row.appendChild(cell);
       row.append(button);
     }
 
-    tblBody.appendChild(row);
+    stopRows.push([hashMapEntry[1], row]);
     hashMapEntry = mapIter.next().value;
+  }
+
+  // sort rows descending by number of passengers
+  stopRows.sort(([a,], [b,]) => b - a);
+  for (const row of stopRows.map(r => r[1])) {
+    tblBody.appendChild(row);
   }
 
   tbl.appendChild(tblBody);
@@ -114,7 +118,7 @@ function generateTable(myMap) {
 window.onload = initPage;
 
 function buttonLogic(button, i, myMap) {
-  button.onclick = function() {
+  button.onclick = function () {
     let marker = new google.maps.Marker({
 
     })
@@ -140,7 +144,7 @@ function buttonLogic(button, i, myMap) {
     console.log(stopLocations);
     clearMarkers();
     createMarker(stopLocations, places);
-    };
+  };
 }
 
 function clearMarkers() {
@@ -209,9 +213,9 @@ function createMarker(stopLocations, places) {
     map: map,
     animation: google.maps.Animation.DROP
   });
-  markerArray.push(marker); 
+  markerArray.push(marker);
   map.setCenter(marker.getPosition());
-  google.maps.event.addListener(marker, "click", function() {
+  google.maps.event.addListener(marker, "click", function () {
     infoWindow.setContent(places);
     infoWindow.open(map, this);
     map.setZoom(17);
