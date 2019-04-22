@@ -155,9 +155,11 @@ app.post('/api/checkin', asyncCatch(async ({ body = {} }, res) => {
 
   // update values
   await (await db).run(SQL`
-    insert or replace into pass_info
+    insert into pass_info
       (num_pass, latitude, longitude, stop_name)
     values (${numAtStop}, ${lat}, ${lng}, ${stop})
+    on conflict(stop_name) do update
+      set num_pass = excluded.num_pass
   `);
 
   return res.sendStatus(204);
