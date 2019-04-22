@@ -3,6 +3,7 @@ const config = require("config");
 const cors = require("cors");
 const express = require("express");
 const morgan = require("morgan");
+const schedule = require("node-schedule");
 const serveStatic = require("serve-static");
 const sqlite = require("sqlite");
 const SQL = require("sql-template-strings");
@@ -187,3 +188,9 @@ app.post("/api/checkin/cancel", asyncCatch(async ({ body = {} }, res) => {
 app.use(serveStatic("../js_client", { index: "passenger.html" }));
 
 module.exports = app;
+
+// and schedule a reset of all stops every day at midnight
+const job = schedule.scheduleJob({ hour: 0, minute: 0 }, async () => {
+  console.log("resetting stored stops.");
+  (await db).run("delete from pass_info");
+});
