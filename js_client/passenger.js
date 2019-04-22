@@ -39,6 +39,12 @@ function setNumInParty(event) {
   fetch("/api/checkin", payLoad)
     .then(res => {
       console.log(res);
+
+      if (res.status >= 400) {
+        console.log("checkin failed, maybe check all the fields?");
+        return;
+      }
+
       document.location.href = "./submit.html";
       localStorage.setItem("tripInfo", JSON.stringify(Data));
     })
