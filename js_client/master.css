@@ -9,11 +9,10 @@ body {
 }
 
 #map {
-  height: 50%;
-  width: 75%;
+  height: 75%;
+  width: 100%;
   margin: auto;
   border-radius: 25px;
-  margin-top: 50px;
 }
 
 table,

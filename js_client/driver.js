@@ -54,10 +54,6 @@ function initPage() {
     .catch(error => console.log(error));
 }
 
-function reloadPage(event) {
-  location.reload();
-}
-
 function generateTable(myMap) {
   // grabs body tag and saves in body variable
   let body = document.getElementsByTagName("body")[0];
