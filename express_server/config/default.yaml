@@ -1,0 +1,11 @@
+# which file should be sqlite target?
+db: db/83384d31-cb64-414d-b779-4b71cdefb423.sqlite
+port: 3000
+
+# https://git.coolaj86.com/coolaj86/greenlock-express.js#working-example-code
+# https://git.coolaj86.com/coolaj86/greenlock.js#example-with-all-options
+# comment out or remove to work on localhost
+# greenlock:
+#   email: jdoe@u.pacific.edu
+#   agreeTos: true
+#   configDir: ~/.config/acme/
