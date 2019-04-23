@@ -7,35 +7,12 @@
     <link rel="stylesheet" href="master.css">
     <title>Passenger</title>
     <meta charset="utf-8" />
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-        * element that contains the map. */
-      #map {
-        height: 50%;
-      }
-
-      /* Optional: Makes the sample page fill the window. */
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        padding: 10px;
-      }
-
-    </style>
   </head>
 
   <body>
     <script src="passenger.js"></script>
-    <div class="driver">
-      <h4>Passenger Portal</h4>
-      <h6>Please select a marker on the map below to be picked up from:</h6>
-    </div>
     <div id="map"></div>
-
-    <div class="driver">
-      <h5>How many people are in your party?</h5>
-    </div>
+    <h5 class="driver">How many people are in your party?</h5>
     <input type="number" id="numInParty" />
     <input id="numPickedUpBtn" type="button" onclick="setNumInParty(event)" value="Submit" />
     <script type="text/javascript"

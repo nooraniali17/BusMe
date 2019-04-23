@@ -1,9 +1,20 @@
 # which file should be sqlite target?
+# do note that you need to ensure the containing folders exist, e.g. for
+# this we would need to touch `db`.
+# the file itself will be created automatically.
 db: db/83384d31-cb64-414d-b779-4b71cdefb423.sqlite
-port: 3000
 
+# if greenlock is activated this will be ignored, and instead will default to
+# 80 (http) and 443 (https).
+port: 3000
 # https://git.coolaj86.com/coolaj86/greenlock-express.js#working-example-code
 # https://git.coolaj86.com/coolaj86/greenlock.js#example-with-all-options
+# usually greenlock can figure out the domain name for the certificate by
+# itself, so these three fields are the only ones absolutely required.
+
+# though it's still a good idea to work out which configuration will actually
+# scale up to your needs.
+
 # comment out or remove to work on localhost
 # greenlock:
 #   email: jdoe@u.pacific.edu

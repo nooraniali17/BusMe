@@ -9,7 +9,7 @@ var finalLng;
 var finalName;
 
 function setNumInParty(event) {
-  numInParty = document.getElementById("numInParty").value;
+  numInParty = parseInt(document.getElementById("numInParty").value, 10);
   if (isNaN(numInParty)) {
     alert("Please enter a number!");
     return;
@@ -19,7 +19,6 @@ function setNumInParty(event) {
     return;
   }
   
-  const Url = "http://ba88259a.ngrok.io/addPassenger";
   const Data = {
     picked_up: 2,
     num_pass: numInParty,
@@ -35,14 +34,18 @@ function setNumInParty(event) {
     body: JSON.stringify(Data),
     method: "POST"
   };
-
   console.log(payLoad);
 
-  fetch(Url, payLoad)
+  fetch("/api/checkin", payLoad)
     .then(res => {
       console.log(res);
-      url = "./passengerSubmission.html";
-      document.location.href = url;
+
+      if (res.status >= 400) {
+        console.log("checkin failed, maybe check all the fields?");
+        return;
+      }
+
+      document.location.href = "./submit.html";
       localStorage.setItem("tripInfo", JSON.stringify(Data));
     })
     .catch(error => console.log(error));

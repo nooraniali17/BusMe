@@ -14,7 +14,6 @@ let stopLngMarker = [];
 let placesMarker = [];
 let iterator = 0;
 let markerArray = [];
-const Url = "http://ba88259a.ngrok.io";
 let myMap;
 let hashMapEntry;
 
@@ -28,7 +27,7 @@ function initPage() {
     method: "GET"
   };
   //part of the js api
-  fetch(Url, payLoad)
+  fetch("/api/checkin", payLoad)
     .then(data => data.json())
     .then(res => {
       //GOING THROUGH DATABASE AND MAKING HASHMAP
@@ -55,10 +54,6 @@ function initPage() {
     .catch(error => console.log(error));
 }
 
-function reloadPage(event) {
-  location.reload();
-}
-
 function generateTable(myMap) {
   // grabs body tag and saves in body variable
   let body = document.getElementsByTagName("body")[0];
@@ -70,6 +65,8 @@ function generateTable(myMap) {
   let breakTag = document.createElement("BR");
   let mapIter = myMap.entries();
   hashMapEntry = mapIter.next().value;
+
+  const stopRows = [];
 
   // creating the cells below
   for (i = 0; i < myMap.size; i++) {
@@ -88,18 +85,20 @@ function generateTable(myMap) {
 
     for (j = 0; j < 2; j++) {
       let cell = document.createElement("td");
-      if (j == 0) {
-        cellText = document.createTextNode(hashMapEntry[j]);
-      } else {
-        cellText = document.createTextNode(hashMapEntry[j]);
-      }
+      cellText = document.createTextNode(hashMapEntry[j]);
       cell.append(cellText);
       row.appendChild(cell);
       row.append(button);
     }
 
-    tblBody.appendChild(row);
+    stopRows.push([hashMapEntry[1], row]);
     hashMapEntry = mapIter.next().value;
+  }
+
+  // sort rows descending by number of passengers
+  stopRows.sort(([a,], [b,]) => b - a);
+  for (const row of stopRows.map(r => r[1])) {
+    tblBody.appendChild(row);
   }
 
   tbl.appendChild(tblBody);
@@ -115,7 +114,7 @@ function generateTable(myMap) {
 window.onload = initPage;
 
 function buttonLogic(button, i, myMap) {
-  button.onclick = function() {
+  button.onclick = function () {
     let marker = new google.maps.Marker({
 
     })
@@ -124,11 +123,6 @@ function buttonLogic(button, i, myMap) {
       hashMapEntry = mapIter.next().value;
       //   hashMapEntry[0] will give location
     }
-    console.log(hashMapEntry);
-    console.log(stopLatMarker);
-    console.log(stopLngMarker);
-    console.log(placesMarker);
-
     locations = {
       stopLat: parseFloat(stopLatMarker[i]),
       stopLng: parseFloat(stopLngMarker[i])
@@ -138,10 +132,9 @@ function buttonLogic(button, i, myMap) {
     let sLng = locations.stopLng;
     let places = placesMarker[i];
     let stopLocations = { lat: parseFloat(sLat), lng: parseFloat(sLng) };
-    console.log(stopLocations);
     clearMarkers();
     createMarker(stopLocations, places);
-    };
+  };
 }
 
 function clearMarkers() {
@@ -210,9 +203,9 @@ function createMarker(stopLocations, places) {
     map: map,
     animation: google.maps.Animation.DROP
   });
-  markerArray.push(marker); 
+  markerArray.push(marker);
   map.setCenter(marker.getPosition());
-  google.maps.event.addListener(marker, "click", function() {
+  google.maps.event.addListener(marker, "click", function () {
     infoWindow.setContent(places);
     infoWindow.open(map, this);
     map.setZoom(17);
@@ -222,8 +215,6 @@ function createMarker(stopLocations, places) {
 
 function setPeoplePickedUp() {
   let peoplePickedUp = document.getElementById("txtInputBox").value;
-
-  console.log("TEST" + hashMapEntry[1]);
 
   const Data = {
     stop_name: hashMapEntry[0],
@@ -239,11 +230,9 @@ function setPeoplePickedUp() {
     method: "POST"
   };
 
-  console.log(payLoad);
-
-  fetch(Url, payLoad)
-    .then(data => console.log(data))
-    .then(res => {
+  fetch("/api/pickup", payLoad)
+    .then(data => {
       alert("Saved!");
+      location.reload();
     })
 }

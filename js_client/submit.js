@@ -14,14 +14,18 @@ function cancelRequest() {
     const numInParty = document.getElementById("numInParty");
     const finalName = document.getElementById("busStopLabel");
   
+    const { stop_name, num_pass } = tripInfo;
+
     fetch("/api/checkin/cancel", {
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: tripInfo.tripId }),
+      body: JSON.stringify({ stop_name, num_pass }),
       method: "POST"
     })
-      .then(console.log)
+      .then((...data) => {
+        console.log(...data);
+        document.location.href = "./";
+      })
       .catch(console.error);
-    document.location.href = "./";
   }
 }
 

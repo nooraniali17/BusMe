@@ -7,7 +7,7 @@ CREATE TABLE pass_info (
   num_pass    INTEGER,
   latitude    FLOAT,
   longitude   FLOAT,
-  stop_name   TEXT
+  stop_name   TEXT UNIQUE
 );
 
 -----
