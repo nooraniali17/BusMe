@@ -1,19 +1,12 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-<<<<<<< .merge_file_rrgIcE
-<<<<<<< .merge_file_X0FUeN
+
 import BusStops from './BusStops';
 import App from './App';
-=======
 import HomePage from './Homepage';
 import MapContainer from './GoogleMapsAPI';
 import Places from './Places';
->>>>>>> .merge_file_3XhFFn
-=======
-import HomePage from './Homepage';
-import MapContainer from './GoogleMapsAPI';
-import Places from './Places';
->>>>>>> .merge_file_XBJY51
+
 
 
 export default class Routing extends Component {
