@@ -1,4 +1,5 @@
 const config = require('config');
+const schedule = require('node-schedule');
 const sqlite = require('sqlite');
 
 /**
@@ -51,7 +52,15 @@ if (!config.has('db')) {
   throw new Error('Please specify a file in the configuration to use as sqlite database.');
 }
 
-module.exports = connect(
+let db;
+
+module.exports = db = connect(
   config.get('db'),
   config.has('reset') && config.get('reset')
 );
+
+// and schedule a reset of all stops every day at midnight
+schedule.scheduleJob({ hour: 0, minute: 0 }, () => {
+  console.log('resetting stored stops.');
+  return db.run('delete from pass_info');
+});

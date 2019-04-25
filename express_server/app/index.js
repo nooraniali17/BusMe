@@ -2,10 +2,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const express = require('express');
 const morgan = require('morgan');
-const schedule = require('node-schedule');
 const serveStatic = require('serve-static');
-
-const db = require('./db');
 
 /**
  * Wrap middleware function with default error handling, so that there is no
@@ -54,9 +51,3 @@ for (const [path, middleware] of Object.entries(require('./endpoints'))) {
 app.use(serveStatic('../js_client', { index: 'passenger.html' }));
 
 module.exports = app;
-
-// and schedule a reset of all stops every day at midnight
-schedule.scheduleJob({ hour: 0, minute: 0 }, () => {
-  console.log('resetting stored stops.');
-  return db.run('delete from pass_info');
-});
