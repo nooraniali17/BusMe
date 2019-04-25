@@ -14,7 +14,10 @@ CREATE TABLE checkin (
   passengers  INTEGER,  -- number of passengers in checkin
   fk_stop     INTEGER,  -- stop logged in to
   cancel      BLOB,     -- cancel token
+  active      BOOLEAN DEFAULT TRUE,  -- is this an active checkin?
+  created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CHECK (passengers BETWEEN 0 AND 10),
+  CHECK (active IN (0, 1)),
   FOREIGN KEY(fk_stop) REFERENCES stop(id)
 );
 

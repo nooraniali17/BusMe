@@ -71,5 +71,5 @@ module.exports = db = connect(
 // and schedule a reset of all stops every day at midnight
 schedule.scheduleJob({ hour: 0, minute: 0 }, () => {
   console.log('resetting stored stops.');
-  return db.run('delete from pass_info');
+  return db.run('update checkin set active = false');
 });

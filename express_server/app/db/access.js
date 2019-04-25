@@ -39,6 +39,8 @@ exports.getCheckins = async () => {
       stop.placeid
     from checkin
     inner join stop on stop.id = checkin.fk_stop
+    where
+      checkin.active
   `);
 
   return checkins.map(({ id, cancel, ...rest }) => {
@@ -97,7 +99,12 @@ exports.cancelCheckin = async (token) => {
 
   const valid = checkin && checkin.cancel === cancel;
   if (valid) {
-    await db.run(SQL`delete from checkin where id = ${id}`);
+    await db.run(SQL`
+      update checkin
+      set active = false
+      where
+        id = ${id}
+    `);
   } else {
     console.log(token, 'is not a valid checkin');
   }
