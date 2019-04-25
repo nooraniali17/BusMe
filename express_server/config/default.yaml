@@ -8,6 +8,9 @@ db: db/83384d31-cb64-414d-b779-4b71cdefb423.sqlite
 # 80 (http) and 443 (https).
 port: 3000
 
+# if the database should be wiped every time the server starts
+reset: false
+
 # https://git.coolaj86.com/coolaj86/greenlock-express.js#working-example-code
 # https://git.coolaj86.com/coolaj86/greenlock.js#example-with-all-options
 # usually greenlock can figure out the domain name for the certificate by

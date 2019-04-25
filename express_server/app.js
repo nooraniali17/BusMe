@@ -41,7 +41,9 @@ const db = (async () => {
   const _ = await sqlite.open(config.get('db'));
   // execute migration script in `migrations/*`, in our case it's just to
   // initialize the database in general.
-  await _.migrate({ force: 'last' });
+  if (config.has('reset') && config.get('reset')) {
+    await _.migrate({ force: 'last' });
+  }
   return _;
 })();
 
