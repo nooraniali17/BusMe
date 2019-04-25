@@ -9,13 +9,19 @@ var finalLng;
 var finalName;
 
 function setNumInParty(event) {
+  let partyName = document.getElementById("partyName").value;
   numInParty = parseInt(document.getElementById("numInParty").value, 10);
+  
   if (isNaN(numInParty)) {
     alert("Please enter a number!");
     return;
   }
   if (numInParty < 1 || numInParty >= 10) {
     alert("Please enter a number greater than 0 but less than 10!");
+    return;
+  }
+  else if (!isNaN(partyName)) {
+    alert("Please enter a valid party name!");
     return;
   }
   
