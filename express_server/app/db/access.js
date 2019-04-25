@@ -9,7 +9,7 @@ const db = require('../db');
 /**
  * Convert `[id, token]` tuple into `'${id}:${token}'` string.
  *
- * @see parseToken
+ * @see parseToken The reverse operation.
  */
 function createToken (id, cancel) {
   const tokenPart = id.toString(config.get('token_radix'));
@@ -19,7 +19,7 @@ function createToken (id, cancel) {
 /**
  * Convert `'${id}:${token}'` string into `[id, token]` tuple.
  *
- * @see createToken
+ * @see createToken The reverse operation.
  */
 function parseToken (token) {
   const [id, cancel] = token.split(':');
@@ -27,7 +27,7 @@ function parseToken (token) {
 }
 
 /**
- * Get all checkins.
+ * Get all checkins, almost a direct table dump.
  */
 exports.getCheckins = async () => {
   const checkins = await db.all(`
@@ -47,7 +47,7 @@ exports.getCheckins = async () => {
 };
 
 /**
- * Convert stop to unique key.
+ * Convert stop to unique key. (Get or create)
  *
  * @param stop Stop by Google Maps place ID (e.g.
  * `ChIJrSRfGH3pj4ARm2lRTYi8PeI`).
@@ -84,8 +84,6 @@ exports.createCheckin = async (pass, name, placeid) => {
 };
 
 /**
- * Cancel checkin by token.
- *
  * @param token `'${id}:${token}'` string.
  * @return Whether or not it is a valid checkin.
  */

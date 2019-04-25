@@ -33,15 +33,24 @@ function connect (db, reset = false) {
     {
       get: (dbPromise, k) => async (...args) => {
         const db = await dbPromise;
+
+        // this "async proxy" stuff is sort of a weird hack so these comments
+        // will state some very obvious things just to be safe.
+
         const method = db[k];
 
-        // if method isn't a function, then it's a property. return that instead
+        // `typeof === function` should cover 99% of callables, but there
+        // may be a few cases where `typeof === object` is callable. however,
+        // unlike python there's no equivalent of `__call__` so this edge case
+        // should be much less frequent.
+
+        // this will also return promises, which will be "absorbed" by `await`.
         if (typeof method !== 'function') {
           return method;
         }
 
-        // will return promise or object; await will decide if it should
-        // continue resolving or return object.
+        // the function call will return promise or object; await will decide if
+        // it should continue resolving or return the object.
         return method.bind(db)(...args);
       }
     }

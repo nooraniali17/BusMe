@@ -13,7 +13,7 @@ const serveStatic = require('serve-static');
  * ```js
  * try {
  *  await fn(...args);
- * } catch (e) {
+ * } catch (err) {
  *  console.error(err);
  *  res.sendStatus(500);
  * }
