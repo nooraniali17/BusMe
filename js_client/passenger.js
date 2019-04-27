@@ -7,6 +7,7 @@ var infoWindow;
 var finalLat;
 var finalLng;
 var finalName;
+let id;
 
 function setNumInParty(event) {
   let partyName = document.getElementById("partyName").value;
@@ -27,10 +28,12 @@ function setNumInParty(event) {
   
   const Data = {
     picked_up: 2,
-    num_pass: numInParty,
+    passengers: numInParty,
     latitude: finalLat,
     longitude: finalLng,
-    stop_name: finalName
+    stop_name: finalName,
+    name: partyName,
+    placeid: id
   };
 
   const payLoad = {
@@ -123,7 +126,7 @@ function callback(results, status) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     for (var i = 0; i < results.length; i++) {
       var place = results[i];
-      createMarker(results[i]);
+      createMarker(place);
     }
   }
 }
@@ -142,6 +145,8 @@ function createMarker(place) {
     finalName = place.name;
     finalLat = getLat;
     finalLng = getLng;
+    id = place.place_id;
     infoWindow.open(map, this);
+    console.log(id);
   });
 }
