@@ -10,7 +10,8 @@ exports.pick = (obj = {}, propNames = [], optNames = []) => {
 
   if (!props.every(p => p != null)) {
     throw new TypeError(
-      `Object ${obj} must contain properties ${propNames}, got ${props} instead`);
+      `Object ${JSON.stringify(obj)} must contain non-null properties [${
+        propNames}], got [${props}]`);
   }
 
   return [...props, ...optNames.map(k => obj[k])];
