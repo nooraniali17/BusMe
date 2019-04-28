@@ -27,10 +27,7 @@ function setNumInParty(event) {
   }
   
   const Data = {
-    picked_up: 2,
     passengers: numInParty,
-    latitude: finalLat,
-    longitude: finalLng,
     stop_name: finalName,
     name: partyName,
     placeid: id
@@ -54,9 +51,15 @@ function setNumInParty(event) {
         return;
       }
 
+      return res.json();
+    })
+    .then(data => { console.log(data); 
       document.location.href = "./submit.html";
       localStorage.setItem("tripInfo", JSON.stringify(Data));
+      localStorage.setItem("token", JSON.stringify(data));
+      console.log(data);
     })
+
     .catch(error => console.log(error));
 }
 

@@ -91,6 +91,12 @@ body {
   text-align: center;
 }
 
+#partyName {
+  text-align: center;
+  margin: auto;
+  display: block;
+}
+
 #cancelButton {
   display: flex;
   margin: auto;

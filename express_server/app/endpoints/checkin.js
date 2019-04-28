@@ -41,7 +41,7 @@ exports['/api/checkin'] = {
     }
 
     try {
-      return res.send({ token: await access.createCheckin(...args) });
+      return res.send({ id: await access.createCheckin(...args) });
     } catch (e) {
       if (e.code === 'SQLITE_CONSTRAINT') {
         console.log('constraint violated, probably passenger count.');
