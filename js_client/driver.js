@@ -123,11 +123,6 @@ function buttonLogic(button, i, myMap) {
       hashMapEntry = mapIter.next().value;
       //   hashMapEntry[0] will give location
     }
-    console.log(hashMapEntry);
-    console.log(stopLatMarker);
-    console.log(stopLngMarker);
-    console.log(placesMarker);
-
     locations = {
       stopLat: parseFloat(stopLatMarker[i]),
       stopLng: parseFloat(stopLngMarker[i])
@@ -137,7 +132,6 @@ function buttonLogic(button, i, myMap) {
     let sLng = locations.stopLng;
     let places = placesMarker[i];
     let stopLocations = { lat: parseFloat(sLat), lng: parseFloat(sLng) };
-    console.log(stopLocations);
     clearMarkers();
     createMarker(stopLocations, places);
   };
@@ -222,8 +216,6 @@ function createMarker(stopLocations, places) {
 function setPeoplePickedUp() {
   let peoplePickedUp = document.getElementById("txtInputBox").value;
 
-  console.log("TEST" + hashMapEntry[1]);
-
   const Data = {
     stop_name: hashMapEntry[0],
     picked_up: peoplePickedUp,
@@ -238,11 +230,9 @@ function setPeoplePickedUp() {
     method: "POST"
   };
 
-  console.log(payLoad);
-
   fetch("/api/pickup", payLoad)
     .then(data => {
-      console.log(data);
       alert("Saved!");
+      location.reload();
     })
 }

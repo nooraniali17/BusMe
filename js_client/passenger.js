@@ -7,9 +7,12 @@ var infoWindow;
 var finalLat;
 var finalLng;
 var finalName;
+let id;
 
 function setNumInParty(event) {
+  let partyName = document.getElementById("partyName").value;
   numInParty = parseInt(document.getElementById("numInParty").value, 10);
+  
   if (isNaN(numInParty)) {
     alert("Please enter a number!");
     return;
@@ -18,13 +21,16 @@ function setNumInParty(event) {
     alert("Please enter a number greater than 0 but less than 10!");
     return;
   }
+  else if (!isNaN(partyName)) {
+    alert("Please enter a valid party name!");
+    return;
+  }
   
   const Data = {
-    picked_up: 2,
-    num_pass: numInParty,
-    latitude: finalLat,
-    longitude: finalLng,
-    stop_name: finalName
+    passengers: numInParty,
+    stop_name: finalName,
+    name: partyName,
+    placeid: id
   };
 
   const payLoad = {
@@ -45,9 +51,15 @@ function setNumInParty(event) {
         return;
       }
 
+      return res.json();
+    })
+    .then(data => { console.log(data); 
       document.location.href = "./submit.html";
       localStorage.setItem("tripInfo", JSON.stringify(Data));
+      localStorage.setItem("token", JSON.stringify(data));
+      console.log(data);
     })
+
     .catch(error => console.log(error));
 }
 
@@ -117,7 +129,7 @@ function callback(results, status) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     for (var i = 0; i < results.length; i++) {
       var place = results[i];
-      createMarker(results[i]);
+      createMarker(place);
     }
   }
 }
@@ -136,6 +148,8 @@ function createMarker(place) {
     finalName = place.name;
     finalLat = getLat;
     finalLng = getLng;
+    id = place.place_id;
     infoWindow.open(map, this);
+    console.log(id);
   });
 }
