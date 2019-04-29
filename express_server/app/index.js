@@ -48,6 +48,9 @@ for (const [path, middleware] of Object.entries(require('./endpoints'))) {
 }
 
 // proxy static files to avoid multi origin trouble during local development
-app.use(serveStatic('../js_client', { index: 'passenger.html' }));
+app.use(serveStatic('../js_client', {
+  index: 'passenger.html',
+  extensions: ['html']
+}));
 
 module.exports = app;
