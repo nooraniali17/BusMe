@@ -12,19 +12,19 @@ window.cancelRequest = async () => {
     console.log(res);
     window.location.replace('.');
   }
-}
+};
 
 function setTable (data) {
   const { name, passengers, stopName } = data;
-  $("#name").text(name);
-  $("#pass").text(passengers);
-  $("#stop").text(stopName);
+  $('#name').text(name);
+  $('#pass').text(passengers);
+  $('#stop').text(stopName);
 }
 
 (async () => {
   try {
     setTable(JSON.parse(localStorage.getItem('trip')));
-  } catch {}
+  } catch (e) {}
 
   const data = await (await fetch('/api/checkin/info', payload)).json();
   data.stopName = getStopName(

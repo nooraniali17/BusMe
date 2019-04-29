@@ -1,6 +1,5 @@
 import { gmapsTextSearch } from './es6-compat/gmaps/places.js';
-import { initMap } from './impl/map.js';
-import navigator from './es6-compat/navigator.js';
+import { initMap, currentPosLatLng } from './impl/map.js';
 
 let map;
 let infoWindow;
@@ -35,7 +34,7 @@ window.sendCheckin = async (e) => {
   const resBody = await res.json();
 
   localStorage.setItem('trip', JSON.stringify({
-    ...reqBody, stopName: chosenLocation.name,
+    ...reqBody, stopName: chosenLocation.name
   }));
   localStorage.setItem('token', JSON.stringify(resBody));
 
@@ -64,11 +63,8 @@ async function addMarkers (location, radius) {
 $(document).ready(async () => {
   $('input').tooltip({ trigger: 'focus' });
 
-  const { coords } = await navigator.geolocation.getCurrentPosition();
-  const { latitude, longitude } = coords;
-  const position = { lat: latitude, lng: longitude };
-
-  infoWindow = new google.maps.InfoWindow();
-  map = await initMap({ infoWindow, position });
-  await addMarkers(position, 50);
+  const mapData = await initMap();
+  map = mapData.map;
+  infoWindow = mapData.infoWindow;
+  await addMarkers(map.getCenter(), 50);
 });

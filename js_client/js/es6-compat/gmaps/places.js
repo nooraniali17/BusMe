@@ -1,4 +1,4 @@
-function gmapsCallback(y, n) {
+function gmapsCallback (y, n) {
   return (res, status) => status === 'OK' ? y(res) : n(new Error(status));
 }
 

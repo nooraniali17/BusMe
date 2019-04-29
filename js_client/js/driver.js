@@ -1,10 +1,9 @@
 import navigator from './es6-compat/navigator.js';
-import { initMap, getStopInfo, getStopName } from './impl/map.js';
+import { initMap, getStopInfo, getStopName, currentPosLatLng } from './impl/map.js';
 import tagSoup from './utils/tag-soup.js';
 
 let map;
 let infoWindow;
-let geocoder;
 let currentMarker = {};
 const pickups = new Set();
 
@@ -28,7 +27,7 @@ function generateRows (t, checkinMap) {
   return Promise.all(
     Object.entries(checkinMap)
       .sort(([, a], [, b]) => {
-        const collect = (acc, cur) => acc + cur.passengers
+        const collect = (acc, cur) => acc + cur.passengers;
         const aCt = a.reduce(collect, 0);
         const bCt = b.reduce(collect, 0);
         return bCt - aCt;
@@ -54,6 +53,7 @@ function generateRows (t, checkinMap) {
             }
           };
 
+          const geocoder = new google.maps.Geocoder();
           const stopInfo = obj.stopInfo = await getStopInfo(geocoder, placeid);
           let stopName = getStopName(stopInfo) || `unknown stop ${placeid}`;
 
@@ -120,17 +120,7 @@ async function populateCheckins () {
 
 $(document).ready(async () => {
   await Promise.all([
-    async () => {
-      geocoder = new google.maps.Geocoder();
-      return populateCheckins();
-    },
-    async () => {
-      const { coords } = await navigator.geolocation.getCurrentPosition();
-      const { latitude, longitude } = coords;
-      const position = { lat: latitude, lng: longitude };
-
-      infoWindow = new google.maps.InfoWindow();
-      map = await initMap({ infoWindow, position });
-    }
+    populateCheckins(),
+    (async () => ({ map, infoWindow } = await initMap()))()
   ].map(fn => fn()));
 });
