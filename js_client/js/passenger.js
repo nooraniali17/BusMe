@@ -41,6 +41,12 @@ window.sendCheckin = async (e) => {
   window.location.replace('submit');
 };
 
+/**
+ * Add markers of all nearby bus stations.
+ * 
+ * @param location LatLng literal to base the query on.
+ * @param radius How far away the query should look for.
+ */
 async function addMarkers (location, radius) {
   const res = await gmapsTextSearch(
     new google.maps.places.PlacesService(map),

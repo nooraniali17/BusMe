@@ -23,6 +23,13 @@ window.pickup = async e => {
   window.location.reload(false);
 };
 
+/**
+ * Generate a table body for checkins.
+ * 
+ * @param t Tag soup generator.
+ * @param checkinMap An object with the keys being the place ID of the checkins
+ * contained.
+ */
 function generateRows (t, checkinMap) {
   return Promise.all(
     Object.entries(checkinMap)
@@ -91,6 +98,12 @@ function generateRows (t, checkinMap) {
   );
 }
 
+/**
+ * Generate table for all checkins.
+ * 
+ * @param checkinMap An object with the keys being the place ID of the checkins
+ * contained.
+ */
 async function generateTable (checkinMap) {
   return tagSoup(async t => Object.keys(checkinMap).length !== 0
     ? [

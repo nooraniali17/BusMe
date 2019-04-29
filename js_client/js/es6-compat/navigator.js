@@ -4,6 +4,9 @@ if (!('geolocation' in navigator)) {
 
 export default {
   geolocation: {
+    /**
+     * Promisify `navigator.geolocation.getCurrentPosition`.
+     */
     getCurrentPosition (opts) {
       return new Promise((y, n) => {
         if (navigator.geolocation) {

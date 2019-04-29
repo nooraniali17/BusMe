@@ -1,9 +1,17 @@
+/**
+ * Set attribute on `el` such that the element will approximate
+ * `<{{ el }} {{ k }}="{{ v }}" />`.
+ */
 function setAttribute (el, k, v) {
   const attr = document.createAttribute(k);
   attr.value = v;
   el.setAttributeNode(attr);
 }
 
+/**
+ * Set event listener on `el` such that the element will approximate
+ * `<{{ el }} on{{ k }}="{{ fn }}" />`.
+ */
 function addEventListener (el, k, fn) {
   if (typeof fn === 'function') {
     el.addEventListener(k, fn);
@@ -13,6 +21,11 @@ function addEventListener (el, k, fn) {
   }
 }
 
+/**
+ * Add all attributes to element.
+ * 
+ * @param props Property object, with `events` being specially handled.
+ */
 function addAttributes (el, props) {
   // events
   if (props.events) {
@@ -28,6 +41,11 @@ function addAttributes (el, props) {
   }
 }
 
+/**
+ * Attach children to element.
+ * 
+ * @param  {...any} children Elements or strings (for text nodes).
+ */
 function addChildren (el, ...children) {
   for (let child of children) {
     if (typeof child === 'string') {
@@ -37,6 +55,11 @@ function addChildren (el, ...children) {
   }
 }
 
+/**
+ * Create HTML element generator.
+ * 
+ * @param {*} tag Tag name to create.
+ */
 function htmlElement (tag) {
   return (props = {}, ...children) => {
     const el = document.createElement(tag);
