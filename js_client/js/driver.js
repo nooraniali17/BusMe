@@ -27,6 +27,12 @@ window.pickup = async e => {
 function generateRows (t, checkinMap) {
   return Promise.all(
     Object.entries(checkinMap)
+      .sort(([, a], [, b]) => {
+        const collect = (acc, cur) => acc + cur.passengers
+        const aCt = a.reduce(collect, 0);
+        const bCt = b.reduce(collect, 0);
+        return bCt - aCt;
+      })
       .reduce((acc, [placeid, cins]) => [
         ...acc,
         ...cins.map(async (obj, i) => {
