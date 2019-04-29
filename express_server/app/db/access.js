@@ -48,6 +48,25 @@ exports.getCheckins = async () => {
   });
 };
 
+exports.getCheckinForToken = async (token) => {
+  const [id, cancel] = parseToken(token);
+
+  const checkin = await db.get(SQL`
+    select
+      checkin.name,
+      checkin.passengers,
+      stop.placeid
+    from checkin
+    inner join stop on stop.id = checkin.fk_stop
+    where
+      checkin.active
+      and checkin.id = ${id}
+      and checkin.cancel = ${cancel}
+  `);
+
+  return checkin;
+}
+
 /**
  * Convert stop to unique key. (Get or create)
  *

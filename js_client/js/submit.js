@@ -1,23 +1,34 @@
-let finalName;
-let tripInfo;
+import { getStopInfo, getStopName } from './impl/map.js';
 
-async function cancelRequest () {
+const payload = {
+  headers: { 'Content-Type': 'application/json' },
+  body: localStorage.getItem('token'),
+  method: 'POST'
+};
+
+window.cancelRequest = async () => {
   if (confirm('Are you sure you want to cancel?')) {
-    const res = await fetch('/api/checkin/cancel', {
-      headers: { 'Content-Type': 'application/json' },
-      body: localStorage.getItem('token'),
-      method: 'POST'
-    });
+    const res = await fetch('/api/checkin/cancel', payload);
     console.log(res);
     window.location.replace('.');
   }
 }
 
-$(document).ready(() => {
-  tripInfo = JSON.parse(localStorage.getItem('trip'));
+function setTable (data) {
+  const { name, passengers, stopName } = data;
+  $("#name").text(name);
+  $("#pass").text(passengers);
+  $("#stop").text(stopName);
+}
 
-  // document.getElementById('busStopLabel').innerHTML = tripInfo.passengers;
-  document.getElementById('passengersInPartyLabel').innerHTML =
-    tripInfo.passengers;
-  document.getElementById('partyName').innerHTML = tripInfo.name;
-});
+(async () => {
+  try {
+    setTable(JSON.parse(localStorage.getItem('trip')));
+  } catch {}
+
+  const data = await (await fetch('/api/checkin/info', payload)).json();
+  data.stopName = getStopName(
+    await getStopInfo(new google.maps.Geocoder(), data.placeid));
+  setTable(data);
+  localStorage.setItem('trip', JSON.stringify(data));
+})();

@@ -1,6 +1,5 @@
-import { gmapsGeocode } from './es6-compat/gmaps/places.js';
 import navigator from './es6-compat/navigator.js';
-import { initMap } from './impl/map.js';
+import { initMap, getStopInfo, getStopName } from './impl/map.js';
 import tagSoup from './utils/tag-soup.js';
 
 let map;
@@ -10,7 +9,7 @@ let currentMarker = {};
 const pickups = new Set();
 
 window.pickup = async e => {
-  if (pickups.length === 0) {
+  if (pickups.size === 0) {
     return alert('Please pick up at least one passenger.');
   }
   const res = await fetch('/api/pickup', {
@@ -24,14 +23,6 @@ window.pickup = async e => {
   }
   window.location.reload(false);
 };
-
-async function getStopName (placeId) {
-  const res = await gmapsGeocode(geocoder, { placeId });
-  if (res.length === 0) {
-    throw new Error(`${placeId} is not a valid Place ID.`);
-  }
-  return res[0];
-}
 
 function generateRows (t, checkinMap) {
   return Promise.all(
@@ -57,15 +48,8 @@ function generateRows (t, checkinMap) {
             }
           };
 
-          const stopInfo = obj.stopInfo = await getStopName(placeid);
-          let stopName = `unknown stop ${placeid}`;
-
-          for (const { short_name, types } of stopInfo.address_components) {
-            if (types.includes('bus_station')) {
-              stopName = short_name;
-              break;
-            }
-          }
+          const stopInfo = obj.stopInfo = await getStopInfo(geocoder, placeid);
+          let stopName = getStopName(stopInfo) || `unknown stop ${placeid}`;
 
           const location = stopInfo.geometry.location;
           const position = { lat: location.lat(), lng: location.lng() };

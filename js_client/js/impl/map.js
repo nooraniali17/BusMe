@@ -1,3 +1,4 @@
+import { gmapsGeocode } from '../es6-compat/gmaps/places.js';
 import navigator from '../es6-compat/navigator.js';
 
 export function initMap({
@@ -26,5 +27,21 @@ export function initMap({
     infoWindow.setPosition(map.getCenter());
     infoWindow.setContent(e.message);
     infoWindow.open(map);
+  }
+}
+
+export async function getStopInfo (geocoder, placeId) {
+  const res = await gmapsGeocode(geocoder, { placeId });
+  if (res.length === 0) {
+    throw new Error(`${placeId} is not a valid Place ID.`);
+  }
+  return res[0];
+}
+
+export function getStopName (info) {
+  for (const { short_name, types } of info.address_components) {
+    if (types.includes('bus_station')) {
+      return short_name;
+    }
   }
 }

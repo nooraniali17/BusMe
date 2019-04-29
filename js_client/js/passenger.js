@@ -4,7 +4,7 @@ import navigator from './es6-compat/navigator.js';
 
 let map;
 let infoWindow;
-let id;
+let chosenLocation;
 
 window.sendCheckin = async (e) => {
   e.preventDefault();
@@ -13,7 +13,7 @@ window.sendCheckin = async (e) => {
   const reqBody = {
     passengers: parseInt(form.passengers.value, 10),
     name: form.groupName.value,
-    placeid: id
+    placeid: chosenLocation.place_id
   };
 
   if (reqBody.placeid == null) {
@@ -34,7 +34,9 @@ window.sendCheckin = async (e) => {
   }
   const resBody = await res.json();
 
-  localStorage.setItem('trip', JSON.stringify(reqBody));
+  localStorage.setItem('trip', JSON.stringify({
+    ...reqBody, stopName: chosenLocation.name,
+  }));
   localStorage.setItem('token', JSON.stringify(resBody));
 
   window.location.replace('submit.html');
@@ -47,13 +49,14 @@ async function addMarkers (location, radius) {
   );
 
   const animation = google.maps.Animation.DROP;
-  for (const { name, place_id, geometry: { location } } of res) {
+  for (const r of res) {
+    const { name, place_id, geometry: { location } } = r;
     const position = { lat: location.lat(), lng: location.lng() };
     new google.maps.Marker({ map, position, animation })
       .addListener('click', function () {
         infoWindow.setContent(name);
         infoWindow.open(map, this);
-        id = place_id;
+        chosenLocation = r;
       });
   }
 }

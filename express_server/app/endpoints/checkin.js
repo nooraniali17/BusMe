@@ -53,6 +53,34 @@ exports['/api/checkin'] = {
   }
 };
 
+exports['/api/checkin/info'] = {
+  /**
+   * Get checkin info. Returns a single entry of the type of `GET /api/checkin`.
+   *
+   * ```yaml
+   * schema:
+   *  token:
+   *    is: str
+   *    desc: String from `POST /api/checkin` to get info about.
+   * ```
+   */
+  async post ({ body = {} }, res) {
+    let token;
+    try {
+      [token] = pick(body, ['token']);
+    } catch (e) {
+      console.log(e.message);
+      return res.sendStatus(400);
+    }
+
+    const checkin = await access.getCheckinForToken(token);
+    if (checkin) {
+      return res.send(checkin);
+    }
+    return res.sendStatus(404);
+  }
+};
+
 exports['/api/checkin/cancel'] = {
   /**
    * Cancel checkin.
