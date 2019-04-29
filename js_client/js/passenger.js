@@ -39,7 +39,7 @@ window.sendCheckin = async (e) => {
   }));
   localStorage.setItem('token', JSON.stringify(resBody));
 
-  window.location.replace('submit.html');
+  window.location.replace('submit');
 };
 
 async function addMarkers (location, radius) {

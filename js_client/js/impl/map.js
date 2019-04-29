@@ -11,7 +11,7 @@ export function initMap({
   infoWindow = infoWindow || new google.maps.InfoWindow();
   position = { lat: 0, lng: 0, ...position };
   const map = new google.maps.Map(document.getElementById('map'), {
-    center: position, zoom: 16, gestureHandling: 'greedy', ...mapOpts
+    center: position, zoom: 17, gestureHandling: 'none', ...mapOpts
   });
   const currentPosMarker = new google.maps.Marker({
     position, map, icon, ...posMarkerOpts
