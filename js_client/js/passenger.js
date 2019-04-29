@@ -4,7 +4,7 @@ import navigator from './es6-compat/navigator.js';
 
 let map;
 let infoWindow;
-let chosenLocation;
+let chosenLocation = {};
 
 window.sendCheckin = async (e) => {
   e.preventDefault();
