@@ -11,9 +11,9 @@ const db = require('../db');
  *
  * @see parseToken The reverse operation.
  */
-function createToken (id, cancel) {
-  const tokenPart = id.toString(config.get('token_radix'));
-  return `${tokenPart}:${cancel}`;
+function createToken(id, cancel) {
+    const tokenPart = id.toString(config.get('token_radix'));
+    return `${tokenPart}:${cancel}`;
 }
 
 /**
@@ -21,16 +21,16 @@ function createToken (id, cancel) {
  *
  * @see createToken The reverse operation.
  */
-function parseToken (token) {
-  const [id, cancel] = token.split(':');
-  return [parseInt(id, config.get('token_radix')), cancel];
+function parseToken(token) {
+    const [id, cancel] = token.split(':');
+    return [parseInt(id, config.get('token_radix')), cancel];
 }
 
 /**
  * Get all checkins, almost a direct table dump.
  */
-exports.getCheckins = async () => {
-  const checkins = await db.all(`
+exports.getCheckins = async() => {
+    const checkins = await db.all(`
     select
       checkin.id,
       checkin.name,
@@ -43,9 +43,28 @@ exports.getCheckins = async () => {
       checkin.active
   `);
 
-  return checkins.map(({ id, cancel, ...rest }) => {
-    return { ...rest, token: createToken(id, cancel) };
-  });
+    return checkins.map(({ id, cancel, ...rest }) => {
+        return {...rest, token: createToken(id, cancel) };
+    });
+};
+
+exports.updateDriver = async(id, lat, long) => {
+    await db.run(SQL `
+    update driver 
+    set long=${long}, let=${lat} 
+    where id=${id}
+  `);
+
+    return id;
+};
+
+exports.getDrivers = async() => {
+    return db.all(`
+    SELECT * 
+    FROM driver
+    WHERE
+      long != 0 AND lat != 0
+  `);
 };
 
 /**
@@ -54,20 +73,20 @@ exports.getCheckins = async () => {
  * @param stop Stop by Google Maps place ID (e.g.
  * `ChIJrSRfGH3pj4ARm2lRTYi8PeI`).
  */
-async function getStopFk (stop) {
-  await db.run(SQL`
+async function getStopFk(stop) {
+    await db.run(SQL `
     insert or ignore into stop
       (placeid)
     values (${stop})
   `);
 
-  const { id } = await db.get(SQL`
+    const { id } = await db.get(SQL `
     select id from stop
     where
       placeid = ${stop}
   `);
 
-  return id;
+    return id;
 }
 
 /**
@@ -75,38 +94,38 @@ async function getStopFk (stop) {
  * @param name Party name.
  * @param placeid Stop to check in to.
  */
-exports.createCheckin = async (pass, name, placeid) => {
-  const cancel = (await randomBytes(18)).toString('base64');
-  const { lastID } = await db.run(SQL`
+exports.createCheckin = async(pass, name, placeid) => {
+    const cancel = (await randomBytes(18)).toString('base64');
+    const { lastID } = await db.run(SQL `
     insert into checkin (name, passengers, fk_stop, cancel)
     values (${name}, ${pass}, ${await getStopFk(placeid)}, ${cancel})
   `);
-  const tokenPart = lastID.toString(config.get('token_radix'));
-  return `${tokenPart}:${cancel}`;
+    const tokenPart = lastID.toString(config.get('token_radix'));
+    return `${tokenPart}:${cancel}`;
 };
 
 /**
  * @param token `'${id}:${token}'` string.
  * @return Whether or not it is a valid checkin.
  */
-exports.cancelCheckin = async (token) => {
-  const [id, cancel] = parseToken(token);
+exports.cancelCheckin = async(token) => {
+    const [id, cancel] = parseToken(token);
 
-  const checkin = await db.get(SQL`
+    const checkin = await db.get(SQL `
     select cancel from checkin
     where id = ${id}
   `);
 
-  const valid = checkin && checkin.cancel === cancel;
-  if (valid) {
-    await db.run(SQL`
+    const valid = checkin && checkin.cancel === cancel;
+    if (valid) {
+        await db.run(SQL `
       update checkin
       set active = false
       where
         id = ${id}
     `);
-  } else {
-    console.log(token, 'is not a valid checkin');
-  }
-  return valid;
+    } else {
+        console.log(token, 'is not a valid checkin');
+    }
+    return valid;
 };
