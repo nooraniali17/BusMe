@@ -1,3 +1,6 @@
+import $ from 'https://dev.jspm.io/jquery';
+import 'https://dev.jspm.io/bootstrap';
+
 import loadGmaps from './impl/get-gmaps.js';
 import { gmapsTextSearch } from './es6-compat/gmaps/places.js';
 import { initMap, currentPosLatLng } from './impl/map.js';

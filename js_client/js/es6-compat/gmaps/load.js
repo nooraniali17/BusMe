@@ -1,6 +1,6 @@
 const imported = {};
 
-function createId(len = 10) {
+function createId (len = 10) {
   let candidate;
 
   do {
@@ -11,26 +11,26 @@ function createId(len = 10) {
   } while (window[candidate]);
 
   return candidate;
-};
+}
 
-function createUrl(baseURL, key, libraries) {
+function createUrl (baseURL, key, libraries) {
   const gmapsURL = new URL(baseURL);
   const gmapsParams = gmapsURL.searchParams;
-  gmapsParams.set("key", key);
-  gmapsParams.set("libraries", libraries.join(","));
+  gmapsParams.set('key', key);
+  gmapsParams.set('libraries', libraries.join(','));
   return gmapsURL;
 }
 
-export default function loadGmaps({
-  baseURL = "https://maps.googleapis.com/maps/api/js",
+export default function loadGmaps ({
+  baseURL = 'https://maps.googleapis.com/maps/api/js',
   key,
   libraries = [],
-  timeoutMs = 10000,
+  timeoutMs = 10000
 } = {}) {
   const url = createUrl(baseURL, key, libraries);
   return imported[url] = imported[url] || new Promise((y, n) => {
     const callback = createId();
-    url.searchParams.set("callback", callback);
+    url.searchParams.set('callback', callback);
 
     const timeout = setTimeout(() => {
       window[callback] = () => {};
@@ -44,7 +44,7 @@ export default function loadGmaps({
       clearTimeout(timeout);
       delete window[callback];
       y(window.google.maps);
-    }
+    };
     document.body.appendChild(script);
   });
-};
+}

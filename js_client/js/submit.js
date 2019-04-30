@@ -1,3 +1,6 @@
+import $ from 'https://dev.jspm.io/jquery';
+import 'https://dev.jspm.io/bootstrap';
+
 import loadGmaps from './impl/get-gmaps.js';
 import { getStopInfo, getStopName, initMap } from './impl/map.js';
 
@@ -28,16 +31,16 @@ function setTable (data) {
 }
 /**
  * Add markers of all nearby bus stations.
- * 
+ *
  * @param location LatLng literal to base the query on.
  * @param radius How far away the query should look for.
  */
 async function addDriverMarker (location, radius) {
-  var driverLatLng = {lat: 37.970843, lng: -121.315699}
+  var driverLatLng = { lat: 37.970843, lng: -121.315699 };
 
-  var driverMaker =new google.maps.Marker({
+  var driverMaker = new google.maps.Marker({
     position: driverLatLng,
-    title:"Here's your driver!"
+    title: "Here's your driver!"
   });
   // const res = await gmapsTextSearch(
   //   new google.maps.places.PlacesService(map),
@@ -59,8 +62,6 @@ async function addDriverMarker (location, radius) {
 
 $(document).ready(async () => {
   $('input').tooltip({ trigger: 'focus' });
-
-  
 });
 
 (async () => {

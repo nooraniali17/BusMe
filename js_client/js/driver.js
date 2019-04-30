@@ -1,3 +1,6 @@
+import $ from 'https://dev.jspm.io/jquery';
+import 'https://dev.jspm.io/bootstrap';
+
 import loadGmaps from './impl/get-gmaps.js';
 import navigator from './es6-compat/navigator.js';
 import { initMap, getStopInfo, getStopName, currentPosLatLng } from './impl/map.js';
