@@ -1,6 +1,10 @@
+import loadGmaps from './impl/get-gmaps.js';
 import navigator from './es6-compat/navigator.js';
 import { initMap, getStopInfo, getStopName, currentPosLatLng } from './impl/map.js';
 import tagSoup from './utils/tag-soup.js';
+
+// GMAPS
+let Geocoder, Marker;
 
 let map;
 let infoWindow;
@@ -25,7 +29,7 @@ window.pickup = async e => {
 
 /**
  * Generate a table body for checkins.
- * 
+ *
  * @param t Tag soup generator.
  * @param checkinMap An object with the keys being the place ID of the checkins
  * contained.
@@ -60,7 +64,7 @@ function generateRows (t, checkinMap) {
             }
           };
 
-          const geocoder = new google.maps.Geocoder();
+          const geocoder = new Geocoder();
           const stopInfo = obj.stopInfo = await getStopInfo(geocoder, placeid);
           let stopName = getStopName(stopInfo) || `unknown stop ${placeid}`;
 
@@ -80,7 +84,7 @@ function generateRows (t, checkinMap) {
                         previousMarker.setMap(null);
                       }
 
-                      const marker = new google.maps.Marker({ map, position });
+                      const marker = new Marker({ map, position });
                       infoWindow.setContent(stopName);
                       infoWindow.open(map, marker);
                       currentMarker = { placeid, marker };
@@ -100,7 +104,7 @@ function generateRows (t, checkinMap) {
 
 /**
  * Generate table for all checkins.
- * 
+ *
  * @param checkinMap An object with the keys being the place ID of the checkins
  * contained.
  */
@@ -131,9 +135,13 @@ async function populateCheckins () {
   $('#checkins').append(...table);
 }
 
-$(document).ready(async () => {
+(async () => {
+  const gmaps = await loadGmaps();
+  Geocoder = gmaps.Geocoder;
+  Marker = gmaps.Marker;
+
   await Promise.all([
-    populateCheckins(),
-    (async () => ({ map, infoWindow } = await initMap()))()
+    populateCheckins,
+    async () => ({ map, infoWindow } = await initMap())
   ].map(fn => fn()));
-});
+})();

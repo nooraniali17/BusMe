@@ -6,22 +6,26 @@ import navigator from '../es6-compat/navigator.js';
  *
  * @returns Map (under `map`) and info popup (under `infoWindow`).
  */
-export async function initMap ({
-  infoWindow = null,
-  position = null,
-  icon = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
-  mapOpts = {},
-  posMarkerOpts = {}
-} = {}) {
-  const map = new google.maps.Map(document.getElementById('map'), {
+export async function initMap (
+  {
+    infoWindow = null,
+    position = null,
+    icon = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
+    mapOpts = {},
+    posMarkerOpts = {}
+
+  } = {},
+  { Map: gmaps_Map, InfoWindow, Marker } = google.maps
+) {
+  const map = new gmaps_Map(document.getElementById('map'), {
     center: { lat: 0, lng: 0 }, zoom: 17, ...mapOpts
   });
-  infoWindow = infoWindow || new google.maps.InfoWindow();
+  infoWindow = infoWindow || new InfoWindow();
 
   try {
     position = position || await currentPosLatLng();
     map.setCenter(position);
-    new google.maps.Marker({ position, map, icon, ...posMarkerOpts })
+    new Marker({ position, map, icon, ...posMarkerOpts })
       .addListener('click', function () {
         infoWindow.setContent('Current Location');
         infoWindow.open(map, this);

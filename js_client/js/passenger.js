@@ -1,5 +1,9 @@
+import loadGmaps from './impl/get-gmaps.js';
 import { gmapsTextSearch } from './es6-compat/gmaps/places.js';
 import { initMap, currentPosLatLng } from './impl/map.js';
+
+// GMAPS
+let Animation, Marker, PlacesService;
 
 let map;
 let infoWindow;
@@ -43,21 +47,21 @@ window.sendCheckin = async (e) => {
 
 /**
  * Add markers of all nearby bus stations.
- * 
+ *
  * @param location LatLng literal to base the query on.
  * @param radius How far away the query should look for.
  */
 async function addMarkers (location, radius) {
   const res = await gmapsTextSearch(
-    new google.maps.places.PlacesService(map),
+    new PlacesService(map),
     { location, radius, query: 'bus stops' }
   );
 
-  const animation = google.maps.Animation.DROP;
+  const animation = Animation.DROP;
   for (const r of res) {
     const { name, place_id, geometry: { location } } = r;
     const position = { lat: location.lat(), lng: location.lng() };
-    new google.maps.Marker({ map, position, animation })
+    new Marker({ map, position, animation })
       .addListener('click', function () {
         infoWindow.setContent(name);
         infoWindow.open(map, this);
@@ -66,11 +70,18 @@ async function addMarkers (location, radius) {
   }
 }
 
-$(document).ready(async () => {
+(async () => {
   $('input').tooltip({ trigger: 'focus' });
+
+  const gmaps = await loadGmaps({ libraries: ['places'] });
+  Animation = gmaps.Animation;
+  Marker = gmaps.Marker;
+  PlacesService = gmaps.places.PlacesService;
 
   const mapData = await initMap();
   map = mapData.map;
   infoWindow = mapData.infoWindow;
   await addMarkers(map.getCenter(), 50);
-});
+})();
+
+$(document).ready(() => $('input').tooltip({ trigger: 'focus' }));

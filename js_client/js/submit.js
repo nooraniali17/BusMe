@@ -1,4 +1,7 @@
+import loadGmaps from './impl/get-gmaps.js';
 import { getStopInfo, getStopName } from './impl/map.js';
+
+let Geocoder;
 
 const payload = {
   headers: { 'Content-Type': 'application/json' },
@@ -26,9 +29,12 @@ function setTable (data) {
     setTable(JSON.parse(localStorage.getItem('trip')));
   } catch (e) {}
 
+  const gmaps = await loadGmaps();
+  Geocoder = gmaps.Geocoder;
+
   const data = await (await fetch('/api/checkin/info', payload)).json();
   data.stopName = getStopName(
-    await getStopInfo(new google.maps.Geocoder(), data.placeid));
+    await getStopInfo(new Geocoder(), data.placeid));
   setTable(data);
   localStorage.setItem('trip', JSON.stringify(data));
 })();

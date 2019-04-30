@@ -23,7 +23,7 @@ function addEventListener (el, k, fn) {
 
 /**
  * Add all attributes to element.
- * 
+ *
  * @param props Property object, with `events` being specially handled.
  */
 function addAttributes (el, props) {
@@ -43,7 +43,7 @@ function addAttributes (el, props) {
 
 /**
  * Attach children to element.
- * 
+ *
  * @param  {...any} children Elements or strings (for text nodes).
  */
 function addChildren (el, ...children) {
@@ -57,7 +57,7 @@ function addChildren (el, ...children) {
 
 /**
  * Create HTML element generator.
- * 
+ *
  * @param {*} tag Tag name to create.
  */
 function htmlElement (tag) {
