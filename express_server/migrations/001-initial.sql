@@ -21,9 +21,17 @@ CREATE TABLE checkin (
   FOREIGN KEY(fk_stop) REFERENCES stop(id)
 );
 
+CREATE TABLE driver (
+  id          INTEGER PRIMARY KEY,
+  long        REAL,
+  lat         REAL
+);
+INSERT INTO driver VALUES (1, 0, 0);
+
 -----
 -- Down
 -----
 
 DROP TABLE checkin;
 DROP TABLE stop;
+DROP TABLE driver;
