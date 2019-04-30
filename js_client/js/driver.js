@@ -1,3 +1,4 @@
+import deepEqual from 'https://dev.jspm.io/deep-equal';
 import $ from 'https://dev.jspm.io/jquery';
 import 'https://dev.jspm.io/bootstrap';
 
@@ -5,6 +6,7 @@ import loadGmaps from './impl/get-gmaps.js';
 import navigator from './es6-compat/navigator.js';
 import { initMap, getStopInfo, getStopName, currentPosLatLng } from './impl/map.js';
 import tagSoup from './utils/tag-soup.js';
+import { sleep } from './utils/index.js';
 
 // GMAPS
 let Geocoder, Marker;
@@ -67,8 +69,9 @@ function generateRows (t, checkinMap) {
             }
           };
 
-          const geocoder = new Geocoder();
-          const stopInfo = obj.stopInfo = await getStopInfo(geocoder, placeid);
+          obj.stop = obj.stop || await getStopInfo(new Geocoder(), placeid);
+
+          const stopInfo = obj.stop;
           let stopName = getStopName(stopInfo) || `unknown stop ${placeid}`;
 
           const location = stopInfo.geometry.location;
@@ -125,17 +128,25 @@ async function generateTable (checkinMap) {
   );
 }
 
-async function populateCheckins () {
-  const data = await (await fetch('/api/checkin', { method: 'GET' })).json();
-  const checkinMap = data.reduce((acc, cur) => {
+async function getCheckins() {
+  getCheckins.cache = getCheckins.cache || [undefined, undefined];
+  const [oldText, oldCheckins] = getCheckins.cache;
+  const oldData = oldText && JSON.parse(oldText);
+
+  const text = await (await fetch('/api/checkin', { method: 'GET' })).text();
+  const data = JSON.parse(text);
+  if (deepEqual(oldData, data)) {
+    return oldCheckins;
+  }
+
+  const checkins = data.reduce((acc, cur) => {
     const k = cur.placeid;
     acc[k] = acc[k] || [];
     acc[k].push(cur);
     return acc;
   }, {});
-
-  const table = await generateTable(checkinMap);
-  $('#checkins').append(...table);
+  getCheckins.cache = [text, checkins];
+  return checkins;
 }
 
 (async () => {
@@ -144,7 +155,12 @@ async function populateCheckins () {
   Marker = gmaps.Marker;
 
   await Promise.all([
-    populateCheckins,
+    async () => {
+      do {
+        const table = await generateTable(await getCheckins());
+        $('#checkins').empty().append(...table);
+      } while (await sleep(5000, true));
+    },
     async () => ({ map, infoWindow } = await initMap())
   ].map(fn => fn()));
 })();
