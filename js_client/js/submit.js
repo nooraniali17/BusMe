@@ -9,6 +9,8 @@ let Geocoder;
 let map;
 let infoWindow;
 
+var icon = 'http://maps.google.com/mapfiles/ms/micons/bus.png';
+
 const payload = {
   headers: { 'Content-Type': 'application/json' },
   body: localStorage.getItem('token'),
@@ -38,10 +40,14 @@ function setTable (data) {
 async function addDriverMarker (location, radius) {
   var driverLatLng = { lat: 37.970843, lng: -121.315699 };
 
-  var driverMaker = new google.maps.Marker({
+  var driverMarker = new google.maps.Marker({
     position: driverLatLng,
-    title: "Here's your driver!"
+    title: "Here's your driver!",
+    icon
   });
+  map.setCenter(driverLatLng);
+
+  driverMarker.setMap(map);
   // const res = await gmapsTextSearch(
   //   new google.maps.places.PlacesService(map),
   //   { location, radius, query: 'bus stops' }
