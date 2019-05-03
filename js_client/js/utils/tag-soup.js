@@ -116,6 +116,9 @@ const tagSouper = new Proxy({ _: {} }, {
  *  </div>
  * </div>
  * ```
+ *
+ * @param cb Closure to limit tag soup creator scope, so that one-letter names
+ * can be used more conveniently.
  */
 export default function tagSoup (cb) {
   return cb(tagSouper);

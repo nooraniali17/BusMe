@@ -42,19 +42,23 @@ window.pickup = async e => {
 function generateRows (t, checkinMap) {
   return Promise.all(
     Object.entries(checkinMap)
+      // sort by current passengers at each stop, descending
       .sort(([, a], [, b]) => {
         const collect = (acc, cur) => acc + cur.passengers;
         const aCt = a.reduce(collect, 0);
         const bCt = b.reduce(collect, 0);
         return bCt - aCt;
       })
-      .reduce((acc, [placeid, cins]) => [
+      .reduce((acc, [placeid, checkins]) => [
         ...acc,
-        ...cins.map(async (obj, i) => {
+        ...checkins.map(async (obj, i) => {
           const { name: groupName, passengers, token } = obj;
 
           const partyProps = {
             events: {
+              /**
+               * Toggle pick-up list and highlighting.
+               */
               click (e) {
                 e.preventDefault();
 
@@ -80,8 +84,11 @@ function generateRows (t, checkinMap) {
           return t.tr(
             i === 0 && t.td(
               {
-                rowspan: cins.length,
+                rowspan: checkins.length,
                 events: {
+                  /**
+                   * Focus on bus stop in map.
+                   */
                   click (e) {
                     e.preventDefault();
                     if (currentMarker.placeid !== placeid) {
@@ -114,7 +121,7 @@ function generateRows (t, checkinMap) {
  * @param checkinMap An object with the keys being the place ID of the checkins
  * contained.
  */
-async function generateTable (checkinMap) {
+function generateTable (checkinMap) {
   return tagSoup(async t => Object.keys(checkinMap).length !== 0
     ? [
       t.thead(t.tr(
@@ -128,7 +135,18 @@ async function generateTable (checkinMap) {
   );
 }
 
-async function getCheckins() {
+/**
+ * Get all check ins from `GET /api/checkin`.
+ */
+async function getCheckins () {
+  // cache is keyed by JSON object, because for some reason comparing the
+  // "compiled" object makes deep-compare go a bit haywire.
+
+  // doesn't really prevent the situation where the same list is returned but
+  // in a different order, but this isn't supposed to be a perfect cache
+  // anyways, just a way to prevent as many unnecessary geocode requests
+  // as possible.
+
   getCheckins.cache = getCheckins.cache || [undefined, undefined];
   const [oldText, oldCheckins] = getCheckins.cache;
   const oldData = oldText && JSON.parse(oldText);
@@ -145,22 +163,25 @@ async function getCheckins() {
     acc[k].push(cur);
     return acc;
   }, {});
+
   getCheckins.cache = [text, checkins];
   return checkins;
 }
 
 (async () => {
+  // LOAD GMAPS JAVASCRIPT
   const gmaps = await loadGmaps();
   Geocoder = gmaps.Geocoder;
   Marker = gmaps.Marker;
 
   await Promise.all([
-    async () => {
+    async () => { // CONSTANTLY UPDATE DRIVER TABLE
       do {
         const table = await generateTable(await getCheckins());
         $('#checkins').empty().append(...table);
       } while (await sleep(5000, true));
     },
+    // LOAD GOOGLE MAPS
     async () => ({ map, infoWindow } = await initMap())
   ].map(fn => fn()));
 })();

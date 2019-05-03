@@ -13,7 +13,6 @@ export async function initMap (
     icon = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
     mapOpts = {},
     posMarkerOpts = {}
-
   } = {},
   { Map: gmaps_Map, InfoWindow, Marker } = google.maps
 ) {
