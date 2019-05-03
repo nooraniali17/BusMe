@@ -47,7 +47,7 @@ async function addDriverMarker (
   icon = 'http://maps.google.com/mapfiles/ms/micons/bus.png'
   } = {}) {
   // TODO: await fetch('/api/driver');
-  const data = await (await fetch('/api/driverLocation', driverPayload)).json();
+  const data = await (await fetch('/api/driverLocation', { method: 'GET' })).text();  
   const animation = Animation.DROP;
   console.log(data);
   var driverLatLng = { lat: data.lat, lng: data.lng};

@@ -171,7 +171,7 @@ async function getCheckins () {
 async function setLocation() {
   var driverPosition = await currentPosLatLng();
   const reqBody = {
-    id: 1234,
+    id: 1,
     lat: driverPosition.lat,
     long: driverPosition.lng
   };

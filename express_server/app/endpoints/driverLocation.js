@@ -6,7 +6,7 @@ exports['/api/driverLocation/'] = {
      * Get Driver Location.
      */
     async get(req, res) {
-        await console.log(access.getDrivers());
+        console.log(await access.getDrivers());
         res.send(await access.getDrivers());
     }
 }
@@ -37,6 +37,7 @@ exports['/api/driverLocation/update'] = {
             return res.sendStatus(400);
         }
         try {
+            console.log(...args)
             return res.send({ token: await access.updateDriver(...args) });
         } catch (e) {
             console.log(e.message);

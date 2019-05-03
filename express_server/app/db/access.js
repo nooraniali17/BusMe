@@ -62,8 +62,6 @@ exports.getDrivers = async() => {
     return db.all(`
     SELECT * 
     FROM driver
-    WHERE
-      long != 0 AND lat != 0
   `);
 };
 
