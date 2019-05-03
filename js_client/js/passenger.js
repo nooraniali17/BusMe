@@ -74,16 +74,18 @@ async function addMarkers (location, radius) {
 }
 
 (async () => {
-  $('input').tooltip({ trigger: 'focus' });
-
+  // LOAD GMAPS JAVASCRIPT
   const gmaps = await loadGmaps({ libraries: ['places'] });
   Animation = gmaps.Animation;
   Marker = gmaps.Marker;
   PlacesService = gmaps.places.PlacesService;
 
+  // LOAD GOOGLE MAPS
   const mapData = await initMap();
   map = mapData.map;
   infoWindow = mapData.infoWindow;
+
+  // POPULATE BUS STOPS
   await addMarkers(map.getCenter(), 50);
 })();
 
