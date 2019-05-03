@@ -15,6 +15,11 @@ const payload = {
   method: 'POST'
 };
 
+const driverPayload = {
+  headers: { 'Content-Type': 'application/json' },
+  method: 'GET'
+};
+
 window.cancelRequest = async () => {
   if (confirm('Are you sure you want to cancel?')) {
     const res = await fetch('/api/checkin/cancel', payload);
@@ -37,13 +42,18 @@ function setTable (data) {
  * @param radius How far away the query should look for.
  * @param icon Marker icon image URL.
  */
-async function addDriverMarker ({
+async function addDriverMarker (
+  {
   icon = 'http://maps.google.com/mapfiles/ms/micons/bus.png'
-}) {
+  } = {}) {
   // TODO: await fetch('/api/driver');
+  const data = await (await fetch('/api/driverLocation', driverPayload)).json();
   const animation = Animation.DROP;
+  console.log(data);
+  var driverLatLng = { lat: data.lat, lng: data.lng};
+  
   var driverMarker = new google.maps.Marker({
-    position: { lat: 37.970843, lng: -121.315699 },
+    position: driverLatLng,
     title: "Here's your driver!",
     animation,
     icon

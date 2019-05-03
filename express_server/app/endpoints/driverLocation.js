@@ -6,6 +6,7 @@ exports['/api/driverLocation/'] = {
      * Get Driver Location.
      */
     async get(req, res) {
+        await console.log(access.getDrivers());
         res.send(await access.getDrivers());
     }
 }
