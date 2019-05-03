@@ -4,7 +4,7 @@ import 'https://dev.jspm.io/bootstrap';
 import loadGmaps from './impl/get-gmaps.js';
 import { getStopInfo, getStopName, initMap } from './impl/map.js';
 
-let Geocoder;
+let Geocoder, Animation;
 
 let map;
 let infoWindow;
@@ -39,31 +39,33 @@ function setTable (data) {
  */
 async function addDriverMarker (location, radius) {
   var driverLatLng = { lat: 37.970843, lng: -121.315699 };
+  // var lat, lng;
 
+  
+  // const data = JSON.parse(res);
+  // lat = data.lat;
+  // lng = data.long;
+  // var driverLatLng = { lat: lat, lng: lng };
+  // const res = await fetch('/api/driverLocation/update', {
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify(reqBody),
+  //   method: 'POST'
+  // });
+
+  // if (res.status >= 400) {
+  //   return alert(`Driver location request failed (HTTP ${res.status})`);
+  // }
+
+  const animation = Animation.DROP;
   var driverMarker = new google.maps.Marker({
     position: driverLatLng,
     title: "Here's your driver!",
+    animation,
     icon
   });
   map.setCenter(driverLatLng);
 
   driverMarker.setMap(map);
-  // const res = await gmapsTextSearch(
-  //   new google.maps.places.PlacesService(map),
-  //   { location, radius, query: 'bus stops' }
-  // );
-
-  // const animation = google.maps.Animation.DROP;
-  // for (const r of res) {
-  //   const { name, place_id, geometry: { location } } = r;
-  //   const position = { lat: location.lat(), lng: location.lng() };
-  //   new google.maps.Marker({ map, position, animation })
-  //     .addListener('click', function () {
-  //       infoWindow.setContent(name);
-  //       infoWindow.open(map, this);
-  //       chosenLocation = r;
-  //     });
-  // }
 }
 
 $(document).ready(async () => {
@@ -76,6 +78,7 @@ $(document).ready(async () => {
   } catch (e) {}
 
   const gmaps = await loadGmaps();
+  Animation = gmaps.Animation;
   Geocoder = gmaps.Geocoder;
 
   const mapData = await initMap();

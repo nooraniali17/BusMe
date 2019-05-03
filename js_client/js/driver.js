@@ -149,10 +149,31 @@ async function getCheckins() {
   return checkins;
 }
 
+async function setLocation() {
+  var driverPosition = await currentPosLatLng();
+  const reqBody = {
+    id: 1234,
+    lat: driverPosition.lat,
+    long: driverPosition.lng
+  };
+
+  const res = await fetch('/api/driverLocation/update', {
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(reqBody),
+    method: 'POST'
+  });
+
+  if (res.status >= 400) {
+    return alert(`Driver location update failed (HTTP ${res.status})`);
+  }
+
+}
+
 (async () => {
   const gmaps = await loadGmaps();
   Geocoder = gmaps.Geocoder;
   Marker = gmaps.Marker;
+  setLocation();
 
   await Promise.all([
     async () => {
