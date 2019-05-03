@@ -51,7 +51,7 @@ exports.getCheckins = async() => {
 exports.updateDriver = async(id, lat, long) => {
     await db.run(SQL `
     update driver 
-    set long=${long}, let=${lat} 
+    set long=${long}, lat=${lat} 
     where id=${id}
   `);
 

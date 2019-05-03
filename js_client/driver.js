@@ -165,26 +165,55 @@ function initMap() {
     icon: image
   });
   //remove if block below to not get bus location
-  // if (navigator.geolocation) {
-  //   navigator.geolocation.getCurrentPosition(
-  //     function(position) {
-  //       var myLocation = {
-  //         lat: position.coords.latitude,
-  //         lng: position.coords.longitude
-  //       };
-  //       myLat = myLocation.lat;
-  //       myLong = myLocation.lng;
-  //       myLocation = { lat: parseFloat(myLat), lng: parseFloat(myLong) };
-  //       infoWindow.setPosition(myLocation);
-  //       infoWindow.setContent("Bus Location Found");
-  //       infoWindow.open(map);
-  //       map.setCenter(myLocation);
-  //     },
-  //     function() {
-  //       handleLocationError(true, infoWindow, map.getCenter());
-  //     }
-  //   );
-  // }
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        var myLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        myLat = myLocation.lat;
+        myLong = myLocation.lng;
+        myLocation = { lat: parseFloat(myLat), lng: parseFloat(myLong) };
+        infoWindow.setPosition(myLocation);
+        infoWindow.setContent("Bus Location Found");
+        infoWindow.open(map);
+        map.setCenter(myLocation);
+
+        const Data = {
+          id: 0,
+          lat: myLat,
+          long: myLong
+        };
+        
+        const payload = {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(Data),
+          method: "POST"
+        };
+        console.log(payload);
+
+        fetch("/api/driverLocation/update", payload)
+          .then(res => {
+            console.log(res);
+
+            if (res.status >= 400) {
+              console.log("Invalid Location!");
+              return;
+            }
+
+            return res.json();
+          })
+          .catch(error => console.log(error));
+
+      },
+      function() {
+        handleLocationError(true, infoWindow, map.getCenter());
+      }
+    );
+  }
 }
 
 function handleLocationError(browserHasGeolocation, infoWindow, myLocation) {

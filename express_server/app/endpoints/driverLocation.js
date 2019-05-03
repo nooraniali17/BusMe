@@ -27,7 +27,7 @@ exports['/api/driverLocation/update'] = {
      *    desc: longitude of drivers location
      * ```
      */
-    async postMessage({ body = {} }, res) {
+    async post ({ body = {} }, res) {
         let args;
         try {
             args = pick(body, ['id', 'lat', 'long']);
