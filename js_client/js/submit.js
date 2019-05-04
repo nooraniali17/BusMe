@@ -3,6 +3,7 @@ import 'https://dev.jspm.io/bootstrap';
 
 import loadGmaps from './impl/get-gmaps.js';
 import { getStopInfo, getStopName, initMap } from './impl/map.js';
+import { sleep } from './utils/index.js';
 
 let Geocoder, Animation, Marker;
 
@@ -32,26 +33,26 @@ function setTable (data) {
 /**
  * Add markers of all nearby bus stations.
  *
- * @param location LatLng literal to base the query on.
- * @param radius How far away the query should look for.
  * @param icon Marker icon image URL.
  */
-async function addDriverMarker ({
+async function updateDriverLocation ({
   icon = 'http://maps.google.com/mapfiles/ms/micons/bus.png'
 } = {}) {
-  const data = await (await fetch('/api/driverLocation', { method: 'GET' })).json();
-  const animation = Animation.DROP;
-  var driverLatLng = { lat: data[0].lat, lng: data[0].long};
-
-  var driverMarker = new google.maps.Marker({
-    position: driverLatLng,
+  const driverMarker = new Marker({
+    position: { lat: 0, lng: 0 },
     title: "Here's your driver!",
-    animation,
-    icon
+    animation: Animation.DROP,
+    icon,
+    map
   });
-  map.setCenter(driverLatLng);
 
-  driverMarker.setMap(map);
+  do {
+    const res = await fetch('/api/driver', { method: 'GET' });
+    const [position] = await res.json();
+
+    map.setCenter(position);
+    driverMarker.setPosition(position);
+  } while (await sleep(1000, true));
 }
 
 async function fetchCheckinInfo () {
@@ -77,5 +78,5 @@ async function fetchCheckinInfo () {
   const mapData = await initMap();
   map = mapData.map;
 
-  return Promise.all([addDriverMarker(), fetchCheckinInfo()]);
+  return Promise.all([updateDriverLocation(), fetchCheckinInfo()]);
 })();

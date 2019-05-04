@@ -23,15 +23,15 @@ CREATE TABLE checkin (
 
 CREATE TABLE driver (
   id          INTEGER PRIMARY KEY,
-  long        REAL,
+  lng         REAL,
   lat         REAL
 );
-INSERT INTO driver VALUES (1, 0, 0);
+INSERT INTO driver VALUES (1, 0, 0); -- temporary
 
 -----
 -- Down
 -----
 
+DROP TABLE driver;
 DROP TABLE checkin;
 DROP TABLE stop;
-DROP TABLE driver;

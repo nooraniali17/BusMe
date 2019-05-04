@@ -9,7 +9,7 @@ db: db/83384d31-cb64-414d-b779-4b71cdefb423.sqlite
 port: 3000
 
 # if the database should be wiped every time the server starts
-reset: false
+reset: true
 
 # what radix tokens should be stored as.
 # (generally the value doesn't matter, just needs to stay consistent)

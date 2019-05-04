@@ -48,10 +48,10 @@ exports.getCheckins = async () => {
   });
 };
 
-exports.updateDriver = async (id, lat, long) => {
+exports.updateDriver = async (id, lat, lng) => {
   await db.run(SQL`
-    update driver 
-    set long=${long}, lat=${lat} 
+    update driver
+    set lng=${lng}, lat=${lat} 
     where id=${id}
   `);
 };
