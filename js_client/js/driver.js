@@ -3,7 +3,6 @@ import $ from 'https://dev.jspm.io/jquery';
 import 'https://dev.jspm.io/bootstrap';
 
 import loadGmaps from './impl/get-gmaps.js';
-import navigator from './es6-compat/navigator.js';
 import { initMap, getStopInfo, getStopName, currentPosLatLng } from './impl/map.js';
 import tagSoup from './utils/tag-soup.js';
 import { sleep } from './utils/index.js';
@@ -168,8 +167,8 @@ async function getCheckins () {
   return checkins;
 }
 
-async function setLocation() {
-  var driverPosition = await currentPosLatLng();
+async function setLocation () {
+  const driverPosition = await currentPosLatLng();
   const reqBody = {
     id: 1,
     lat: driverPosition.lat,
@@ -185,7 +184,6 @@ async function setLocation() {
   if (res.status >= 400) {
     return alert(`Driver location update failed (HTTP ${res.status})`);
   }
-
 }
 
 (async () => {

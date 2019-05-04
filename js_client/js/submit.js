@@ -4,20 +4,14 @@ import 'https://dev.jspm.io/bootstrap';
 import loadGmaps from './impl/get-gmaps.js';
 import { getStopInfo, getStopName, initMap } from './impl/map.js';
 
-let Geocoder, Animation;
+let Geocoder, Animation, Marker;
 
 let map;
-let infoWindow;
 
 const payload = {
   headers: { 'Content-Type': 'application/json' },
   body: localStorage.getItem('token'),
   method: 'POST'
-};
-
-const driverPayload = {
-  headers: { 'Content-Type': 'application/json' },
-  method: 'GET'
 };
 
 window.cancelRequest = async () => {
@@ -42,14 +36,13 @@ function setTable (data) {
  * @param radius How far away the query should look for.
  * @param icon Marker icon image URL.
  */
-async function addDriverMarker (
-  {
+async function addDriverMarker ({
   icon = 'http://maps.google.com/mapfiles/ms/micons/bus.png'
-  } = {}) {
+} = {}) {
   const data = await (await fetch('/api/driverLocation', { method: 'GET' })).json();
   const animation = Animation.DROP;
   var driverLatLng = { lat: data[0].lat, lng: data[0].long};
-  
+
   var driverMarker = new google.maps.Marker({
     position: driverLatLng,
     title: "Here's your driver!",
@@ -78,11 +71,11 @@ async function fetchCheckinInfo () {
   const gmaps = await loadGmaps();
   Animation = gmaps.Animation;
   Geocoder = gmaps.Geocoder;
+  Marker = gmaps.Marker;
 
   // LOAD GOOGLE MAPS
   const mapData = await initMap();
   map = mapData.map;
-  infoWindow = mapData.infoWindow;
 
   return Promise.all([addDriverMarker(), fetchCheckinInfo()]);
 })();

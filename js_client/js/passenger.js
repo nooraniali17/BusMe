@@ -3,7 +3,7 @@ import 'https://dev.jspm.io/bootstrap';
 
 import loadGmaps from './impl/get-gmaps.js';
 import { gmapsTextSearch } from './es6-compat/gmaps/places.js';
-import { initMap, currentPosLatLng } from './impl/map.js';
+import { initMap } from './impl/map.js';
 
 // GMAPS
 let Animation, Marker, PlacesService;
@@ -62,7 +62,7 @@ async function addMarkers (location, radius) {
 
   const animation = Animation.DROP;
   for (const r of res) {
-    const { name, place_id, geometry: { location } } = r;
+    const { name, geometry: { location } } = r;
     const position = { lat: location.lat(), lng: location.lng() };
     new Marker({ map, position, animation })
       .addListener('click', function () {
