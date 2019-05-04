@@ -11,8 +11,9 @@ html, body {
   color: initial;
 }
 
-.center-div {
+.center {
   padding: 1%;
+  text-align: center;
   margin: 0 auto;
   width: 100%;
 }
