@@ -42,7 +42,7 @@ async function currentDriverLocation () {
  * @param icon Marker icon image URL.
  */
 async function updateDriverLocation ({
-  icon = 'http://maps.google.com/mapfiles/ms/micons/bus.png'
+  icon = 'https://maps.google.com/mapfiles/ms/micons/bus.png'
 } = {}) {
   const position = await currentDriverLocation();
   const driverMarker = new Marker({
