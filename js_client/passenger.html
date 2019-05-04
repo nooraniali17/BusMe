@@ -1,56 +1,39 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
-    <link rel="stylesheet" href="master.css">
-    <title>Passenger</title>
-    <meta charset="utf-8" />
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-        * element that contains the map. */
-      #map {
-        height: 50%;
-      }
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+  <script src="js/passenger.js" type="module"></script>
 
-      /* Optional: Makes the sample page fill the window. */
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        padding: 10px;
-      }
+  <link rel="stylesheet" href="css/passenger.css">
+  <link rel="stylesheet" href="css/global.css">
+  <title>Passenger</title>
+  <meta charset="utf-8" />
+</head>
 
-    </style>
-  </head>
+<body>
+  <div id="map"></div>
 
-  <body>
-    <script src="passenger.js"></script>
-    <div class="driver">
-      <h4>Passenger Portal</h4>
-      <h6>Please select a marker on the map below to be picked up from:</h6>
-    </div>
-    <div id="map"></div>
-
-    <div class="driver">
-      <h5>How many people are in your party?</h5>
-    </div>
-    <input type="number" id="numInParty" />
-    <input id="numPickedUpBtn" type="button" onclick="setNumInParty(event)" value="Submit" />
-    <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDg2zhsGJpYuDRbjC_dUOfiT4bJY0IFA8&libraries=places&callback=initMap">
-    </script>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
-    </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-    </script>
-  </body>
+  <div class="container center-div">
+    <h1>Choose a stop, and tell us&hellip;</h1>
+    <form onsubmit="sendCheckin(event)">
+      <div class="form-row">
+        <div class="col-6">
+          <input name="groupName" class="form-control form-control-lg" type="text" placeholder="Party Name"
+            data-toggle="tooltip" data-placement="top" title="You will use this to confirm your checkin." />
+        </div>
+        <div class="col">
+          <input class="form-control form-control-lg" name="passengers" type="number" min="1" max="10"
+            placeholder="# Pass." inputmode="tel" data-toggle="tooltip" data-placement="top"
+            title="How many people are with you? (maximum 10 passengers)" />
+        </div>
+        <div class="col">
+          <button class="btn-lg btn-primary" type="submit">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</body>
 
 </html>

@@ -1,0 +1,11 @@
+.center-div {
+  text-align: center;
+}
+
+#checkins {
+  margin-top: 1em;
+}
+
+#checkins th, #checkins td {
+  vertical-align: middle;
+}
