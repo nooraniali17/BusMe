@@ -23,7 +23,6 @@
     "sqlite": "^3.0.3"
   },
   "devDependencies": {
-    "nodemon": "^1.18.11",
     "semistandard": "^13.0.1"
   }
 }
