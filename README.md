@@ -2,9 +2,9 @@
 # BusMe
 # URL - busme.app
 
-Passenger Portal Link - busme.app
+<strong>Passenger Portal Link - busme.app</strong>
 
-Driver Portal Link - busme.app/driver
+<strong>Driver Portal Link - busme.app/driver</strong>
 
 Our project relies on these three files the most:
 
