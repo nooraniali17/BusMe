@@ -1,7 +1,7 @@
 const access = require('../db/access');
 const { pick } = require('../util');
 
-exports['/api/driver'] = {
+exports['/api/drivers'] = {
   /**
    * Get Driver Location.
    */

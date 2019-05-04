@@ -1,5 +1,5 @@
 module.exports = {
-  ...require('./checkin'),
-  ...require('./pickup'),
-  ...require('./driver')
+  ...require('./checkins'),
+  ...require('./pickups'),
+  ...require('./drivers')
 };

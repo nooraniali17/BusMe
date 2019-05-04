@@ -17,7 +17,7 @@ const payload = {
 
 window.cancelRequest = async () => {
   if (confirm('Are you sure you want to cancel?')) {
-    const res = await fetch('/api/checkin/cancel', payload);
+    const res = await fetch('/api/checkins/cancel', payload);
     console.log(res);
     window.location.replace('.');
   }
@@ -47,7 +47,7 @@ async function updateDriverLocation ({
   });
 
   do {
-    const res = await fetch('/api/driver', { method: 'GET' });
+    const res = await fetch('/api/drivers', { method: 'GET' });
     const [position] = await res.json();
 
     map.setCenter(position);
@@ -56,7 +56,7 @@ async function updateDriverLocation ({
 }
 
 async function fetchCheckinInfo () {
-  const data = await (await fetch('/api/checkin/info', payload)).json();
+  const data = await (await fetch('/api/checkins/info', payload)).json();
   data.stopName = getStopName(
     await getStopInfo(new Geocoder(), data.placeid));
   setTable(data);

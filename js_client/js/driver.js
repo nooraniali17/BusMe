@@ -19,7 +19,7 @@ window.pickup = async e => {
   if (pickups.size === 0) {
     return alert('Please pick up at least one passenger.');
   }
-  const res = await fetch('/api/pickup', {
+  const res = await fetch('/api/pickups', {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify([...pickups]),
     method: 'POST'
@@ -112,7 +112,7 @@ function generateRows (t, checkinMap) {
 }
 
 /**
- * Get all check ins from `GET /api/checkin`. Returns null if there is no need
+ * Get all check ins from `GET /api/checkins`. Returns null if there is no need
  * to update (304, or similar return).
  */
 async function getCheckins () {
@@ -127,7 +127,7 @@ async function getCheckins () {
   const oldText = getCheckins.cache;
   const oldData = oldText && JSON.parse(oldText);
 
-  const res = await fetch('/api/checkin', { method: 'GET' });
+  const res = await fetch('/api/checkins', { method: 'GET' });
   if (res.status === 304) {
     return;
   }
@@ -174,7 +174,7 @@ async function generateTable () {
 }
 
 async function setLocation () {
-  const res = await fetch('/api/driver', {
+  const res = await fetch('/api/drivers', {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id: 1, ...await currentPosLatLng() }),
     method: 'PUT'

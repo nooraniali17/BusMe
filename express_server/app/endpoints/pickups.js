@@ -1,6 +1,6 @@
 const access = require('../db/access');
 
-exports['/api/pickup'] = {
+exports['/api/pickups'] = {
   /**
    * Pick users up.
    *

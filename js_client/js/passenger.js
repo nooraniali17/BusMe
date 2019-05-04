@@ -30,7 +30,7 @@ window.sendCheckin = async (e) => {
     return alert('Please fill in all fields.');
   }
 
-  const res = await fetch('/api/checkin', {
+  const res = await fetch('/api/checkins', {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(reqBody),
     method: 'POST'

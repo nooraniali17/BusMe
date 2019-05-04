@@ -1,7 +1,7 @@
 const access = require('../db/access');
 const { pick } = require('../util');
 
-exports['/api/checkin'] = {
+exports['/api/checkins'] = {
   /**
    * Get all checkins (table dump).
    */
@@ -28,7 +28,7 @@ exports['/api/checkin'] = {
    *  is: str
    *  desc: |
    *    ID (in opaque ID:token format) for future reference in
-   *    `POST /api/checkin/cancel`.
+   *    `POST /api/checkins/cancel`.
    * ```
    */
   async post ({ body = {} }, res) {
@@ -53,7 +53,7 @@ exports['/api/checkin'] = {
   }
 };
 
-exports['/api/checkin/info'] = {
+exports['/api/checkins/info'] = {
   /**
    * Get checkin info. Returns a single entry of the type of `GET /api/checkin`.
    *
@@ -61,7 +61,7 @@ exports['/api/checkin/info'] = {
    * schema:
    *  token:
    *    is: str
-   *    desc: String from `POST /api/checkin` to get info about.
+   *    desc: String from `POST /api/checkins` to get info about.
    * ```
    */
   async post ({ body = {} }, res) {
@@ -81,7 +81,7 @@ exports['/api/checkin/info'] = {
   }
 };
 
-exports['/api/checkin/cancel'] = {
+exports['/api/checkins/cancel'] = {
   /**
    * Cancel checkin.
    *
@@ -89,7 +89,7 @@ exports['/api/checkin/cancel'] = {
    * schema:
    *  token:
    *    is: str
-   *    desc: String from `POST /api/checkin` to validate cancel.
+   *    desc: String from `POST /api/checkins` to validate cancel.
    * ```
    */
   async post ({ body = {} }, res) {
