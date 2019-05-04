@@ -6,7 +6,6 @@ exports['/api/driverLocation/'] = {
      * Get Driver Location.
      */
     async get(req, res) {
-        console.log(await access.getDrivers());
         res.send(await access.getDrivers());
     }
 }
@@ -28,7 +27,7 @@ exports['/api/driverLocation/update'] = {
      *    desc: longitude of drivers location
      * ```
      */
-    async post({ body = {} }, res) {
+    async post ({ body = {} }, res) {
         let args;
         try {
             args = pick(body, ['id', 'lat', 'long']);
@@ -37,7 +36,6 @@ exports['/api/driverLocation/update'] = {
             return res.sendStatus(400);
         }
         try {
-            console.log(...args)
             return res.send({ token: await access.updateDriver(...args) });
         } catch (e) {
             console.log(e.message);
