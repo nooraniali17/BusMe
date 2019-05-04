@@ -30,6 +30,12 @@ function setTable (data) {
   $('#stop').text(stopName);
 }
 
+async function currentDriverLocation () {
+  const res = await fetch('/api/drivers', { method: 'GET' });
+  const [position] = await res.json();
+  return position;
+}
+
 /**
  * Add markers of all nearby bus stations.
  *
@@ -38,20 +44,18 @@ function setTable (data) {
 async function updateDriverLocation ({
   icon = 'http://maps.google.com/mapfiles/ms/micons/bus.png'
 } = {}) {
+  const position = await currentDriverLocation();
   const driverMarker = new Marker({
-    position: { lat: 0, lng: 0 },
+    position,
     title: "Here's your driver!",
     animation: Animation.DROP,
     icon,
     map
   });
+  map.setCenter(position);
 
   do {
-    const res = await fetch('/api/drivers', { method: 'GET' });
-    const [position] = await res.json();
-
-    map.setCenter(position);
-    driverMarker.setPosition(position);
+    driverMarker.setPosition(await currentDriverLocation());
   } while (await sleep(1000, true));
 }
 
