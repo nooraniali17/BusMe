@@ -55,26 +55,25 @@ def require_auth(
     permissions = _map_permissions(permissions, strict_mappings)
 
     def decorator(fn):
-        # guess event name, and since we are assuming this is tightly coupled
-        # with the _AsyncNamespace class we can also assume that `on_(.+) => $1`
-        event_name = fn.__name__[3:] if fn.__name__.startswith("on_") else fn.__name__
-
         @wraps(fn)
         async def decorated(self, sid, *data):
             nonlocal error_event, permissions, reject
             session_data = (await self.get_session(sid)).get("auth")
-
-            async def get_session_perms():
-                """type: () -> str[]"""
-                nonlocal self, session_data
-                return await session_data.permissions(self.app["session"])
+            session_perms = session_data.permissions if session_data else None
 
             async def reject_cb():
                 """type: () -> void"""
-                nonlocal self, error_event, permissions, reject, sid
+                nonlocal self, error_event, permissions, session_perms, reject, sid
+
+                # guess event name, and since we are assuming this is tightly
+                # coupled with the _AsyncNamespace class we can also assume
+                # `on_(.+) => $1`
+                event_name = (
+                    fn.__name__[3:] if fn.__name__.startswith("on_") else fn.__name__
+                )
+
                 _log.info(f'event "{event_name}" rejected for session {sid}')
                 if reject:
-                    session_perms = await get_session_perms()
                     await reject(
                         self, sid, [p for p in permissions if p not in session_perms]
                     )
@@ -85,22 +84,17 @@ def require_auth(
                         room=sid,
                     )
 
-            async def check_permissions():
+            def check_permissions():
                 """type: () -> bool"""
-                nonlocal permissions, session_data
-                # no auth data means no chance of matching
+                nonlocal permissions, session_perms, session_data
                 if not session_data:
                     return False
+                
+                # no target permissions means no need to check permissions,
+                # otherwise check that permissions ⊆ session_perms.
+                return not permissions or all(p in session_perms for p in permissions)
 
-                # no target permissions means no need to check permissions
-                if not permissions:
-                    return True
-
-                # finally, check that all required permissions are granted
-                session_perms = await get_session_perms()
-                return session_data and all(p in session_perms for p in permissions)
-
-            if await check_permissions():
+            if check_permissions():
                 return await fn(self, sid, session_data, *data)
             await reject_cb()
 

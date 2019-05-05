@@ -96,6 +96,12 @@ class RiderNamespace(LoginNamespace):
                 room=sid,
             )
 
+        # avoid double subscribes
+        async with self.session(sid) as session:
+            if session.get('sub_stops'):
+                return _log.debug(f"User {auth.user_id} already subscribed to stops.")
+            session['sub_stops'] = True
+
         _log.info(f"User {auth.user_id} subscribed to stops.")
         await update_stops()
         while await sleep(10, result=True):

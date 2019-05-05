@@ -1,4 +1,4 @@
-# set various logging levels
+# Set various logging levels
 loggers:
   engineio: 30
 
@@ -7,40 +7,38 @@ loggers:
 # psycopg...).
 database:
   database: busme
-  user: null
+  user:
   host: '127.0.0.1'
   port: '5432'
-  password: null
+  password:
 
 # Various authentication parameters.
 authentication:
   # API identifier. Should be listed in the dashboard under "identifier", and
   # should look like a URL (though it doesn't have to).
-  api_id: null
+  # APIs > <API> > sidebar "API Audience"
+  api_id:
 
-  # parameters to authenticate ID Token JWTs.
+  # Parameters to authenticate ID Token JWTs.
   id_token_params:
     # A list of acceptable algorithms for verifying JWTs. A list of available
     # algorithms is provided here:
     # https://pyjwt.readthedocs.io/en/latest/algorithms.html
     algorithms: ["RS256"]
-    audience: null
+    # Applications > <Application> > Settings > Client ID
+    audience:
+  
+  # Parameters to verify Access Token JWTs.
+  # Be sure to set RBA and default audience active (or some other way to get
+  # JWT access tokens).
+  access_token_params:
+    algorithms: ["RS256"]
+    audience:
 
   # OpenID configuration URI.
   # https://auth0.com/docs/protocols/oidc/openid-connect-discovery
   # https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
-  openid_discovery: null
-
-  # Management API base URI.
-  management_api: null
-
-  # Management API access token generator parameters
-  # https://auth0.com/docs/api/management/v2/get-access-tokens-for-production
-  management_params:
-    client_id: null
-    client_secret: null
-    audience: null
-    grant_type: client_credentials
+  openid_discovery:
 
 # Management API permissions mapping. As this app cannot dynamically generate
 # permissions (or?) it is up to you to map these roles correctly, and ensure
@@ -50,15 +48,14 @@ permissions:
   create_organization: create:organization
   create_route: create:route
 
-# ssl stuff (set to null to use plain http, though you probably shouldn't)
+# SSL stuff (set to null to use plain HTTP, though you probably shouldn't)
 ssl:
-  cert: null
-  key: null
+  # cert:
+  # key:
 
 # A list of folders where all the static files are located, if any.
 # (should only be used in development)
 static_files:
-  - ../js_client
 
 # Should the tables be dropped each time the server starts up?
 db_startup_wipe: False
