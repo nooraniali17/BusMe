@@ -1,46 +1,41 @@
 {
-  "name": "bus-me",
-  "version": "0.1.0",
+  "name": "busme-client",
+  "version": "0.0.1",
   "private": true,
-  "dependencies": {
-    "google-map-react": "^1.1.4",
-    "google-maps-react": "^2.0.2",
-    "react": "^16.8.6",
-    "react-bootstrap": "^1.0.0-beta.6",
-    "react-dom": "^16.8.6",
-    "react-geolocated": "^2.4.1",
-    "react-google-maps": "^9.4.5",
-    "react-router": "^5.0.0",
-    "react-router-dom": "^5.0.0",
-    "react-scripts": "^2.1.8",
-    "recompose": "^0.30.0"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "eslint src --ext=jsx --ext=js",
-    "fix": "eslint src --ext=jsx --ext=js --fix"
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest",
+    "lint": "eslint . --ext .js,.tsx src",
+    "fix": "eslint . --ext .js,.tsx src --fix"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "dependencies": {
+    "react": "16.8.3",
+    "react-native": "^0.59.6",
+    "socket.io-client": "^2.2.0"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
-  "main": "index.js",
   "devDependencies": {
-    "eslint": "^5.16.0",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "prettier": "^1.16.4"
+    "@babel/core": "7.4.4",
+    "@babel/runtime": "7.4.4",
+    "@types/jest": "24.0.12",
+    "@types/react": "16.8.16",
+    "@types/react-native": "0.57.51",
+    "@types/react-test-renderer": "16.8.1",
+    "@types/socket.io-client": "^1.4.32",
+    "@typescript-eslint/eslint-plugin": "^1.7.0",
+    "babel-jest": "24.8.0",
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.13.0",
+    "jest": "24.8.0",
+    "metro-react-native-babel-preset": "0.54.0",
+    "react-test-renderer": "16.8.3",
+    "tslint-react": "^4.0.0",
+    "typescript": "3.4.5"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "jest": {
+    "preset": "react-native"
+  },
+  "eslintIgnore": ["__tests__", "*.config.js", "index.js"]
 }

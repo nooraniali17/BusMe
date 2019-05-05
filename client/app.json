@@ -1,0 +1,5 @@
+{
+  "name": "BusMe",
+  "displayName": "BusMe",
+  "entryPoint": "src/index.js"
+}
