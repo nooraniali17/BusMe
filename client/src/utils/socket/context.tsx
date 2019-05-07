@@ -54,7 +54,7 @@ export interface SocketIOProps extends SocketIOClient.ConnectOpts {
  * Create a promisified `sio.emit` function.
  */
 export function emitAsync(sio: SocketIOClient.Socket): AsyncEmitCallable {
-  return (event, ...args) => new Promise((y) => sio.emit(event, ...args, y));
+  return (event, ...args) => new Promise(y => sio.emit(event, ...args, y));
 }
 
 /**

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-import authenticate, { AuthenticationData } from './authenticate';
+import defaultAuthenticate, { AuthenticationData } from './authenticate';
 import { SocketIOProps, SocketIO } from '../utils/socket/context';
 
 /**
@@ -11,43 +11,42 @@ interface AuthSocketIOProps extends SocketIOProps {
    * Authentication function yielding login tokens. Should have a option to
    * force retrieval from authentication server over cached tokens.
    */
-  authenticate: typeof authenticate;
+  authenticate?: typeof defaultAuthenticate;
+
+  loading(): React.ReactChild;
 }
 
 /**
  * Shortcut for authentication. The default implementation follows a simple
  * connect-login-authenticated model using JWTs and OpenID Connect.
  */
-export default class AuthSocketIO extends Component<
-AuthSocketIOProps, { ready: boolean }
-> {
-  public static defaultProps = { authenticate };
+export default function AuthSocketIO({
+  authenticate = defaultAuthenticate, children, loading, ...props
+}: AuthSocketIOProps) {
+  const [ready, setReady] = useState(false);
 
-  public constructor(props: AuthSocketIOProps) {
-    super(props);
-    this.state = { ready: false };
-  }
+  // set ready in 5 seconds regardless of connection status
+  const timeout = setTimeout(() => setReady(true), 5000);
 
-  private provider?: JSX.Element;
+  return <SocketIO
+    {...props}
+    onConnect={async (sio) => {
+      function login({ idToken, accessToken }: AuthenticationData) {
+        sio.emit('login', idToken, accessToken);
+      }
 
-  public render() {
-    this.provider = this.provider || <SocketIO
-      {...this.props}
-      onConnect={async (sio) => {
-        function login({ idToken, accessToken }: AuthenticationData) {
-          sio.emit('login', idToken, accessToken);
+      login(await authenticate());
+      sio.once('error', async (err: any) => {
+        if (err.event === 'login') {
+          login(await authenticate(true));
         }
-
-        login(await this.props.authenticate());
-        sio.on('error', async (err: any) => {
-          if (err.event === 'login') {
-            login(await this.props.authenticate(true));
-          }
-        });
-        sio.on('authenticated', () => this.setState({ ready: true }));
-      }}>
-      {this.state ? this.props.children : undefined}
-    </SocketIO>;
-    return this.provider;
-  }
+      });
+      sio.once('authenticated', () => {
+        clearTimeout(timeout);
+        setReady(true);
+      });
+    }}
+  >
+    {ready ? children : loading()}
+  </SocketIO>;
 }

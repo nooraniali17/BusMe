@@ -25,9 +25,9 @@ export interface AuthenticationData {
   tokenType: "Bearer";
 }
 
-const auth0 = new Auth0({ 
+const auth0 = new Auth0({
   domain: 'bus-me-us.auth0.com',
-  clientId: 'l3VFomJk2JRrNZ2BnymXuH54yfhjPgfe'
+  clientId: 'l3VFomJk2JRrNZ2BnymXuH54yfhjPgfe',
 });
 
 /**
@@ -48,7 +48,7 @@ async function fetchAuthFresh(): Promise<AuthenticationData> {
 }
 
 /**
- * Fetch authentication from local storage, 
+ * Fetch authentication from local storage.
  */
 async function fetchAuthCache(): Promise<AuthenticationData | undefined> {
   const authRaw = await AsyncStorage.getItem(authStorageKey);
@@ -65,7 +65,7 @@ async function fetchAuthCache(): Promise<AuthenticationData | undefined> {
  * 
  * @param force Should the user be forced to manually log in?
  */
-export default async function authenticate (force = false) {
+export default async function authenticate(force = false) {
   let authData = !force && await fetchAuthCache();
   if (!authData) {
     authData = await fetchAuthFresh();
