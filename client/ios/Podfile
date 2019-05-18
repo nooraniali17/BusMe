@@ -3,6 +3,11 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 inhibit_all_warnings!
 
+plugin 'cocoapods-keys', {
+  :project => "BusMe",
+  :keys => ["GoogleMapsAPIKey"]
+}
+
 target 'BusMe' do
   # ------------
   # REACT NATIVE
@@ -43,8 +48,8 @@ target 'BusMe' do
   pod 'react-native-maps', :path => rn_maps_path
   pod 'react-native-google-maps', path: rn_maps_path
   pod 'Google-Maps-iOS-Utils'
-  pod 'GoogleMaps'
-  pod 'GooglePlaces'
+  pod 'GoogleMaps', '3.1.0'
+  pod 'GooglePlaces', '3.1.0'
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   
